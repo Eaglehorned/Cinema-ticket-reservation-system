@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cinema_ticket_reservation_system.Controllers
+namespace Nadim.CinemaReservationSystem.Controllers
 {
     [Route("api/[controller]")]
     public class SampleDataController : Controller

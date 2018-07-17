@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Cinema_ticket_reservation_system
+namespace Nadim.CinemaReservationSystem
 {
     public class Program
     {

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cinema_ticket_reservation_system
+namespace Nadim.CinemaReservationSystem
 {
     public class Startup
     {
