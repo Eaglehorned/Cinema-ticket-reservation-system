@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
-import Authentication from './components/Authentication';
+import LogIn from './components/Login';
 
 export default class App extends Component {
-  displayName = App.name
+displayName = App.name
 
-  render() {
-      return (
-          <div>
-            <Authentication/>
-          </div>
-    );
-  }
+    render() {
+        return (
+            <div>
+                <LogIn/>
+            </div>
+        );
+    }
 }
