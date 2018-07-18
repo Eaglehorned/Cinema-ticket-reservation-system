@@ -29,7 +29,7 @@ Obj/
 # Visual Studio 2015 cache/options directory
 .vs/
 /wwwroot/dist/
-
+Nadim.CinemaReservationSystem.Database/Import Schema Logs/
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -43,6 +43,7 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
+*.jfm
 *_i.c
 *_p.c
 *_i.h
