@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
+import Authentication from './components/Authentication';
 
 export default class App extends Component {
   displayName = App.name
@@ -7,6 +8,7 @@ export default class App extends Component {
   render() {
       return (
           <div>
+            <Authentication/>
           </div>
     );
   }
