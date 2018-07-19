@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 namespace Nadim.CinemaReservationSystem.Web
 {
@@ -21,6 +22,8 @@ namespace Nadim.CinemaReservationSystem.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddDbContext<Nadim.CinemaReservationSystem.Web.Models.CinemaReservationSystemContext>(options => options.UseSqlServer("Server=localhost\\SQLEXPRESS01;Database=CinemaReservationSystemDb;Trusted_Connection=True;"));
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

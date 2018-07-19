@@ -10,33 +10,50 @@ export default class Login extends Component {
             email: '',
             password:''
         }
-        this.handleChangeEmail = this.handleChangeEmail.bind(this);
-        this.handleChangePassword = this.handleChangePassword.bind(this);
+        this.handleEmailChange = this.handleEmailChange.bind(this);
+        this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleLoginClick = this.handleLoginClick.bind(this);
     }
 
-    handleChangeEmail(event){
+    handleEmailChange(event){
         this.setState({
             email: event.target.value
         })
     }
 
-    handleChangePassword(event){
+    handlePasswordChange(event){
         this.setState({
             password: event.target.value
         });
-        console.log(this.state.password);
     }
 
     handleLoginClick(event){
         event.preventDefault();
+        fetch('api/Authentication/Authenticate', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                Id: 0,
+                Email: this.state.email,
+                Password: this.state.password,
+                FirstName: '',
+                LastName: '',
+                Role: ''
+            })
+        }).then(response => response.json())
+            .then(parsedJson => {
+                console.log(parsedJson);
+            });
     }
 
     render() {
         return (
             <div className="authentication-container">
-                <input type="email" className="form-control form-control-sm" value={this.state.email} onChange={this.handleChangeEmail} placeholder="Example@example.com"/>
-                <input type="password" className="form-control form-control-sm" value={this.state.password} onChange={this.handleChangePassword} placeholder="Password"/>
+                <input type="email" className="form-control form-control-sm" value={this.state.email} onChange={this.handleEmailChange} placeholder="Example@example.com"/>
+                <input type="password" className="form-control form-control-sm" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Password"/>
                 <button type="button" className="btn btn-primary btn-sm" onClick={this.handleLoginClick}>Log in</button>
             </div>
         )
