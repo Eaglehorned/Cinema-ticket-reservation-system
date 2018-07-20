@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import LogIn from './components/Login';
+import Registration from './components/Registration';
 
 export default class App extends Component {
 displayName = App.name
@@ -9,6 +10,7 @@ displayName = App.name
         return (
             <div>
                 <LogIn/>
+                <Registration/>
             </div>
         );
     }
