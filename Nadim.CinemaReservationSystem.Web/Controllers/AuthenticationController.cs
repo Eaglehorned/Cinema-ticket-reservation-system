@@ -8,7 +8,6 @@ using Nadim.CinemaReservationSystem.Web.Models;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
@@ -30,8 +29,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         [HttpPost("[action]")]
         public IActionResult Login([FromBody] User user)
         {
-            if (!Regex.IsMatch(user.Email, @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$") ||
-                string.IsNullOrEmpty(user.Password))
+            if (!Utils.IsEmailValid(user.Email) || string.IsNullOrEmpty(user.Password))
             {
                 return Json(new Response
                 {
@@ -85,8 +83,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         [HttpPost("[action]")]
         public IActionResult Register([FromBody] User user)
         {
-            if (!Regex.IsMatch(user.Email, @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$") ||
-                string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.LastName))
+            if (!Utils.IsEmailValid(user.Email) || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.LastName))
             {
                 return Json(new Response
                 {

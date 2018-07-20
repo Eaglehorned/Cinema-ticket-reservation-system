@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Nadim.CinemaReservationSystem.Web
 {
@@ -32,6 +33,11 @@ namespace Nadim.CinemaReservationSystem.Web
                 timeString = timeString.Replace("UTC", "GMT");
             }
             return DateTime.ParseExact(timeString, "ddd, dd MMM yyyy HH:mm:ss Z", CultureInfo.InvariantCulture);
+        }
+
+        public static bool IsEmailValid(string email)
+        {
+            return Regex.IsMatch(email, @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$");
         }
     }
 }

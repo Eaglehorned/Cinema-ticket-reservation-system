@@ -43,7 +43,6 @@ export default class Login extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                Id: 0,
                 Email: this.state.email,
                 Password: this.state.password,
             })

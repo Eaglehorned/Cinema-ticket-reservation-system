@@ -32,20 +32,20 @@ export default class Authentication extends Component {
         })
     }
 
-    handleRegistration = (dataFromChild) => {
-        console.log(dataFromChild);
+    handleRegistration = (AuthenticationData) => {
+        console.log(AuthenticationData);
         this.setState({
-            username: dataFromChild.username,
-            token: dataFromChild.token,
+            username: AuthenticationData.username,
+            token: AuthenticationData.token,
             modalIsOpen: false
         })
         //TODO: inform parent about user authenticated
     }
 
-    handleLogin = (dataFromChild) => {
+    handleLogin = (AuthenticationData) => {
         this.setState({
-            username: dataFromChild.username,
-            token: dataFromChild.token,
+            username: AuthenticationData.username,
+            token: AuthenticationData.token,
         })
         //TODO: inform parent about user authenticated
     }
