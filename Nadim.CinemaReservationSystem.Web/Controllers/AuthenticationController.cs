@@ -76,7 +76,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return Json(new ResponseWithToken
             {
                 Status = "ok",
-                Details = dbContext.Users.First(u => u.Email == user.Email).FirstName,
+                Details = dbContext.Users.First(u => u.Email == user.Email).FirstName + " " + dbContext.Users.First(u => u.Email == user.Email).LastName,
                 Token = new JwtSecurityTokenHandler().WriteToken(token)
             });
         }

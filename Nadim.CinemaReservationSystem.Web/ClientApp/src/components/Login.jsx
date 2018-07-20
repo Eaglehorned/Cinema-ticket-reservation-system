@@ -53,7 +53,10 @@ export default class Login extends Component {
                 if (parsedJson.status === 'ok') {
                     localStorage.setItem('token', parsedJson.token);
                     localStorage.setItem('username', parsedJson.details);
-                    //here to call callback
+                    this.props.callBackFromParent({
+                        username: parsedJson.details,
+                        token: parsedJson.token
+                    })
                 }
                 else{
                     alert(parsedJson.details);
@@ -63,7 +66,7 @@ export default class Login extends Component {
 
     render() {
         return (
-            <div className="authentication-container">
+            <div>
                 <input type="email" className="form-control form-control-sm" value={this.state.email} onChange={this.handleEmailChange} placeholder="Example@example.com"/>
                 <input type="password" className="form-control form-control-sm" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Password"/>
                 <button type="button" className="btn btn-primary btn-sm" onClick={this.handleLoginClick} disabled={!(this.validateEmail(this.state.email) && this.state.password)}>Log in</button>
