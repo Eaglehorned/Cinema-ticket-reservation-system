@@ -21,3 +21,7 @@
     border-radius: 5px; 
     background-color: whitesmoke;
 }
+
+.error-text{
+    color: #f80000;
+}

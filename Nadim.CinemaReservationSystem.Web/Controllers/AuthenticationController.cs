@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nadim.CinemaReservationSystem.Web.Models;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.Extensions.Configuration;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
+using Nadim.CinemaReservationSystem.Web.Services;
 
 namespace Nadim.CinemaReservationSystem.Web.Controllers
 {
@@ -19,6 +16,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
     {
         private readonly CinemaReservationSystemContext dbContext;
         public readonly IConfiguration configuration;
+
         public AuthenticationController(CinemaReservationSystemContext context, IConfiguration configuration)
         {
             dbContext = context;
@@ -27,9 +25,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [AllowAnonymous]
         [HttpPost("[action]")]
-        public IActionResult Login([FromBody] User user)
+        public IActionResult Login([FromBody] UserLoginInfo user)
         {
-            if (!Utils.IsEmailValid(user.Email) || string.IsNullOrEmpty(user.Password))
+            if (!AuthenticationService.IsUserLoginDataValid(user))
             {
                 return BadRequest(new Response
                 {
@@ -38,7 +36,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 });
             }
 
-            if (!dbContext.Users.Any(u => u.Email == user.Email))
+            if (!AuthenticationService.UserExists(dbContext, user.Email))
             {
                 return BadRequest(new Response
                 {
@@ -47,7 +45,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 });
             }
 
-            if (Utils.GetHash(user.Password) != dbContext.Users.First(u => u.Email == user.Email).Password)
+            if (!AuthenticationService.IsUserDataCorrect(dbContext, user))
             {
                 return BadRequest(new Response
                 {
@@ -56,35 +54,20 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 });
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Tokens:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[] {
-                new Claim(ClaimTypes.Name, user.Email)
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: configuration["Tokens:Issuer"],
-                audience: configuration["Tokens:Issuer"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: creds
-                );
-
             return Ok(new ResponseWithToken
             {
                 Status = "ok",
                 Details = dbContext.Users.First(u => u.Email == user.Email).FirstName + 
                     " " + dbContext.Users.First(u => u.Email == user.Email).LastName,
-                Token = new JwtSecurityTokenHandler().WriteToken(token)
+                Token = AuthenticationService.GenerateToken(configuration, user.Email)
             });
         }
 
         [AllowAnonymous]
         [HttpPost("[action]")]
-        public IActionResult Register([FromBody] User user)
+        public IActionResult Register([FromBody] UserRegistrationInfo user)
         {
-            if (!Utils.IsEmailValid(user.Email) || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.LastName))
+            if (!AuthenticationService.IsUserRegistrationDataValid(user))
             {
                 return BadRequest(new Response
                 {
@@ -93,7 +76,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 });
             }
 
-            if (dbContext.Users.Any(u => u.Email == user.Email))
+            if (AuthenticationService.UserExists(dbContext, user.Email))
             {
                 return BadRequest(new Response
                 {
@@ -102,30 +85,20 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 });
             }
 
-            user.Password = Utils.GetHash(user.Password);
-            user.Role = "user";
-            dbContext.Users.Add(user);
+            dbContext.Users.Add(new User {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Password = Utils.GetHash(user.Password),
+                Email = user.Email,
+                Role = "user"
+            });
+
             dbContext.SaveChanges();
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Tokens:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[] {
-                new Claim(ClaimTypes.Name, user.Email)
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: configuration["Tokens:Issuer"],
-                audience: configuration["Tokens:Issuer"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(300),
-                signingCredentials: creds
-                );
 
             return Ok(new ResponseWithToken
             {
                 Status = "ok",
-                Token = new JwtSecurityTokenHandler().WriteToken(token)
+                Token = AuthenticationService.GenerateToken(configuration, user.Email)
             });
         }
     }

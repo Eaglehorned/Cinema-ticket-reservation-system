@@ -54,7 +54,6 @@ export default class Login extends Component {
             })
         }).then(response => response.json())
             .then(parsedJson => {
-                console.log(parsedJson);
                 if (parsedJson.status === 'ok') {
                     localStorage.setItem('token', parsedJson.token);
                     localStorage.setItem('username', parsedJson.details);
@@ -77,7 +76,7 @@ export default class Login extends Component {
     render() {
         return (
             <div>
-                <h4>{this.state.error}</h4>
+                <h3 className="error-text">{this.state.error}</h3>
                 <input 
                     type="email" 
                     className="form-control form-control-sm" 
