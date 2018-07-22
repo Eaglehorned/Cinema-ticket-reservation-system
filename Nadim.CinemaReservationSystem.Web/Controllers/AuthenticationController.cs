@@ -31,7 +31,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         {
             if (!Utils.IsEmailValid(user.Email) || string.IsNullOrEmpty(user.Password))
             {
-                return Json(new Response
+                return BadRequest(new Response
                 {
                     Status = "error",
                     Details = "Incorrect data."
@@ -40,7 +40,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
             if (!dbContext.Users.Any(u => u.Email == user.Email))
             {
-                return Json(new Response
+                return BadRequest(new Response
                 {
                     Status = "error",
                     Details = "User doesnt exist."
@@ -49,7 +49,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
             if (Utils.GetHash(user.Password) != dbContext.Users.First(u => u.Email == user.Email).Password)
             {
-                return Json(new Response
+                return BadRequest(new Response
                 {
                     Status = "error",
                     Details = "Incorrect password."
@@ -71,10 +71,11 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 signingCredentials: creds
                 );
 
-            return Json(new ResponseWithToken
+            return Ok(new ResponseWithToken
             {
                 Status = "ok",
-                Details = dbContext.Users.First(u => u.Email == user.Email).FirstName + " " + dbContext.Users.First(u => u.Email == user.Email).LastName,
+                Details = dbContext.Users.First(u => u.Email == user.Email).FirstName + 
+                    " " + dbContext.Users.First(u => u.Email == user.Email).LastName,
                 Token = new JwtSecurityTokenHandler().WriteToken(token)
             });
         }
@@ -85,7 +86,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         {
             if (!Utils.IsEmailValid(user.Email) || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.LastName))
             {
-                return Json(new Response
+                return BadRequest(new Response
                 {
                     Status = "error",
                     Details = "Incorrect data."
@@ -94,14 +95,13 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
             if (dbContext.Users.Any(u => u.Email == user.Email))
             {
-                return Json(new Response
+                return BadRequest(new Response
                 {
                     Status = "error",
                     Details = "User already registed."
                 });
             }
 
-            user.Id = dbContext.Users.Count() == 0 ? 1 : (dbContext.Users.Last().Id + 1);
             user.Password = Utils.GetHash(user.Password);
             user.Role = "user";
             dbContext.Users.Add(user);
@@ -118,11 +118,11 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 issuer: configuration["Tokens:Issuer"],
                 audience: configuration["Tokens:Issuer"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(300),
                 signingCredentials: creds
                 );
 
-            return Json(new ResponseWithToken
+            return Ok(new ResponseWithToken
             {
                 Status = "ok",
                 Token = new JwtSecurityTokenHandler().WriteToken(token)
