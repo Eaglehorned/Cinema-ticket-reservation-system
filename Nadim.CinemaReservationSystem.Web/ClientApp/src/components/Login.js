@@ -11,6 +11,7 @@ export default class Login extends Component {
             password:'',
             username:'',
             token:'',
+            error:''
         }
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -25,16 +26,21 @@ export default class Login extends Component {
     handleEmailChange(event){
         this.setState({
             email: event.target.value,
+            error:'',
         })
     }
 
     handlePasswordChange(event){
         this.setState({
             password: event.target.value,
+            error:'',
         });
     }
 
     handleLoginClick(event){
+        this.setState({
+            error:'',
+        })
         event.preventDefault();
         fetch('api/Authentication/Login', {
             method: 'POST',
@@ -56,9 +62,14 @@ export default class Login extends Component {
                         username: parsedJson.details,
                         token: parsedJson.token
                     })
+                    this.setState({
+                        error:'',
+                    })
                 }
                 else{
-                    alert(parsedJson.details);
+                   this.setState({
+                       error: parsedJson.details,
+                   });
                 }
             });
     }
@@ -66,9 +77,29 @@ export default class Login extends Component {
     render() {
         return (
             <div>
-                <input type="email" className="form-control form-control-sm" value={this.state.email} onChange={this.handleEmailChange} placeholder="Example@example.com"/>
-                <input type="password" className="form-control form-control-sm" value={this.state.password} onChange={this.handlePasswordChange} placeholder="Password"/>
-                <button type="button" className="btn btn-primary btn-sm" onClick={this.handleLoginClick} disabled={!(this.validateEmail(this.state.email) && this.state.password)}>Log in</button>
+                <h4>{this.state.error}</h4>
+                <input 
+                    type="email" 
+                    className="form-control form-control-sm" 
+                    value={this.state.email} 
+                    onChange={this.handleEmailChange} 
+                    placeholder="Example@example.com"
+                />
+                <input 
+                    type="password" 
+                    className="form-control form-control-sm" 
+                    value={this.state.password} 
+                    onChange={this.handlePasswordChange} 
+                    placeholder="Password"
+                />
+                <button 
+                    type="button" 
+                    className="btn btn-primary btn-sm" 
+                    onClick={this.handleLoginClick} 
+                    disabled={!(this.validateEmail(this.state.email) && this.state.password)}
+                >
+                    Log in
+                </button>
             </div>
         )
     }

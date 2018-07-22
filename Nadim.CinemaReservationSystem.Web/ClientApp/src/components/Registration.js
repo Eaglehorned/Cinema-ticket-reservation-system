@@ -10,6 +10,7 @@ export default class Registration extends Component {
             password: '',
             firstName:'',
             lastName:'',
+            error:'',
         }
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -26,24 +27,28 @@ export default class Registration extends Component {
     handleEmailChange(event){
         this.setState({
             email: event.target.value,
+            error:'',
         })
     }
 
     handlePasswordChange(event){
         this.setState({
             password: event.target.value,
+            error:'',
         })
     }
 
     handleFirstnameChange(event){
         this.setState({
             firstName: event.target.value,
+            error:'',
         })
     }
 
     handleLastnameChange(event){
         this.setState({
             lastName: event.target.value,
+            error:'',
         })
     }
 
@@ -70,9 +75,14 @@ export default class Registration extends Component {
                         username: `${this.state.firstName} ${this.state.lastName}`,
                         token: parsedJson.token
                     });
+                    this.setState({
+                        error:''
+                    })
                 }
                 else {
-                    alert(parsedJson.details);
+                    this.setState({
+                        error: parsedJson.details,
+                    })
                 }
             })
     }
@@ -80,12 +90,39 @@ export default class Registration extends Component {
     render() {
         return (
             <div className="authentication-container">
-                <input type="email" className="form-control form-control-sm" placeholder="Example@example.com" onChange={this.handleEmailChange}/>
-                <input type="password" className="form-control form-control-sm" placeholder="Password" onChange={this.handlePasswordChange}/>
-                <input type="name" className="form-control form-control-sm" placeholder="First name" onChange={this.handleFirstnameChange}/>
-                <input type="name" className="form-control form-control-sm" placeholder="Last name" onChange={this.handleLastnameChange}/>
-                <button type="button" className="btn btn-primary" onClick={this.handleRegisterClick} 
-                    disabled={!(this.validateEmail(this.state.email) && this.state.password && this.state.lastName && this.state.firstName)}>Register</button>
+                <h4>{this.state.error}</h4>
+                <input 
+                    type="email" 
+                    className="form-control form-control-sm" 
+                    placeholder="Example@example.com" 
+                    onChange={this.handleEmailChange}
+                />
+                <input 
+                    type="password" 
+                    className="form-control form-control-sm" 
+                    placeholder="Password" 
+                    onChange={this.handlePasswordChange}
+                />
+                <input 
+                    type="name" 
+                    className="form-control form-control-sm" 
+                    placeholder="First name" 
+                    onChange={this.handleFirstnameChange}
+                />
+                <input 
+                    type="name" 
+                    className="form-control form-control-sm" 
+                    placeholder="Last name" 
+                    onChange={this.handleLastnameChange}
+                />
+                <button 
+                    type="button" 
+                    className="btn btn-primary" 
+                    onClick={this.handleRegisterClick} 
+                    disabled={!(this.validateEmail(this.state.email) && this.state.password && this.state.lastName && this.state.firstName)}
+                >
+                    Register
+                </button>
             </div>
         ); 
     }

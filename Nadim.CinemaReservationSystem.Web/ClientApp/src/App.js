@@ -3,7 +3,7 @@ import { Route } from 'react-router';
 import Authentication from './components/Authentication'
 
 export default class App extends Component {
-displayName = App.name
+    displayName = App.name
 
     render() {
         return (
