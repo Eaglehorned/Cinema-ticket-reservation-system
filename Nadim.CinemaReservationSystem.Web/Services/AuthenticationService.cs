@@ -23,7 +23,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             this.dbContext = dbContext;
         }
 
-        private bool UserExists(CinemaReservationSystemContext dbContext, string userEmail)
+        private bool UserExists(string userEmail)
         {
             return dbContext.Users.Any(u => u.Email == userEmail);
         }
@@ -38,12 +38,12 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return Utils.IsEmailValid(user.Email) && !string.IsNullOrEmpty(user.Password) && !string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(user.LastName);
         }
 
-        private bool IsUserDataCorrect(CinemaReservationSystemContext dbContext, UserLoginInfo user)
+        private bool IsUserDataCorrect(UserLoginInfo user)
         {
             return Utils.GetHash(user.Password) == dbContext.Users.First(u => u.Email == user.Email).Password;
         }
 
-        private string GenerateToken(IConfiguration configuration, string userEmail)
+        private string GenerateToken(string userEmail)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -74,7 +74,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
-            if (!UserExists(dbContext, user.Email))
+            if (!UserExists(user.Email))
             {
                 return new DataValidationResult
                 {
@@ -83,7 +83,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
-            if (!IsUserDataCorrect(dbContext, user))
+            if (!IsUserDataCorrect(user))
             {
                 return new DataValidationResult
                 {
@@ -97,7 +97,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 ResultOk = true,
                 FullUserName = dbContext.Users.First(u => u.Email == user.Email).FirstName +
                     " " + dbContext.Users.First(u => u.Email == user.Email).LastName,
-                Token = GenerateToken(configuration, user.Email)
+                Token = GenerateToken(user.Email)
             };
         }
 
@@ -112,7 +112,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
-            if (UserExists(dbContext, user.Email))
+            if (UserExists(user.Email))
             {
                 return new DataValidationResult
                 {
@@ -135,7 +135,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new RegistrationResult
             {
                 ResultOk = true,
-                Token = GenerateToken(configuration, user.Email)
+                Token = GenerateToken(user.Email)
             };
         }
     }
