@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Nadim.CinemaReservationSystem.Web.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
+using Nadim.CinemaReservationSystem.Web.Contracts;
 using Nadim.CinemaReservationSystem.Web.Services;
 
 namespace Nadim.CinemaReservationSystem.Web.Controllers
@@ -16,90 +17,56 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
     {
         private readonly CinemaReservationSystemContext dbContext;
         public readonly IConfiguration configuration;
+        public IAuthenticationService authorizationService;
 
-        public AuthenticationController(CinemaReservationSystemContext context, IConfiguration configuration)
+        public AuthenticationController(CinemaReservationSystemContext dbContext, IConfiguration configuration, IAuthenticationService authorizationService)
         {
-            dbContext = context;
+            this.dbContext = dbContext;
             this.configuration = configuration;
+            this.authorizationService = authorizationService;
         }
 
         [AllowAnonymous]
         [HttpPost("[action]")]
         public IActionResult Login([FromBody] UserLoginInfo user)
         {
-            if (!AuthenticationService.IsUserLoginDataValid(user))
-            {
-                return BadRequest(new Response
-                {
-                    Status = "error",
-                    Details = "Incorrect data."
-                });
-            }
+            Result result = authorizationService.ValidateLoginData(dbContext, configuration, user);
 
-            if (!AuthenticationService.UserExists(dbContext, user.Email))
+            if (result.ResultOk)
             {
-                return BadRequest(new Response
-                {
-                    Status = "error",
-                    Details = "User doesnt exist."
-                });
+                return Ok(result);
             }
-
-            if (!AuthenticationService.IsUserDataCorrect(dbContext, user))
+            else
             {
-                return BadRequest(new Response
-                {
-                    Status = "error",
-                    Details = "Incorrect password."
-                });
+                return BadRequest(result);
             }
-
-            return Ok(new ResponseWithToken
-            {
-                Status = "ok",
-                Details = dbContext.Users.First(u => u.Email == user.Email).FirstName + 
-                    " " + dbContext.Users.First(u => u.Email == user.Email).LastName,
-                Token = AuthenticationService.GenerateToken(configuration, user.Email)
-            });
         }
 
         [AllowAnonymous]
         [HttpPost("[action]")]
         public IActionResult Register([FromBody] UserRegistrationInfo user)
         {
-            if (!AuthenticationService.IsUserRegistrationDataValid(user))
+            Result result = authorizationService.ValidateRegisterData(dbContext, configuration, user);
+
+            if (result.ResultOk)
             {
-                return BadRequest(new Response
+                dbContext.Users.Add(new User
                 {
-                    Status = "error",
-                    Details = "Incorrect data."
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Password = Utils.GetHash(user.Password),
+                    Email = user.Email,
+                    Role = "user"
                 });
+
+                dbContext.SaveChanges();
+
+                return Ok(result);
             }
-
-            if (AuthenticationService.UserExists(dbContext, user.Email))
+            else
             {
-                return BadRequest(new Response
-                {
-                    Status = "error",
-                    Details = "User already registed."
-                });
+                return BadRequest(result);
             }
-
-            dbContext.Users.Add(new User {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Password = Utils.GetHash(user.Password),
-                Email = user.Email,
-                Role = "user"
-            });
-
-            dbContext.SaveChanges();
-
-            return Ok(new ResponseWithToken
-            {
-                Status = "ok",
-                Token = AuthenticationService.GenerateToken(configuration, user.Email)
-            });
         }
     }
 }

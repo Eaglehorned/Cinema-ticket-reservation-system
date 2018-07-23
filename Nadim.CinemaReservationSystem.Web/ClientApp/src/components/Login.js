@@ -54,7 +54,7 @@ export default class Login extends Component {
             })
         }).then(response => response.json())
             .then(parsedJson => {
-                if (parsedJson.status === 'ok') {
+                if (parsedJson.resultOk === true) {
                     localStorage.setItem('token', parsedJson.token);
                     localStorage.setItem('username', parsedJson.details);
                     this.props.callBackFromParent({
