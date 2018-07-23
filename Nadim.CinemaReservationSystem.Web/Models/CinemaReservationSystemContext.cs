@@ -10,5 +10,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
     {
         public CinemaReservationSystemContext(DbContextOptions<CinemaReservationSystemContext> options): base(options) { }
         public DbSet<User> Users { get; set; }
+        public DbSet<Cinema> Cinemas { get; set; }
+        public DbSet<CinemaRoom> CinemaRooms { get; set; }
     }
 }

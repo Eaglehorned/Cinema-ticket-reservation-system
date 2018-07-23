@@ -14,6 +14,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
+        IConfiguration configuration;
+        CinemaReservationSystemContext dbContext;
         private bool UserExists(CinemaReservationSystemContext dbContext, string userEmail)
         {
             return dbContext.Users.Any(u => u.Email == userEmail);
@@ -54,7 +56,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public Result Login(CinemaReservationSystemContext dbContext, IConfiguration configuration, UserLoginInfo user)
+        public Result Login(UserLoginInfo user)
         {
             if (!InputLoginDataValid(user))
             {
@@ -86,13 +88,13 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new LoginResult
             {
                 ResultOk = true,
-                Details = dbContext.Users.First(u => u.Email == user.Email).FirstName +
+                FullUserName = dbContext.Users.First(u => u.Email == user.Email).FirstName +
                     " " + dbContext.Users.First(u => u.Email == user.Email).LastName,
                 Token = GenerateToken(configuration, user.Email)
             };
         }
 
-        public Result Register(CinemaReservationSystemContext dbContext, IConfiguration configuration, UserRegistrationInfo user)
+        public Result Register(UserRegistrationInfo user)
         {
             if (!InputRegistrationDataValid(user))
             {
@@ -128,6 +130,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 ResultOk = true,
                 Token = GenerateToken(configuration, user.Email)
             };
+        }
+
+        public AuthenticationService(IConfiguration configuration, CinemaReservationSystemContext dbContext) {
+            this.configuration = configuration;
+            this.dbContext = dbContext;
         }
     }
 }

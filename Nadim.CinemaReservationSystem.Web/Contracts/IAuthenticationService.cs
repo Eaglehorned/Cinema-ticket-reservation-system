@@ -9,7 +9,7 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
 {
     public interface IAuthenticationService
     {
-        Result Login(CinemaReservationSystemContext dbContext, IConfiguration configuration, UserLoginInfo user);
-        Result Register(CinemaReservationSystemContext dbContext, IConfiguration configuration, UserRegistrationInfo user);
+        Result Login(UserLoginInfo user);
+        Result Register(UserRegistrationInfo user);
     }
 }

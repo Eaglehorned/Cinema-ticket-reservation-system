@@ -30,32 +30,26 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         [HttpPost("[action]")]
         public IActionResult Login([FromBody] UserLoginInfo user)
         {
-            Result result = authorizationService.Login(dbContext, configuration, user);
+            Result result = authorizationService.Login(user);
 
             if (result.ResultOk)
             {
                 return Ok(result);
             }
-            else
-            {
-                return BadRequest(result);
-            }
+            return BadRequest(result);
         }
 
         [AllowAnonymous]
         [HttpPost("[action]")]
         public IActionResult Register([FromBody] UserRegistrationInfo user)
         {
-            Result result = authorizationService.Register(dbContext, configuration, user);
+            Result result = authorizationService.Register(user);
 
             if (result.ResultOk)
             {
                 return Ok(result);
             }
-            else
-            {
-                return BadRequest(result);
-            }
+            return BadRequest(result);
         }
     }
 }
