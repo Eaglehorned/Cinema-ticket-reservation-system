@@ -30,7 +30,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         [HttpPost("[action]")]
         public IActionResult Login([FromBody] UserLoginInfo user)
         {
-            Result result = authorizationService.ValidateLoginData(dbContext, configuration, user);
+            Result result = authorizationService.Login(dbContext, configuration, user);
 
             if (result.ResultOk)
             {
@@ -46,21 +46,10 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         [HttpPost("[action]")]
         public IActionResult Register([FromBody] UserRegistrationInfo user)
         {
-            Result result = authorizationService.ValidateRegisterData(dbContext, configuration, user);
+            Result result = authorizationService.Register(dbContext, configuration, user);
 
             if (result.ResultOk)
             {
-                dbContext.Users.Add(new User
-                {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Password = Utils.GetHash(user.Password),
-                    Email = user.Email,
-                    Role = "user"
-                });
-
-                dbContext.SaveChanges();
-
                 return Ok(result);
             }
             else
