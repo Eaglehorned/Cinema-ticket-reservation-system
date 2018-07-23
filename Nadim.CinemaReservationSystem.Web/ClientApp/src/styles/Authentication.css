@@ -1,0 +1,27 @@
+.authentication-container{
+    padding: 20px;
+    width: 100%;
+    text-align: center;
+    margin: auto;
+}
+
+.authentication-container button{
+    margin-bottom: 5px;
+}
+
+.Modal{
+    position: absolute;
+    top: 100px;
+    right: 150px;
+    left: 150px;
+    bottom: 100px;
+    padding: 50px;
+    height: 350px;
+    border:solid 2px #80b6e4;
+    border-radius: 5px; 
+    background-color: whitesmoke;
+}
+
+.error-text{
+    color: #f80000;
+}
