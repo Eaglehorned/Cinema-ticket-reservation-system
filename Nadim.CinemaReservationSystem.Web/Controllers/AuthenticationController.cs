@@ -15,14 +15,10 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
     [Route("api/[controller]")]
     public class AuthenticationController : Controller
     {
-        private readonly CinemaReservationSystemContext dbContext;
-        public readonly IConfiguration configuration;
-        public IAuthenticationService authorizationService;
+        private readonly IAuthenticationService authorizationService;
 
-        public AuthenticationController(CinemaReservationSystemContext dbContext, IConfiguration configuration, IAuthenticationService authorizationService)
+        public AuthenticationController(IAuthenticationService authorizationService)
         {
-            this.dbContext = dbContext;
-            this.configuration = configuration;
             this.authorizationService = authorizationService;
         }
 

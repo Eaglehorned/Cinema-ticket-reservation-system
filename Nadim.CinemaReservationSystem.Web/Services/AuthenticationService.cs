@@ -14,8 +14,15 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        IConfiguration configuration;
-        CinemaReservationSystemContext dbContext;
+        private readonly IConfiguration configuration;
+        private readonly CinemaReservationSystemContext dbContext;
+
+        public AuthenticationService(IConfiguration configuration, CinemaReservationSystemContext dbContext)
+        {
+            this.configuration = configuration;
+            this.dbContext = dbContext;
+        }
+
         private bool UserExists(CinemaReservationSystemContext dbContext, string userEmail)
         {
             return dbContext.Users.Any(u => u.Email == userEmail);
@@ -130,11 +137,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 ResultOk = true,
                 Token = GenerateToken(configuration, user.Email)
             };
-        }
-
-        public AuthenticationService(IConfiguration configuration, CinemaReservationSystemContext dbContext) {
-            this.configuration = configuration;
-            this.dbContext = dbContext;
         }
     }
 }

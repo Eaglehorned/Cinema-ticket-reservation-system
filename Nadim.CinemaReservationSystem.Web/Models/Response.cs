@@ -20,7 +20,8 @@ namespace Nadim.CinemaReservationSystem.Web
         public string Token { get; set; }
     }
 
-    public class LoginResult : RegistrationResult {
+    public class LoginResult : RegistrationResult
+    {
         public string FullUserName { get; set; }
     }
 }
