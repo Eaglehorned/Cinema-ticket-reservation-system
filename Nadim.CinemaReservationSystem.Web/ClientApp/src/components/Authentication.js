@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import LogIn from './Login';
+import Login from './Login';
 import Registration from './Registration';
 import Modal from 'react-modal';
 
@@ -60,7 +60,7 @@ export default class Authentication extends Component {
     renderAuthenticationContent() {
         return(
             <div>
-                <LogIn callBackFromParent={this.handleLogin}/>
+                <Login callBackFromParent={this.handleLogin}/>
                 <button type="button" className="btn btn-primary btn-sm" onClick={this.openModal}>Register</button>
                 <Modal     
                     isOpen={this.state.modalIsOpen}

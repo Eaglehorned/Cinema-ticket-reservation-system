@@ -1,0 +1,27 @@
+.add-cinema-container{
+    padding: 20px;
+    width: 100%;
+}
+
+.add-cinema-container .scheme-container{
+    text-align: center;
+}
+
+.add-cinema-container .seat{
+    width: 30px;
+    height: 30px;
+    border: solid black;
+    margin: 5px;
+    display: inline-block;
+}
+
+.Modal-container{
+    text-align: center;  
+    display: inline-block;
+}
+
+.Modal-container .Modal{
+    vertical-align: middle;
+    width: 200px;
+    height: 200px;
+}

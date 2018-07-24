@@ -12,11 +12,12 @@
 .Modal{
     position: absolute;
     top: 100px;
-    right: 150px;
-    left: 150px;
+    right: 30%;
+    left: 30%;
     bottom: 100px;
     padding: 50px;
     height: 350px;
+    min-width: 450px;
     border:solid 2px #80b6e4;
     border-radius: 5px; 
     background-color: whitesmoke;
