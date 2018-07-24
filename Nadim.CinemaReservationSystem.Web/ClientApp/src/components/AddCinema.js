@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import AddCinemaInfo from './AddCinemaInfo';
-import SeatsScheme from './SeatsScheme';
+import SeatsSchemeForCreation from './SeatsSchemeForCreation';
 import '../styles/AddCinema.css';
+import Modal from 'react-modal';
 
 export default class AddCinema extends Component {
     displayName = AddCinema.name;
@@ -11,10 +12,13 @@ export default class AddCinema extends Component {
         this.state={
             cinemaInfoInputted: false,
             seatsArray: new Array(),
-            cinemaInfo: ''
+            cinemaInfo: '',
+            modalIsOpen: false,
         }
         this.handleCinemaInfoInput = this.handleCinemaInfoInput.bind(this);
-        this.handleOnSeatClick = this.handleSeatTypeChange.bind(this);
+        this.handleSeatTypeChange = this.handleSeatTypeChange.bind(this);
+        this.closeModal= this.closeModal.bind(this);
+        this.openModal = this.openModal.bind(this);
     }
 
     handleCinemaInfoInput(cinemaInfo){
@@ -37,17 +41,40 @@ export default class AddCinema extends Component {
     }
 
     handleSeatTypeChange(dataToChangeSeatType){
-        console.log(dataToChangeSeatType.row);
-        console.log(dataToChangeSeatType.column);
+        this.setState({
+            modalIsOpen: true,
+        })
+    }
+
+    closeModal(){
+        this.setState({
+            modalIsOpen: false
+        })
+    }
+
+    openModal(){
+        this.setState({
+            modalIsOpen: true
+        })
     }
 
     render(){
         let content = this.state.cinemaInfoInputted ? 
-            <SeatsScheme seatsArray={this.state.seatsArray} callBackFromParent={this.handleSeatTypeChange}/> :
+            <SeatsSchemeForCreation seatsArray={this.state.seatsArray} callBackFromParent={this.handleSeatTypeChange}/> :
             <AddCinemaInfo callBackFromParent={this.handleCinemaInfoInput}/>;
         return(
-            <div className="add-cinema-container">
-                {content}
+            <div>
+                <div className="add-cinema-container">
+                    {content}
+                </div>
+                    <Modal     
+                    isOpen={this.state.modalIsOpen}
+                    onRequestClose={this.closeModal}
+                    ariaHideApp={false}
+                    className="Modal"
+                >
+                    {/* component to switch seat type */}
+                </Modal>
             </div>
         )
     }
