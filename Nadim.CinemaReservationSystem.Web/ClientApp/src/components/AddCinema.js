@@ -16,8 +16,6 @@ export default class AddCinema extends Component {
             cinemaInfo: {},
             modalIsOpen: false,
             seatInfoToTypeChange: {},
-            username: this.props.username,
-            token: this.props.token,
         }
         this.handleCinemaInfoInput = this.handleCinemaInfoInput.bind(this);
         this.handleSeatTypeChange = this.handleSeatTypeChange.bind(this);
@@ -25,6 +23,7 @@ export default class AddCinema extends Component {
         this.openModal = this.openModal.bind(this);
         this.handleSubmitSeatTypeChange = this.handleSubmitSeatTypeChange.bind(this);
         this.handleCancelCinemaDataInput = this.handleCancelCinemaDataInput.bind(this);
+        this.handleCreateCinema = this.handleCreateCinema.bind(this);
     }
 
     handleCinemaInfoInput(cinemaData){
@@ -65,6 +64,7 @@ export default class AddCinema extends Component {
     }
 
     handleCancelCinemaDataInput(){
+        console.log([].concat(...this.state.seatsArray));
         this.setState({
             cinemaInfoInputted: false,
             seatsArray: [],
@@ -75,18 +75,23 @@ export default class AddCinema extends Component {
     }
 
     handleCreateCinema(){
-        fetch('api/AddCinema/CreateCinema', {
+        fetch('api/Cinema/AddCinema', {
             method: 'POST',
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                //'Authorization': 'bearer ' + this.props.token,
             },
             body: JSON.stringify({
-
+                city: this.state.cinemaInfo.city,
+                name: this.state.cinemaInfo.name,
+                cinemaRoomsCount: this.state.cinemaInfo.cinemaRoomsCount,
+                seats: [].concat(...this.state.seatsArray),
+                username: this.props.username,
             })
         }).then(response => response.json())
             .then(parsedJson => {
-
+                console.log(parsedJson);
             })
     }
 
@@ -116,7 +121,7 @@ export default class AddCinema extends Component {
         return(
             <div>
                 <p>
-                    {this.state.username}
+                    {this.props.username}
                 </p>
                 <div className="add-cinema-container">
                     {content}

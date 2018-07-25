@@ -11,12 +11,14 @@ export default class Registration extends Component {
             firstName:'',
             lastName:'',
             error:'',
+            userName:'',
         }
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleFirstnameChange = this.handleFirstnameChange.bind(this);
         this.handleLastnameChange = this.handleLastnameChange.bind(this);
         this.handleRegisterClick = this.handleRegisterClick.bind(this);
+        this.handleUsernameChange = this.handleUsernameChange.bind(this);
     }
 
     validateEmail(email) {
@@ -52,6 +54,13 @@ export default class Registration extends Component {
         })
     }
 
+    handleUsernameChange(event){
+        this.setState({
+            userName: event.target.value,
+            error:'',
+        })
+    }
+
     handleRegisterClick(event){
         event.preventDefault();
         fetch('api/Authentication/Register', {
@@ -64,15 +73,16 @@ export default class Registration extends Component {
                 Email: this.state.email,
                 Password: this.state.password,
                 FirstName: this.state.firstName,
-                LastName: this.state.lastName
+                LastName: this.state.lastName,
+                Username: this.state.userName,
             })
         }).then(response => response.json())
             .then(parsedJson => {
                 if (parsedJson.resultOk === true) {
                     localStorage.setItem('token', parsedJson.token);
-                    localStorage.setItem('username', this.state.firstName);
+                    localStorage.setItem('username', this.state.userName);
                     this.props.callBackFromParent({
-                        username: `${this.state.firstName} ${this.state.lastName}`,
+                        username: this.state.userName,
                         token: parsedJson.token
                     });
                     this.setState({
@@ -102,6 +112,12 @@ export default class Registration extends Component {
                     className="form-control form-control-sm" 
                     placeholder="Password" 
                     onChange={this.handlePasswordChange}
+                />
+                <input 
+                    type="name" 
+                    className="form-control form-control-sm" 
+                    placeholder="User name" 
+                    onChange={this.handleUsernameChange}
                 />
                 <input 
                     type="name" 

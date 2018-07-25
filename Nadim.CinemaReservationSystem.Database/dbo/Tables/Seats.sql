@@ -6,5 +6,5 @@
     [Type] NVARCHAR(50) NOT NULL, 
     [Price] INT NOT NULL,
     [CinemaRoomId] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[CinemaRooms]([CinemaRoomId]), 
-    [booked] BIT NOT NULL,
+    [Booked] BIT NOT NULL,
 )

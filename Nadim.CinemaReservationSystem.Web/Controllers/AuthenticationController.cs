@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Nadim.CinemaReservationSystem.Web.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Nadim.CinemaReservationSystem.Web.Contracts;
-using Nadim.CinemaReservationSystem.Web.Services;
 
 namespace Nadim.CinemaReservationSystem.Web.Controllers
 {

@@ -5,5 +5,6 @@
     [Password] NVARCHAR(MAX) NOT NULL, 
     [FirstName] NVARCHAR(MAX) NOT NULL, 
     [LastName] NVARCHAR(MAX) NOT NULL, 
-    [Role] NVARCHAR(MAX) NOT NULL
+    [Role] NVARCHAR(MAX) NOT NULL, 
+    [UserName] NVARCHAR(MAX) NOT NULL
 )
