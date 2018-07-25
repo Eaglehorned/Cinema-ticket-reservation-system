@@ -6,16 +6,11 @@ export default class AddCinemaInfo extends Component{
     constructor(props){
         super(props);
         this.state = {
-            // city:'',
-            // name: '',
-            // cinemaRoomsCount: '',
-            // rowsCount: '',
-            // columnsCount: ''
             city:'ss',
             name: 'sss',
             cinemaRoomsCount: 3,
-            rowsCount: 2,
-            columnsCount: 3
+            cinemaRoomRows: 2,
+            cinemaRoomColumns: 3,
         }
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -26,7 +21,7 @@ export default class AddCinemaInfo extends Component{
     }
 
     validateNumber(number){
-        let result = /\d+/;
+        let result = /^\d+$/;
         return result.test(String(number));
     }
 
@@ -50,24 +45,24 @@ export default class AddCinemaInfo extends Component{
 
     handleRowsChange(event){
         this.setState({
-            rowsCount: event.target.value, 
+            cinemaRoomRows: event.target.value, 
         });
     }
     
     handleColumnsChange(event){
         this.setState({
-            columnsCount: event.target.value, 
+            cinemaRoomColumns: event.target.value, 
         });
     }
 
     handleAddCinemaClick(event){
         event.preventDefault();
         this.props.callBackFromParent({
-            rows: this.state.rowsCount,
-            columns: this.state.columnsCount,
             city: this.state.city,
             name: this.state.name,
-            cinemaRoomsCount: this.state.cinemaRoomsCount
+            cinemaRoomRows: parseInt(this.state.cinemaRoomRows),
+            cinemaRoomColumns: parseInt(this.state.cinemaRoomColumns),
+            cinemaRoomsCount: parseInt(this.state.cinemaRoomsCount),
         });
     }
 
@@ -111,7 +106,7 @@ export default class AddCinemaInfo extends Component{
                 <input 
                     type="text" 
                     className="form-control form-control-sm" 
-                    value={this.state.rowsCount} 
+                    value={this.state.cinemaRoomRows} 
                     onChange={this.handleRowsChange}
                     placeholder="Rows"
                 />
@@ -121,7 +116,7 @@ export default class AddCinemaInfo extends Component{
                 <input
                     type="text" 
                     className="form-control form-control-sm" 
-                    value={this.state.columnsCount} 
+                    value={this.state.cinemaRoomColumns} 
                     onChange={this.handleColumnsChange}
                     placeholder="Columns"
                 />
@@ -132,8 +127,8 @@ export default class AddCinemaInfo extends Component{
                     disabled={
                         !(
                             this.validateNumber(this.state.cinemaRoomsCount) && 
-                            this.validateNumber(this.state.rowsCount) && 
-                            this.validateNumber(this.state.columnsCount) && 
+                            this.validateNumber(this.state.cinemaRoomRows) && 
+                            this.validateNumber(this.state.cinemaRoomColumns) && 
                             this.state.city && 
                             this.state.name
                         )

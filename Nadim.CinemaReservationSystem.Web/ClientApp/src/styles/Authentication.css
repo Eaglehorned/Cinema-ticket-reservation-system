@@ -6,23 +6,22 @@
 }
 
 .authentication-container button{
-    margin-bottom: 5px;
-}
-
-.Modal{
-    position: absolute;
-    top: 100px;
-    right: 30%;
-    left: 30%;
-    bottom: 100px;
-    padding: 50px;
-    height: 350px;
-    min-width: 450px;
-    border:solid 2px #80b6e4;
-    border-radius: 5px; 
-    background-color: whitesmoke;
+    margin-bottom: 7px;
 }
 
 .error-text{
     color: #f80000;
+}
+
+.authentication-Modal{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 50px;
+    height: 350px;
+    min-width: 600px;
+    border:solid 2px #80b6e4;
+    border-radius: 5px; 
+    background-color: whitesmoke;
 }

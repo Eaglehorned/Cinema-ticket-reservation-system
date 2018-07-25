@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Login from './Login';
 import Registration from './Registration';
 import Modal from 'react-modal';
+import '../styles/Authentication.css';
 
 export default class Authentication extends Component {
     constructor(props) {
@@ -61,12 +62,12 @@ export default class Authentication extends Component {
         return(
             <div>
                 <Login callBackFromParent={this.handleLogin}/>
-                <button type="button" className="btn btn-primary btn-sm" onClick={this.openModal}>Register</button>
+                <button type="button" className="btn btn-primary" onClick={this.openModal}>Register</button>
                 <Modal     
                     isOpen={this.state.modalIsOpen}
                     onRequestClose={this.closeModal}
                     ariaHideApp={false}
-                    className="Modal"
+                    className="authentication-Modal"
                 >
                     <Registration callBackFromParent={this.handleRegistration}/>
                 </Modal>

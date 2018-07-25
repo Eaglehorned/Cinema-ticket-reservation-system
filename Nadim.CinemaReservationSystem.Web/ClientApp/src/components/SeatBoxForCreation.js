@@ -5,20 +5,17 @@ export default class SeatBoxForCreation extends Component{
 
     constructor(props){
         super(props);
-        this.state={
-            seatType:'',
-        }
         this.handleOnSeatClick= this.handleOnSeatClick.bind(this);
     }
 
     handleOnSeatClick(){
-        this.props.callBackFromParent(this.props.SeatInfo);
+        this.props.callBackFromParent(this.props.seatInfo);
     }
 
     render(){
-        let styleName = this.state.seatType ? "seat" : "seat " + this.state.seatType;
+        let styleName = "seat-" + this.props.seatInfo.type;
         return(
-            <div className="seat" onClick={this.handleOnSeatClick}>
+            <div className={styleName} onClick={this.handleOnSeatClick}>
             </div>
         )
     }

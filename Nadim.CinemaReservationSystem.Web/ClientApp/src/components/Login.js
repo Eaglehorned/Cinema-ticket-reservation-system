@@ -1,5 +1,4 @@
 ﻿import React, { Component } from 'react';
-import '../styles/Authentication.css';
 
 export default class Login extends Component {
     displayName = Login.name;
@@ -93,7 +92,7 @@ export default class Login extends Component {
                 />
                 <button 
                     type="button" 
-                    className="btn btn-primary btn-sm" 
+                    className="btn btn-primary" 
                     onClick={this.handleLoginClick} 
                     disabled={!(this.validateEmail(this.state.email) && this.state.password)}
                 >

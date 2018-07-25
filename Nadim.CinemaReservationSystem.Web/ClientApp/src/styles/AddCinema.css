@@ -5,9 +5,10 @@
 
 .add-cinema-container .scheme-container{
     text-align: center;
+    margin: 20px;
 }
 
-.add-cinema-container .seat{
+.add-cinema-container .seat-Default{
     width: 30px;
     height: 30px;
     border: solid black;
@@ -15,13 +16,41 @@
     display: inline-block;
 }
 
-.Modal-container{
-    text-align: center;  
+.add-cinema-container .seat-Vip{
+    width: 30px;
+    height: 30px;
+    border: solid black;
+    margin: 5px;
     display: inline-block;
+    background-color: aquamarine;
 }
 
-.Modal-container .Modal{
-    vertical-align: middle;
-    width: 200px;
-    height: 200px;
+.add-cinema-container .button-container{
+    text-align: center;
+}
+
+.add-cinema-container .button-container Button{
+    margin: 10px;
+}
+
+.add-cinema-Modal{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 50px;
+    height: 350px;
+    width: 450px;
+    border:solid 2px #80b6e4;
+    border-radius: 5px; 
+    background-color: whitesmoke;
+}
+
+.add-cinema-Modal Button{
+    margin-top: 5px;
+    margin-right: 10px;
+}
+
+.add-cinema-Modal h2{
+    margin: 0;
 }
