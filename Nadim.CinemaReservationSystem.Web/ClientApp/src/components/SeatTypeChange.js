@@ -49,13 +49,13 @@ export default class SeatTypeChange extends Component{
                     >
                         <MenuItem 
                             eventKey="1" 
-                            onClick={this.handleTypeClick.bind(this, "Default")}
+                            onClick={this.handleTypeClick.bind(this, "default")}
                         >
                             Default
                         </MenuItem>
                         <MenuItem 
                             eventKey="2" 
-                            onClick={this.handleTypeClick.bind(this, "Vip")}
+                            onClick={this.handleTypeClick.bind(this, "vip")}
                         >
                             Vip
                         </MenuItem>

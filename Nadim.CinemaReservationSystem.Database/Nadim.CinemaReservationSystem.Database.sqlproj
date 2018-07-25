@@ -68,7 +68,4 @@
     <Build Include="dbo\Tables\CinemaRooms.sql" />
     <Build Include="dbo\Tables\Seats.sql" />
   </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="Nadim.CinemaReservationSystem.Database.refactorlog" />
-  </ItemGroup>
 </Project>

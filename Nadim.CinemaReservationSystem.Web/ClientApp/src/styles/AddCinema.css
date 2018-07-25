@@ -8,7 +8,7 @@
     margin: 20px;
 }
 
-.add-cinema-container .seat-Default{
+.add-cinema-container .seat-default{
     width: 30px;
     height: 30px;
     border: solid black;
@@ -16,7 +16,7 @@
     display: inline-block;
 }
 
-.add-cinema-container .seat-Vip{
+.add-cinema-container .seat-vip{
     width: 30px;
     height: 30px;
     border: solid black;

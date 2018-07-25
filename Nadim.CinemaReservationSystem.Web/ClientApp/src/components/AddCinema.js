@@ -34,7 +34,7 @@ export default class AddCinema extends Component {
                 seatsArray[i].push({
                     row: i,
                     column: j,
-                    type:'Default'
+                    type:'default'
                 });
             }
         }
@@ -88,6 +88,8 @@ export default class AddCinema extends Component {
                 cinemaRoomsCount: this.state.cinemaInfo.cinemaRoomsCount,
                 seats: [].concat(...this.state.seatsArray),
                 username: this.props.username,
+                vipSeatPrice: this.state.cinemaInfo.vipPrice,
+                defaultSeatPrice: this.state.cinemaInfo.defaultPrice,
             })
         }).then(response => response.json())
             .then(parsedJson => {

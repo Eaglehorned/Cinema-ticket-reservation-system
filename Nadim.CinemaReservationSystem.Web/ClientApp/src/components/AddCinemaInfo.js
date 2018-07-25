@@ -11,6 +11,8 @@ export default class AddCinemaInfo extends Component{
             cinemaRoomsCount: 3,
             cinemaRoomRows: 2,
             cinemaRoomColumns: 3,
+            defaultPrice: 0,
+            vipPrice: 0,
         }
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -18,6 +20,8 @@ export default class AddCinemaInfo extends Component{
         this.handleRowsChange = this.handleRowsChange.bind(this);
         this.handleColumnsChange = this.handleColumnsChange.bind(this);
         this.handleAddCinemaClick = this.handleAddCinemaClick.bind(this);
+        this.handleDefaultPriceChange = this.handleDefaultPriceChange.bind(this);
+        this.handleVipPriceChange = this.handleVipPriceChange.bind(this);
     }
 
     validateNumber(number){
@@ -55,6 +59,18 @@ export default class AddCinemaInfo extends Component{
         });
     }
 
+    handleDefaultPriceChange(event){
+        this.setState({
+            defaultPrice: event.target.value, 
+        });
+    }
+
+    handleVipPriceChange(event){
+        this.setState({
+            vipPrice: event.target.value, 
+        });
+    }
+
     handleAddCinemaClick(event){
         event.preventDefault();
         this.props.callBackFromParent({
@@ -63,6 +79,8 @@ export default class AddCinemaInfo extends Component{
             cinemaRoomRows: parseInt(this.state.cinemaRoomRows),
             cinemaRoomColumns: parseInt(this.state.cinemaRoomColumns),
             cinemaRoomsCount: parseInt(this.state.cinemaRoomsCount),
+            defaultPrice: parseInt(this.state.defaultPrice),
+            vipPrice: parseInt(this.state.vipPrice),
         });
     }
 
@@ -111,7 +129,7 @@ export default class AddCinemaInfo extends Component{
                     placeholder="Rows"
                 />
                 <h4>
-                    <strong>Number of places in row in cinema room : </strong>
+                    <strong>Number of places in row : </strong>
                 </h4> 
                 <input
                     type="text" 
@@ -120,12 +138,34 @@ export default class AddCinemaInfo extends Component{
                     onChange={this.handleColumnsChange}
                     placeholder="Columns"
                 />
+                <h4>
+                    <strong>Price for default seat USD : </strong>
+                </h4> 
+                <input
+                    type="text" 
+                    className="form-control form-control-sm" 
+                    value={this.state.defaultPrice} 
+                    onChange={this.handleDefaultPriceChange}
+                    placeholder="Columns"
+                />
+                <h4>
+                    <strong>Price for VIP seat USD : </strong>
+                </h4> 
+                <input
+                    type="text" 
+                    className="form-control form-control-sm" 
+                    value={this.state.vipPrice} 
+                    onChange={this.handleVipPriceChange}
+                    placeholder="Columns"
+                />
                 <button 
                     type="button" 
                     className="btn btn-primary" 
                     onClick={this.handleAddCinemaClick} 
                     disabled={
                         !(
+                            this.validateNumber(this.state.defaultPrice) &&
+                            this.validateNumber(this.state.vipPrice) &&
                             this.validateNumber(this.state.cinemaRoomsCount) && 
                             this.validateNumber(this.state.cinemaRoomRows) && 
                             this.validateNumber(this.state.cinemaRoomColumns) && 

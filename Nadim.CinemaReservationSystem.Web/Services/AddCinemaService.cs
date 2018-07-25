@@ -18,7 +18,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         private bool DoesUserHavePermission(string userName)
         {
-            return dbContext.Users.Any(u => u.UserName == userName) &
+            return String.IsNullOrEmpty(userName) && 
+                dbContext.Users.Any(u => u.UserName == userName) &&
                 dbContext.Users.First(u => u.UserName == userName).Role == "admin";
         }
 
@@ -28,6 +29,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         public Result AddCinema(CinemaAdditionInfo cinemaInfo)
         {
+            /*
             if (!DoesUserHavePermission(cinemaInfo.CurrentUsername))
             {
                 return new DataValidationResult
@@ -36,7 +38,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     Details = "User dont have permisson to do this."
                 };
             }
-
+            */
             if (CinemaExists(cinemaInfo.Name))
             {
                 return new DataValidationResult
@@ -65,7 +67,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         Row = seat.Row,
                         Column = seat.Column,
                         Type = seat.Type,
-                        Price = 10, //FORGOT TO ADD PRICE EVERYWHERE NEED TO FIX!!!!
+                        Price = seat.Type == "default" ? cinemaInfo.DefaultSeatPrice : cinemaInfo.VipSeatPrice,
                         Booked = false,
                     });
                 }
