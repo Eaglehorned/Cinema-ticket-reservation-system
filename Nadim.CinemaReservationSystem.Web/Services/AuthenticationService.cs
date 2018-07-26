@@ -35,10 +35,10 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         private bool InputRegistrationDataValid(UserRegistrationInfo user)
         {
-            return Utils.IsEmailValid(user.Email) && 
-                !string.IsNullOrEmpty(user.Password) && 
-                !string.IsNullOrEmpty(user.FirstName) && 
-                !string.IsNullOrEmpty(user.LastName) && 
+            return Utils.IsEmailValid(user.Email) &&
+                !string.IsNullOrEmpty(user.Password) &&
+                !string.IsNullOrEmpty(user.FirstName) &&
+                !string.IsNullOrEmpty(user.LastName) &&
                 !string.IsNullOrEmpty(user.UserName);
         }
 
@@ -47,7 +47,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return Utils.GetHash(user.Password) == dbContext.Users.First(u => u.Email == user.Email).Password;
         }
 
-        private bool UserNameUsed(string userName) {
+        private bool UserNameUsed(string userName)
+        {
             return dbContext.Users.Any(u => u.UserName == userName);
         }
 
@@ -56,9 +57,21 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[] {
-                new Claim(ClaimTypes.Name, userEmail)
-            };
+            Claim[] claims;
+
+            if (dbContext.Users.Any(u => u.Email == userEmail))
+            {
+                claims = new[] {
+                    new Claim(ClaimTypes.Name, userEmail),
+                    new Claim(ClaimTypes.Role, dbContext.Users.First(u => u.Email == userEmail).Role)
+                };
+            }
+            else
+            {
+                claims = new[] {
+                    new Claim(ClaimTypes.Name, userEmail),
+                };
+            }
 
             var token = new JwtSecurityToken(
                 issuer: configuration["Tokens:Issuer"],
@@ -128,7 +141,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
-            if (UserNameUsed(user.UserName)) {
+            if (UserNameUsed(user.UserName))
+            {
                 return new DataValidationResult
                 {
                     ResultOk = false,

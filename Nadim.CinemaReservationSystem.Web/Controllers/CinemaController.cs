@@ -19,7 +19,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             this.CreateCinemaService = createCinemaService;
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpPost("[action]")]
         public IActionResult AddCinema([FromBody] CinemaCreationInfo cinemaInfo)
         {

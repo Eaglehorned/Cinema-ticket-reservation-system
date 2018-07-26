@@ -71,6 +71,7 @@ export default class AddCinema extends Component {
     }
 
     handleCreateCinema(){
+        console.log(this.props.token);
         fetch('api/Cinema/AddCinema', {
             method: 'POST',
             headers:{

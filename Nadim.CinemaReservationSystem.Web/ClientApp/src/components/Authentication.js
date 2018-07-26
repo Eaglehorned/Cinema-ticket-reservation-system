@@ -39,7 +39,10 @@ export default class Authentication extends Component {
             token: authenticationData.token,
             modalIsOpen: false
         })
-        //TODO: inform parent about user authenticated
+        this.props.callBackSetUserInfo({
+            username: this.state.username,
+            token:this.state.token,
+        })
     }
 
     handleLogin = (AuthenticationData) => {
@@ -47,7 +50,10 @@ export default class Authentication extends Component {
             username: AuthenticationData.username,
             token: AuthenticationData.token,
         })
-        //TODO: inform parent about user authenticated
+        this.props.callBackSetUserInfo({
+            username: this.state.username,
+            token:this.state.token,
+        })
     }
 
     handleLogout(){
@@ -55,7 +61,10 @@ export default class Authentication extends Component {
             username: '',
             token: ''
         })
-        //TODO: inform parent about logout
+        this.props.callBackSetUserInfo({
+            username: '',
+            token: '',
+        })
     }   
 
     renderAuthenticationContent() {

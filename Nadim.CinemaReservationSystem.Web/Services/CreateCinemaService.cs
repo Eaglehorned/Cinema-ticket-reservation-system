@@ -16,11 +16,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             this.dbContext = dbContext;
         }
 
-        private bool DoesUserHavePermission(string userName)
-        {
-            return dbContext.Users.Any(u => u.UserName == userName) && dbContext.Users.First(u => u.UserName == userName).Role == "admin";
-        }
-
         private bool CinemaExists(string name)
         {
             return dbContext.Cinemas.Any(c => c.Name == name);
@@ -73,15 +68,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 {
                     ResultOk = false,
                     Details = "Invalid data."
-                };
-            }
-            
-            if (!DoesUserHavePermission(cinemaInfo.CurrentUsername))
-            {
-                return new DataValidationResult
-                {
-                    ResultOk = false,
-                    Details = "User dont have permisson to do this."
                 };
             }
             
