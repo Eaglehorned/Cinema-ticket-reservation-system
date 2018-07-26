@@ -7,11 +7,11 @@ using Nadim.CinemaReservationSystem.Web.Models;
 
 namespace Nadim.CinemaReservationSystem.Web.Services
 {
-    public class CreateCinemaService : ICreateCinemaService
+    public class CinemaService : ICinemaService
     {
         private readonly CinemaReservationSystemContext dbContext;
 
-        public CreateCinemaService(CinemaReservationSystemContext dbContext)
+        public CinemaService(CinemaReservationSystemContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -86,6 +86,24 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new Result
             {
                 ResultOk = true
+            };
+        }
+
+        public Result GetCinemaList() {
+
+            var cinemaList = dbContext.Cinemas.Select(c => c.Name);
+
+            if (cinemaList == null) {
+                return new DataValidationResult {
+                    ResultOk = false,
+                    Details = "Cinema list is empty",
+                };
+            }
+
+            return new GetCinemaListResult
+            {
+                ResultOk = true,
+                CinemaList = cinemaList.ToList(),
             };
         }
     }

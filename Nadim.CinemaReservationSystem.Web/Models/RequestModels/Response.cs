@@ -24,4 +24,9 @@ namespace Nadim.CinemaReservationSystem.Web
     {
         public string FullUserName { get; set; }
     }
+
+    public class GetCinemaListResult : Result
+    {
+        public List<string> CinemaList { get; set; }
+    }
 }

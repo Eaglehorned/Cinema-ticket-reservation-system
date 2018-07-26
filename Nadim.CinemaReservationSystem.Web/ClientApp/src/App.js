@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import Authentication from './components/Authentication'
 import AddCinema from './components/AddCinema'
+import Cinema from './components/Cinema';
 
 export default class App extends Component {
     displayName = App.name
@@ -30,7 +31,7 @@ export default class App extends Component {
                     username={this.state.username}
                     callBackSetUserInfo={this.setUserInfo}
                 />
-                <AddCinema 
+                <Cinema 
                     username={this.state.username}
                     token={this.state.token}
                 />

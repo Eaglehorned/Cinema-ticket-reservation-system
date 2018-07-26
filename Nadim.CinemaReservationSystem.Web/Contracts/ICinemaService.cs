@@ -6,8 +6,10 @@ using Nadim.CinemaReservationSystem.Web.Models;
 
 namespace Nadim.CinemaReservationSystem.Web.Contracts
 {
-    public interface ICreateCinemaService
+    public interface ICinemaService
     {
         Result CreateCinema(CinemaCreationInfo cinemaInfo);
+
+        Result GetCinemaList();
     }
 }

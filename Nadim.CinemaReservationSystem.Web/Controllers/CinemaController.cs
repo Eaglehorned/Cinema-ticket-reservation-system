@@ -12,18 +12,30 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
     [Route("api/[controller]")]
     public class CinemaController : Controller
     {
-        private readonly ICreateCinemaService CreateCinemaService;
+        private readonly ICinemaService CinemaService;
 
-        public CinemaController(ICreateCinemaService createCinemaService)
+        public CinemaController(ICinemaService createCinemaService)
         {
-            this.CreateCinemaService = createCinemaService;
+            this.CinemaService = createCinemaService;
         }
 
         [Authorize(Roles = "admin")]
         [HttpPost("[action]")]
         public IActionResult AddCinema([FromBody] CinemaCreationInfo cinemaInfo)
         {
-            Result result = CreateCinemaService.CreateCinema(cinemaInfo);
+            Result result = CinemaService.CreateCinema(cinemaInfo);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult GetCinemaList()
+        {
+            Result result = CinemaService.GetCinemaList();
 
             if (result.ResultOk)
             {
