@@ -5,23 +5,31 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Nadim.CinemaReservationSystem.Web.Models;
 using Nadim.CinemaReservationSystem.Web.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nadim.CinemaReservationSystem.Web.Controllers
 {
     [Route("api/[controller]")]
     public class CinemaController : Controller
     {
-        private readonly IAddCinemaService addCinemaService;
+        private readonly ICreateCinemaService CreateCinemaService;
 
-        public CinemaController(IAddCinemaService addCinemaService) {
-            this.addCinemaService = addCinemaService;
+        public CinemaController(ICreateCinemaService createCinemaService)
+        {
+            this.CreateCinemaService = createCinemaService;
         }
 
+        [Authorize]
         [HttpPost("[action]")]
-        public IActionResult AddCinema([FromBody] CinemaAdditionInfo cinemaInfo)
+        public IActionResult AddCinema([FromBody] CinemaCreationInfo cinemaInfo)
         {
-            addCinemaService.AddCinema(cinemaInfo);
-            return Ok();
+            Result result = CreateCinemaService.CreateCinema(cinemaInfo);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }

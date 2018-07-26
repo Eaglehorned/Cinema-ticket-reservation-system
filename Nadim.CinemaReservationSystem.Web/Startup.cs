@@ -24,7 +24,8 @@ namespace Nadim.CinemaReservationSystem.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddTransient<IAddCinemaService, AddCinemaService>();
+
+            services.AddTransient<ICreateCinemaService, CreateCinemaService>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
             services.AddDbContext<Nadim.CinemaReservationSystem.Web.Models.CinemaReservationSystemContext>(options => options.UseSqlServer(Configuration["ConnectionString"]));
 

@@ -16,6 +16,7 @@ export default class AddCinema extends Component {
             cinemaInfo: {},
             modalIsOpen: false,
             seatInfoToTypeChange: {},
+            error: '',
         }
         this.handleCinemaInfoInput = this.handleCinemaInfoInput.bind(this);
         this.handleSeatTypeChange = this.handleSeatTypeChange.bind(this);
@@ -24,6 +25,8 @@ export default class AddCinema extends Component {
         this.handleSubmitSeatTypeChange = this.handleSubmitSeatTypeChange.bind(this);
         this.handleCancelCinemaDataInput = this.handleCancelCinemaDataInput.bind(this);
         this.handleCreateCinema = this.handleCreateCinema.bind(this);
+        this.clearState = this.clearState.bind(this);
+        this.clearErrorState = this.clearErrorState.bind(this);
     }
 
     handleCinemaInfoInput(cinemaData){
@@ -64,14 +67,7 @@ export default class AddCinema extends Component {
     }
 
     handleCancelCinemaDataInput(){
-        console.log([].concat(...this.state.seatsArray));
-        this.setState({
-            cinemaInfoInputted: false,
-            seatsArray: [],
-            cinemaInfo: {},
-            modalIsOpen: false,
-            seatInfoToTypeChange: {},
-        });
+        this.clearState();
     }
 
     handleCreateCinema(){
@@ -80,7 +76,7 @@ export default class AddCinema extends Component {
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                //'Authorization': 'bearer ' + this.props.token,
+                'Authorization': 'bearer ' + this.props.token,
             },
             body: JSON.stringify({
                 city: this.state.cinemaInfo.city,
@@ -93,8 +89,32 @@ export default class AddCinema extends Component {
             })
         }).then(response => response.json())
             .then(parsedJson => {
-                console.log(parsedJson);
+                if (parsedJson.resultOk){
+                    //TODO: inform parent cinema created
+                }
+                else {
+                    this.clearState();
+                    this.setState({
+                        error: parsedJson.details,
+                    })
+                }
             })
+    }
+
+    clearState(){
+        this.setState({
+            cinemaInfoInputted: false,
+            seatsArray: [],
+            cinemaInfo: {},
+            modalIsOpen: false,
+            seatInfoToTypeChange: {},
+        });
+    }
+
+    clearErrorState(){
+        this.setState({
+            error: '',
+        })
     }
 
     closeModal(){
@@ -119,13 +139,15 @@ export default class AddCinema extends Component {
             /> :
             <AddCinemaInfo 
                 callBackFromParent={this.handleCinemaInfoInput}
+                callBackClearErrorState={this.clearErrorState}
             /> ;
         return(
             <div>
-                <p>
-                    {this.props.username}
-                </p>
                 <div className="add-cinema-container">
+                <h1>Add Cinema</h1>
+                <h3 className="error-text">
+                    {this.state.error}
+                </h3>
                     {content}
                 </div>
                 <div>

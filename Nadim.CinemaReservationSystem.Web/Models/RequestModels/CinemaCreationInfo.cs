@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace Nadim.CinemaReservationSystem.Web.Models
 {
-    public class CinemaAdditionInfo
+    public class CinemaCreationInfo
     {
         public string City { get; set; }
         public string Name { get; set; }
         public int CinemaRoomsCount { get; set; }
         public List<SeatAdditionInfo> Seats { get; set; } 
         public string CurrentUsername { get; set; }
-        public int VipSeatPrice { get; set; }
-        public int DefaultSeatPrice { get; set; }
+        public double VipSeatPrice { get; set; }
+        public double DefaultSeatPrice { get; set; }
     }
 }

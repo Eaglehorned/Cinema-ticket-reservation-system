@@ -35,7 +35,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         private bool InputRegistrationDataValid(UserRegistrationInfo user)
         {
-            return Utils.IsEmailValid(user.Email) && !string.IsNullOrEmpty(user.Password) && !string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(user.LastName);
+            return Utils.IsEmailValid(user.Email) && 
+                !string.IsNullOrEmpty(user.Password) && 
+                !string.IsNullOrEmpty(user.FirstName) && 
+                !string.IsNullOrEmpty(user.LastName) && 
+                !string.IsNullOrEmpty(user.UserName);
         }
 
         private bool IsUserDataCorrect(UserLoginInfo user)

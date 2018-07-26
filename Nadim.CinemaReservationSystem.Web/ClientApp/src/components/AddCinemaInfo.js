@@ -6,13 +6,13 @@ export default class AddCinemaInfo extends Component{
     constructor(props){
         super(props);
         this.state = {
-            city:'ss',
-            name: 'sss',
-            cinemaRoomsCount: 3,
-            cinemaRoomRows: 2,
-            cinemaRoomColumns: 3,
-            defaultPrice: 0,
-            vipPrice: 0,
+            city:'',
+            name: '',
+            cinemaRoomsCount: '',
+            cinemaRoomRows: '',
+            cinemaRoomColumns: '',
+            defaultPrice: '',
+            vipPrice: '',
         }
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -24,8 +24,13 @@ export default class AddCinemaInfo extends Component{
         this.handleVipPriceChange = this.handleVipPriceChange.bind(this);
     }
 
-    validateNumber(number){
+    validateIntNumber(number){
         let result = /^\d+$/;
+        return result.test(String(number));
+    }
+
+    validateDoubleNumber(number){
+        let result = /^\d+([.,]\d+)?$/;
         return result.test(String(number));
     }
 
@@ -33,42 +38,49 @@ export default class AddCinemaInfo extends Component{
         this.setState({
             city: event.target.value, 
         });
+        this.props.callBackClearErrorState();
     }
 
     handleNameChange(event){
         this.setState({
             name: event.target.value, 
         });
+        this.props.callBackClearErrorState();
     }
 
     handleCinemaRoomsChange(event){
         this.setState({
             cinemaRoomsCount: event.target.value, 
         });
+        this.props.callBackClearErrorState();
     }
 
     handleRowsChange(event){
         this.setState({
             cinemaRoomRows: event.target.value, 
         });
+        this.props.callBackClearErrorState();
     }
     
     handleColumnsChange(event){
         this.setState({
             cinemaRoomColumns: event.target.value, 
         });
+        this.props.callBackClearErrorState();
     }
 
     handleDefaultPriceChange(event){
         this.setState({
             defaultPrice: event.target.value, 
         });
+        this.props.callBackClearErrorState();
     }
 
     handleVipPriceChange(event){
         this.setState({
             vipPrice: event.target.value, 
         });
+        this.props.callBackClearErrorState();
     }
 
     handleAddCinemaClick(event){
@@ -79,15 +91,14 @@ export default class AddCinemaInfo extends Component{
             cinemaRoomRows: parseInt(this.state.cinemaRoomRows),
             cinemaRoomColumns: parseInt(this.state.cinemaRoomColumns),
             cinemaRoomsCount: parseInt(this.state.cinemaRoomsCount),
-            defaultPrice: parseInt(this.state.defaultPrice),
-            vipPrice: parseInt(this.state.vipPrice),
+            defaultPrice: this.state.defaultPrice,
+            vipPrice: this.state.vipPrice,
         });
     }
 
     render(){
         return(
             <div>
-                <h1>Add Cinema</h1>
                 <h4>
                     <strong>City : </strong>
                 </h4> 
@@ -146,7 +157,7 @@ export default class AddCinemaInfo extends Component{
                     className="form-control form-control-sm" 
                     value={this.state.defaultPrice} 
                     onChange={this.handleDefaultPriceChange}
-                    placeholder="Columns"
+                    placeholder="Price"
                 />
                 <h4>
                     <strong>Price for VIP seat USD : </strong>
@@ -156,7 +167,7 @@ export default class AddCinemaInfo extends Component{
                     className="form-control form-control-sm" 
                     value={this.state.vipPrice} 
                     onChange={this.handleVipPriceChange}
-                    placeholder="Columns"
+                    placeholder="Price"
                 />
                 <button 
                     type="button" 
@@ -164,11 +175,11 @@ export default class AddCinemaInfo extends Component{
                     onClick={this.handleAddCinemaClick} 
                     disabled={
                         !(
-                            this.validateNumber(this.state.defaultPrice) &&
-                            this.validateNumber(this.state.vipPrice) &&
-                            this.validateNumber(this.state.cinemaRoomsCount) && 
-                            this.validateNumber(this.state.cinemaRoomRows) && 
-                            this.validateNumber(this.state.cinemaRoomColumns) && 
+                            this.validateDoubleNumber(this.state.defaultPrice) &&
+                            this.validateDoubleNumber(this.state.vipPrice) &&
+                            this.validateIntNumber(this.state.cinemaRoomsCount) && 
+                            this.validateIntNumber(this.state.cinemaRoomRows) && 
+                            this.validateIntNumber(this.state.cinemaRoomColumns) && 
                             this.state.city && 
                             this.state.name
                         )

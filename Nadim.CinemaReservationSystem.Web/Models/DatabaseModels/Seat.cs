@@ -13,7 +13,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public int Row { get; set; }
         public int Column { get; set; }
         public string Type { get; set; }
-        public int Price { get; set;}
+        public double Price { get; set;}
         public bool Booked { get; set; }
 
         public int CinemaRoomId { get; set; }
