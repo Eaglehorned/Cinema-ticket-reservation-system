@@ -9,10 +9,6 @@
     margin-bottom: 7px;
 }
 
-.error-text{
-    color: #f80000;
-}
-
 .authentication-Modal{
     position: absolute;
     top: 40%;

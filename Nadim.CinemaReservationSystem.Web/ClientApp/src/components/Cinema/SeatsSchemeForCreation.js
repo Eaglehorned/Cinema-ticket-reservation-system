@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import SeatBoxForCreation from '../components/SeatBoxForCreation';
+import SeatBoxForCreation from './SeatBoxForCreation';
 
 export default class SeatsSchemeForCreation extends Component{
     displayName = SeatsSchemeForCreation.displayName;
@@ -49,7 +49,7 @@ export default class SeatsSchemeForCreation extends Component{
                     <Button
                         bsStyle="primary" onClick={this.handleCreateClick}
                     >
-                        Create
+                        Submit
                     </Button>
                     <Button 
                         onClick={this.handleCancelClick}

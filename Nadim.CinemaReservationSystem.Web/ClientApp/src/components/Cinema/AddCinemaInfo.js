@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 
 export default class AddCinemaInfo extends Component{
     displayName = AddCinemaInfo.name;
@@ -22,6 +22,7 @@ export default class AddCinemaInfo extends Component{
         this.handleAddCinemaClick = this.handleAddCinemaClick.bind(this);
         this.handleDefaultPriceChange = this.handleDefaultPriceChange.bind(this);
         this.handleVipPriceChange = this.handleVipPriceChange.bind(this);
+        this.handleCancelClick = this.handleCancelClick.bind(this);
     }
 
     validateIntNumber(number){
@@ -38,49 +39,42 @@ export default class AddCinemaInfo extends Component{
         this.setState({
             city: event.target.value, 
         });
-        this.props.callBackClearErrorState();
     }
 
     handleNameChange(event){
         this.setState({
             name: event.target.value, 
         });
-        this.props.callBackClearErrorState();
     }
 
     handleCinemaRoomsChange(event){
         this.setState({
             cinemaRoomsCount: event.target.value, 
         });
-        this.props.callBackClearErrorState();
     }
 
     handleRowsChange(event){
         this.setState({
             cinemaRoomRows: event.target.value, 
         });
-        this.props.callBackClearErrorState();
     }
     
     handleColumnsChange(event){
         this.setState({
             cinemaRoomColumns: event.target.value, 
         });
-        this.props.callBackClearErrorState();
     }
 
     handleDefaultPriceChange(event){
         this.setState({
             defaultPrice: event.target.value, 
         });
-        this.props.callBackClearErrorState();
     }
 
     handleVipPriceChange(event){
         this.setState({
             vipPrice: event.target.value, 
         });
-        this.props.callBackClearErrorState();
     }
 
     handleAddCinemaClick(event){
@@ -88,12 +82,15 @@ export default class AddCinemaInfo extends Component{
         this.props.callBackFromParent({
             city: this.state.city,
             name: this.state.name,
-            cinemaRoomRows: parseInt(this.state.cinemaRoomRows),
-            cinemaRoomColumns: parseInt(this.state.cinemaRoomColumns),
             cinemaRoomsCount: parseInt(this.state.cinemaRoomsCount),
             defaultPrice: this.state.defaultPrice,
             vipPrice: this.state.vipPrice,
         });
+    }
+
+    handleCancelClick(event){
+        event.preventDefault();
+        this.props.callBackCancelCinemaInfoInput();
     }
 
     render(){
@@ -186,6 +183,13 @@ export default class AddCinemaInfo extends Component{
                     }
                 >
                     Add
+                </button>
+                <button 
+                    type="button" 
+                    className="btn btn-secondary" 
+                    onClick={this.handleCancelClick} 
+                >
+                    Cancel
                 </button>
             </div>
         )

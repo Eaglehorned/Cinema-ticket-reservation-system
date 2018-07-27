@@ -11,7 +11,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public string Name { get; set; }
         public int CinemaRoomsCount { get; set; }
         public List<SeatAdditionInfo> Seats { get; set; } 
-        public string CurrentUsername { get; set; }
         public double VipSeatPrice { get; set; }
         public double DefaultSeatPrice { get; set; }
     }

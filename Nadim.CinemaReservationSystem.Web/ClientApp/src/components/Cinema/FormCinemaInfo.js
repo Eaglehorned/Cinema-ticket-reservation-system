@@ -3,10 +3,10 @@ import AddCinemaInfo from './AddCinemaInfo';
 import SeatsSchemeForCreation from './SeatsSchemeForCreation';
 import SeatTypeChange from './SeatTypeChange';
 import Modal from 'react-modal';
-import '../styles/AddCinema.css';
+import '../../styles/AddCinema.css';
 
-export default class AddCinema extends Component {
-    displayName = AddCinema.name;
+export default class FormCinemaInfo extends Component {
+    displayName = FormCinemaInfo.name;
 
     constructor(props) {
         super(props);
@@ -24,9 +24,7 @@ export default class AddCinema extends Component {
         this.openModal = this.openModal.bind(this);
         this.handleSubmitSeatTypeChange = this.handleSubmitSeatTypeChange.bind(this);
         this.handleCancelCinemaDataInput = this.handleCancelCinemaDataInput.bind(this);
-        this.handleCreateCinema = this.handleCreateCinema.bind(this);
-        this.clearState = this.clearState.bind(this);
-        this.clearErrorState = this.clearErrorState.bind(this);
+        this.handleSubmitCinemaInfo = this.handleSubmitCinemaInfo.bind(this);
     }
 
     handleCinemaInfoInput(cinemaData){
@@ -67,54 +65,20 @@ export default class AddCinema extends Component {
     }
 
     handleCancelCinemaDataInput(){
-        this.clearState();
-    }
-
-    handleCreateCinema(){
-        fetch('api/Cinema/AddCinema', {
-            method: 'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'bearer ' + this.props.token,
-            },
-            body: JSON.stringify({
-                city: this.state.cinemaInfo.city,
-                name: this.state.cinemaInfo.name,
-                cinemaRoomsCount: this.state.cinemaInfo.cinemaRoomsCount,
-                seats: [].concat(...this.state.seatsArray),
-                username: this.props.username,
-                vipSeatPrice: this.state.cinemaInfo.vipPrice,
-                defaultSeatPrice: this.state.cinemaInfo.defaultPrice,
-            })
-        }).then(response => response.json())
-            .then(parsedJson => {
-                if (parsedJson.resultOk){
-                    //TODO: inform parent cinema created
-                }
-                else {
-                    this.clearState();
-                    this.setState({
-                        error: parsedJson.details,
-                    })
-                }
-            })
-    }
-
-    clearState(){
         this.setState({
             cinemaInfoInputted: false,
-            seatsArray: [],
-            cinemaInfo: {},
-            modalIsOpen: false,
-            seatInfoToTypeChange: {},
-        });
+        })
     }
 
-    clearErrorState(){
-        this.setState({
-            error: '',
-        })
+    handleSubmitCinemaInfo(){
+        this.props.callBackReceiveCinemaInfo({
+            city: this.state.cinemaInfo.city,
+            name: this.state.cinemaInfo.name,
+            cinemaRoomsCount: this.state.cinemaInfo.cinemaRoomsCount,
+            seats: [].concat(...this.state.seatsArray),
+            vipSeatPrice: this.state.cinemaInfo.vipPrice,
+            defaultSeatPrice: this.state.cinemaInfo.defaultPrice,
+        });
     }
 
     closeModal(){
@@ -135,19 +99,15 @@ export default class AddCinema extends Component {
                 seatsArray={this.state.seatsArray} 
                 callBackFromParent={this.handleSeatTypeChange}
                 callBackCancelCinemaDataInput={this.handleCancelCinemaDataInput}
-                callBackCreateCinema={this.handleCreateCinema}
+                callBackCreateCinema={this.handleSubmitCinemaInfo}
             /> :
             <AddCinemaInfo 
                 callBackFromParent={this.handleCinemaInfoInput}
-                callBackClearErrorState={this.clearErrorState}
             /> ;
         return(
             <div>
                 <div className="add-cinema-container">
-                <h1>Add Cinema</h1>
-                <h3 className="error-text">
-                    {this.state.error}
-                </h3>
+                <h1>Input cinema info</h1>
                     {content}
                 </div>
                 <div>
@@ -157,7 +117,7 @@ export default class AddCinema extends Component {
                         ariaHideApp={false}
                         className="add-cinema-Modal"
                     >
-                        <SeatTypeChange 
+                        <SeatTypeChange
                             seatInfo={this.state.seatInfoToTypeChange}
                             callBackSubmitSeatTypeChange={this.handleSubmitSeatTypeChange}
                             callBackCancelSeatTypeChange={this.closeModal}

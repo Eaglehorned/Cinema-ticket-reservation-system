@@ -59,20 +59,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             Claim[] claims;
 
-            if (dbContext.Users.Any(u => u.Email == userEmail))
-            {
-                claims = new[] {
-                    new Claim(ClaimTypes.Name, userEmail),
-                    new Claim(ClaimTypes.Role, dbContext.Users.First(u => u.Email == userEmail).Role)
-                };
-            }
-            else
-            {
-                claims = new[] {
-                    new Claim(ClaimTypes.Name, userEmail),
-                };
-            }
-
+            claims = new[] {
+                new Claim(ClaimTypes.Name, userEmail),
+                new Claim(ClaimTypes.Role, dbContext.Users.FirstOrDefault(u => u.Email == userEmail).Role)
+            };
+            
             var token = new JwtSecurityToken(
                 issuer: configuration["Tokens:Issuer"],
                 audience: configuration["Tokens:Issuer"],

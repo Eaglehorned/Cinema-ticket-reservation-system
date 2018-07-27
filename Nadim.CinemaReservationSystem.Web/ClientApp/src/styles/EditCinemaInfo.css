@@ -1,0 +1,9 @@
+.edit-cinema-info-container{
+    padding: 20px;
+    width: 100%;
+}
+
+.edit-cinema-info-container Button{
+    margin-left: 10px;
+    margin-bottom: 10px; 
+}

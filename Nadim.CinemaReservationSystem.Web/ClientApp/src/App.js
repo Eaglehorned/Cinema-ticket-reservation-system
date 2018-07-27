@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
-import Authentication from './components/Authentication'
-import AddCinema from './components/AddCinema'
-import Cinema from './components/Cinema';
+import Authentication from './components/Authentication/Authentication'
+import Cinema from './components/Cinema/Cinema';
 
 export default class App extends Component {
     displayName = App.name
@@ -26,7 +25,6 @@ export default class App extends Component {
     render() {
         return (
             <div>
-                <p>{this.state.username} {this.state.token}</p>
                 <Authentication 
                     username={this.state.username}
                     callBackSetUserInfo={this.setUserInfo}

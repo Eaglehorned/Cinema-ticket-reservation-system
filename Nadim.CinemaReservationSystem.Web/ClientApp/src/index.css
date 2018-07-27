@@ -1,3 +1,7 @@
 input {
     margin-bottom: 7px;
 }
+
+.error-text{
+    color: #f80000;
+}

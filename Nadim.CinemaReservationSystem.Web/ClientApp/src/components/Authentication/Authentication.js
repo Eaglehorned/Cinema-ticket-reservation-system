@@ -2,15 +2,15 @@ import React, {Component} from 'react';
 import Login from './Login';
 import Registration from './Registration';
 import Modal from 'react-modal';
-import '../styles/Authentication.css';
+import '../../styles/Authentication.css';
 
 export default class Authentication extends Component {
     constructor(props) {
         super(props);
         this.state = {
             modalIsOpen: false,
-            username:'',
-            token:''
+            username: this.props.username,
+            token: this.props.token,
         }
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
