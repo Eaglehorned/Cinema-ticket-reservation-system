@@ -33,6 +33,11 @@
     margin: 10px;
 }
 
+.add-cinema-container Button{
+    margin-bottom: 5px;
+    margin-right: 10px;
+}
+
 .add-cinema-Modal{
     position: absolute;
     top: 40%;
@@ -44,11 +49,6 @@
     border:solid 2px #80b6e4;
     border-radius: 5px; 
     background-color: whitesmoke;
-}
-
-.add-cinema-Modal Button{
-    margin-top: 5px;
-    margin-right: 10px;
 }
 
 .add-cinema-Modal h2{

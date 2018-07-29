@@ -23,9 +23,16 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         private bool CinemaInputInfoValid(CinemaCreationInfo cinemaInfo)
         {
-            return cinemaInfo.CinemaRoomsCount > 0 &&
-                !cinemaInfo.Seats.Exists(s => s.Row < 0) &&
-                !cinemaInfo.Seats.Exists(s => s.Column < 0);
+            foreach (CinemaRoomCreationInfo room in cinemaInfo.CinemaRooms)
+            {
+                {
+                    if (!(room.Seats.Count > 0) ||
+                        room.Seats.Exists(s => s.Row < 0) ||
+                        room.Seats.Exists(s => s.Column < 0))
+                        return false;
+                }
+            }
+            return true;
         }
 
         private Cinema GenerateCinema(CinemaCreationInfo cinemaInfo)
@@ -34,25 +41,22 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 City = cinemaInfo.City,
                 Name = cinemaInfo.Name,
+                DefaultSeatPrice = cinemaInfo.DefaultSeatPrice,
+                VipSeatPrice = cinemaInfo.VipSeatPrice,
                 CinemaRooms = new List<CinemaRoom>()
             };
 
-            for (int i = 0; i < cinemaInfo.CinemaRoomsCount; i++)
-            {
+            foreach (CinemaRoomCreationInfo room in cinemaInfo.CinemaRooms) {
                 newCinema.CinemaRooms.Add(new CinemaRoom
                 {
-                    Number = i,
-                    Seats = new List<Seat>()
+                    Name = room.Name,
+                    Seats = new List<Seat>(),
                 });
-                foreach (SeatAdditionInfo seat in cinemaInfo.Seats)
-                {
-                    newCinema.CinemaRooms.Last().Seats.Add(new Seat
-                    {
+                foreach (SeatCreationInfo seat in room.Seats) {
+                    newCinema.CinemaRooms.Last().Seats.Add(new Seat {
                         Row = seat.Row,
                         Column = seat.Column,
                         Type = seat.Type,
-                        Price = seat.Type == "default" ? cinemaInfo.DefaultSeatPrice : cinemaInfo.VipSeatPrice,
-                        Booked = false,
                     });
                 }
             }

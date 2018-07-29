@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Button} from 'react-bootstrap';
-import '../../styles/AddCinema.css';
+import '../../styles/Cinema.css';
 
 export default class EditCinemaGeneralInfo extends Component {
     displayName = EditCinemaGeneralInfo.name;

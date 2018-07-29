@@ -9,7 +9,7 @@ export default class SeatsSchemeForCreation extends Component{
         super(props);
         this.handleSeatTypeChange = this.handleSeatTypeChange.bind(this);
         this.generateKey = this.generateKey.bind(this);
-        this.handleCreateClick = this.handleCreateClick.bind(this);
+        this.handleSubmitClick = this.handleSubmitClick.bind(this);
         this.handleCancelClick = this.handleCancelClick.bind(this);
     }
 
@@ -17,12 +17,12 @@ export default class SeatsSchemeForCreation extends Component{
         this.props.callBackFromParent(dataToChangeSeatType);
     }
 
-    handleCreateClick(){
-        this.props.callBackCreateCinema();
+    handleSubmitClick(){
+        this.props.callBackSubmit();
     }
 
     handleCancelClick(){
-        this.props.callBackCancelCinemaDataInput();
+        this.props.callBackCancel();
     }
 
     generateKey(row, column){
@@ -32,6 +32,9 @@ export default class SeatsSchemeForCreation extends Component{
     render(){
         return(
             <div>
+                <h3>
+                    Edit seat types
+                </h3>
                 <div className="scheme-container">
                     {this.props.seatsArray.map((item) =>
                         <div key={item[0].row}>
@@ -47,7 +50,7 @@ export default class SeatsSchemeForCreation extends Component{
                 </div>
                 <div className="button-container">
                     <Button
-                        bsStyle="primary" onClick={this.handleCreateClick}
+                        bsStyle="primary" onClick={this.handleSubmitClick}
                     >
                         Submit
                     </Button>

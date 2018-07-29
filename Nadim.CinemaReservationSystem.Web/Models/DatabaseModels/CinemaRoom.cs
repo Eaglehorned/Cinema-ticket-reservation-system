@@ -10,7 +10,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CinemaRoomId { get; set; }
-        public int Number { get; set; }
+        public string Name { get; set; }
 
         public int CinemaId { get; set; }
         public Cinema Cinema { get; set; }

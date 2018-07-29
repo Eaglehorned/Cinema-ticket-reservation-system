@@ -10,15 +10,19 @@ export default class Cinema extends Component{
         super(props);
         this.state={
             show: false,
-            infoMessage:''
+            infoMessage:'',
+            chosenAction: '',
         }
-        this.InformWithMessage = this.InformWithMessage.bind(this);
-        this.CreateCinema = this.CreateCinema.bind(this);
-        this.CancelCinemaCreation = this.CancelCinemaCreation.bind(this);
-        this.EditCinemaInfo = this.EditCinemaInfo.bind(this);
+        this.informWithMessage = this.informWithMessage.bind(this);
+        this.createCinema = this.createCinema.bind(this);
+        this.cancelCinemaCreation = this.cancelCinemaCreation.bind(this);
+        this.editCinemaInfo = this.editCinemaInfo.bind(this);
+        this.renderContent = this.renderContent.bind(this);
+        this.handleChooseCreateCinemaAction = this.handleChooseCreateCinemaAction.bind(this);
+        
     }
 
-    InformWithMessage(message){
+    informWithMessage(message){
         this.setState({
             show: true,
             infoMessage: message,
@@ -31,8 +35,7 @@ export default class Cinema extends Component{
             }),5000);
     }
 
-    CreateCinema(receivedCinemaInfo){
-
+    createCinema(receivedCinemaInfo){
         fetch('api/Cinema/AddCinema', {
             method: 'POST',
             headers:{
@@ -46,16 +49,18 @@ export default class Cinema extends Component{
         }).then(response => response.json())
             .then(parsedJson => {
                 if (parsedJson.resultOk){
-                    this.InformWithMessage('Cinema created.');
+                    this.informWithMessage('Cinema created.');
                 }
                 else {
-                    this.InformWithMessage(parsedJson.details);
+                    this.informWithMessage(parsedJson.details);
                 }
-            })
+            });
+        this.setState({
+            chosenAction: '',
+        })
     }
 
-    EditCinemaInfo(receivedCinemaInfo){
-        console.log(receivedCinemaInfo);
+    editCinemaInfo(receivedCinemaInfo){
         fetch('api/Cinema/AddCinema', {
             method: 'POST',
             headers:{
@@ -69,31 +74,59 @@ export default class Cinema extends Component{
         }).then(response => response.json())
             .then(parsedJson => {
                 if (parsedJson.resultOk){
-                    this.InformWithMessage('Cinema information edited.');
+                    this.informWithMessage('Cinema information edited.');
                 }
                 else {
-                    this.InformWithMessage(parsedJson.details);
+                    this.informWithMessage(parsedJson.details);
                 }
             })
     }
 
-    CancelCinemaCreation(){
-        //TODO hide cinema creation form
+    handleChooseCreateCinemaAction(){
+        this.setState({
+            chosenAction: 'createCinema',
+        })
+    }
+
+    renderContent(){
+        if(this.state.chosenAction === 'createCinema'){
+            return (         
+                <FormCinemaInfo
+                    callBackReceiveCinemaInfo={this.createCinema}
+                    callBackCancelCinemaCreation={this.cancelCinemaCreation}
+                />
+            )
+        }
+
+        return(
+            <div>
+                <Button
+                    bsStyle="primary"
+                    onClick={this.handleChooseCreateCinemaAction}
+                >
+                    Create cinema
+                </Button>
+            </div>
+        )
+    }
+
+    cancelCinemaCreation(){
+        this.setState({
+            chosenAction: ''
+        })
     }
 
     render(){
+        let content = this.renderContent();
         return(
-            <div>
+            <div className="add-cinema-container">
                 <h2>
                     {this.state.show ? 
                         this.state.infoMessage :
                         ''
                     }
                 </h2>
-                <FormCinemaInfo
-                    callBackReceiveCinemaInfo={this.CreateCinema}
-                    callBackCancelCinemaInfoInput={this.CancelCinemaCreation}
-                />
+                {content}
                 {/* <EditCinemaInfo
                     callBackEditCinemaInfo={this.EditCinemaInfo}
                 /> */}

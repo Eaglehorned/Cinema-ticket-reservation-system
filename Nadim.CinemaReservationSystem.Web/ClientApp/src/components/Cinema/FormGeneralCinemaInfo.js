@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
+import { Button } from 'react-bootstrap';
 
-export default class AddCinemaInfo extends Component{
-    displayName = AddCinemaInfo.name;
+export default class FormGeneralCinemaInfo extends Component{
+    displayName = FormGeneralCinemaInfo.name;
 
     constructor(props){
         super(props);
@@ -17,9 +18,7 @@ export default class AddCinemaInfo extends Component{
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleCinemaRoomsChange = this.handleCinemaRoomsChange.bind(this);
-        this.handleRowsChange = this.handleRowsChange.bind(this);
-        this.handleColumnsChange = this.handleColumnsChange.bind(this);
-        this.handleAddCinemaClick = this.handleAddCinemaClick.bind(this);
+        this.handleSubmitCinemaInfoClick = this.handleSubmitCinemaInfoClick.bind(this);
         this.handleDefaultPriceChange = this.handleDefaultPriceChange.bind(this);
         this.handleVipPriceChange = this.handleVipPriceChange.bind(this);
         this.handleCancelClick = this.handleCancelClick.bind(this);
@@ -53,18 +52,6 @@ export default class AddCinemaInfo extends Component{
         });
     }
 
-    handleRowsChange(event){
-        this.setState({
-            cinemaRoomRows: event.target.value, 
-        });
-    }
-    
-    handleColumnsChange(event){
-        this.setState({
-            cinemaRoomColumns: event.target.value, 
-        });
-    }
-
     handleDefaultPriceChange(event){
         this.setState({
             defaultPrice: event.target.value, 
@@ -77,25 +64,26 @@ export default class AddCinemaInfo extends Component{
         });
     }
 
-    handleAddCinemaClick(event){
-        event.preventDefault();
+    handleSubmitCinemaInfoClick(){
         this.props.callBackFromParent({
             city: this.state.city,
             name: this.state.name,
             cinemaRoomsCount: parseInt(this.state.cinemaRoomsCount),
-            defaultPrice: this.state.defaultPrice,
-            vipPrice: this.state.vipPrice,
+            defaultSeatPrice: this.state.defaultPrice,
+            vipSeatPrice: this.state.vipPrice,
         });
     }
 
-    handleCancelClick(event){
-        event.preventDefault();
-        this.props.callBackCancelCinemaInfoInput();
+    handleCancelClick(){
+        this.props.callBackCancelGeneralCinemaInfoInput();
     }
 
     render(){
         return(
             <div>
+                <h3>
+                    Input general cinema information
+                </h3>
                 <h4>
                     <strong>City : </strong>
                 </h4> 
@@ -127,26 +115,6 @@ export default class AddCinemaInfo extends Component{
                     placeholder="Rooms"
                 />
                 <h4>
-                    <strong>Number of rows in cinema room : </strong>
-                </h4> 
-                <input 
-                    type="text" 
-                    className="form-control form-control-sm" 
-                    value={this.state.cinemaRoomRows} 
-                    onChange={this.handleRowsChange}
-                    placeholder="Rows"
-                />
-                <h4>
-                    <strong>Number of places in row : </strong>
-                </h4> 
-                <input
-                    type="text" 
-                    className="form-control form-control-sm" 
-                    value={this.state.cinemaRoomColumns} 
-                    onChange={this.handleColumnsChange}
-                    placeholder="Columns"
-                />
-                <h4>
                     <strong>Price for default seat USD : </strong>
                 </h4> 
                 <input
@@ -166,31 +134,26 @@ export default class AddCinemaInfo extends Component{
                     onChange={this.handleVipPriceChange}
                     placeholder="Price"
                 />
-                <button 
-                    type="button" 
-                    className="btn btn-primary" 
-                    onClick={this.handleAddCinemaClick} 
+                <Button 
+                    bsStyle="primary"
+                    onClick={this.handleSubmitCinemaInfoClick} 
                     disabled={
                         !(
                             this.validateDoubleNumber(this.state.defaultPrice) &&
                             this.validateDoubleNumber(this.state.vipPrice) &&
                             this.validateIntNumber(this.state.cinemaRoomsCount) && 
-                            this.validateIntNumber(this.state.cinemaRoomRows) && 
-                            this.validateIntNumber(this.state.cinemaRoomColumns) && 
                             this.state.city && 
                             this.state.name
                         )
                     }
                 >
-                    Add
-                </button>
-                <button 
-                    type="button" 
-                    className="btn btn-secondary" 
+                    Submit
+                </Button>
+                <Button 
                     onClick={this.handleCancelClick} 
                 >
                     Cancel
-                </button>
+                </Button>
             </div>
         )
     }

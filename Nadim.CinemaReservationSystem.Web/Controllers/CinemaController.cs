@@ -32,6 +32,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return BadRequest(result);
         }
 
+        [Authorize]
         [HttpGet("[action]")]
         public IActionResult GetCinemaList()
         {
