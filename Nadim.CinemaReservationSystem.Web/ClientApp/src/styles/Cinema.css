@@ -51,6 +51,11 @@
     background-color: whitesmoke;
 }
 
+.add-cinema-Modal Button{
+    margin-bottom: 5px;
+    margin-right: 10px;
+}
+
 .add-cinema-Modal h2{
     margin: 0;
 }

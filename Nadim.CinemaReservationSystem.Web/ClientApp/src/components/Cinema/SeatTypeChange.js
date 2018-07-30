@@ -20,13 +20,11 @@ export default class SeatTypeChange extends Component{
         })
     }
 
-    handleSubmitClick(event){
-        event.preventDefault();
+    handleSubmitClick(){
         this.props.callBackSubmitSeatTypeChange(this.state.chosenType);
     }
 
-    handleCancelClick(event){
-        event.preventDefault();
+    handleCancelClick(){
         this.props.callBackCancelSeatTypeChange();
     }
 
@@ -62,11 +60,16 @@ export default class SeatTypeChange extends Component{
                     </DropdownButton>
                 </ButtonToolbar>
                 <br/>
-                <div className="button-container">
-                    <Button bsStyle="primary" onClick={this.handleSubmitClick}> 
+                <div>
+                    <Button 
+                        bsStyle="primary" 
+                        onClick={this.handleSubmitClick}
+                    > 
                         Submit
                     </Button>
-                    <Button onClick={this.handlecancelClick}> 
+                    <Button 
+                        onClick={this.handleCancelClick}
+                    > 
                         Cancel
                     </Button>
                 </div>

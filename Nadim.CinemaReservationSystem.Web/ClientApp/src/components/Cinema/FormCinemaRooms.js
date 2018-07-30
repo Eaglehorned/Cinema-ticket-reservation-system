@@ -76,7 +76,6 @@ export default class FormCinemaRooms extends Component{
                 tempCinemaRoomsArray[i].seats = [].concat(...tempCinemaRoomsArray[i].seatsArray);
                 delete tempCinemaRoomsArray[i].seatsArray;
             }
-            console.log(tempCinemaRoomsArray);
             this.props.callBackReceiveCinemaRoomsInfo(tempCinemaRoomsArray);
         }
     }
@@ -98,7 +97,6 @@ export default class FormCinemaRooms extends Component{
                 currentCinemaRoomId: this.state.currentCinemaRoomId - 1,
             })
         }
-        console.log(this.state.cinemaRoomsArray);
     }
 
     closeModal(){
