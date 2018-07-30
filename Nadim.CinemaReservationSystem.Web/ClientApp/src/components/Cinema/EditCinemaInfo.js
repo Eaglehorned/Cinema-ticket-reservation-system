@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { DropdownButton, MenuItem, Button, Nav} from 'react-bootstrap';
 import FormGeneralCinemaInfo from './FormGeneralCinemaInfo';
+import FormCinemaRooms from './FormCinemaRooms';
 import '../../styles/EditCinemaInfo.css';
 
 export default class EditCinemaInfo extends Component{
@@ -14,10 +15,12 @@ export default class EditCinemaInfo extends Component{
             isCinemaChosen: false,
             choosenCinema: '',
             editComponentChosen:'',
-            params: ['City', 'Name', 'Price'],
+            params: ['City', 'Name', 'Price', 'Cinema rooms'],
             chosenParamToEditDisplayString: '',
             chosenParamsToEdit: {},
             isParamChosen: false,
+            needToFormCinemaRooms: false,
+            cinemaRoomsCount: 0,
             versionsOfChoosedParams:[
                 {
                     city: true,
@@ -39,6 +42,13 @@ export default class EditCinemaInfo extends Component{
                     cinemaRoomsCount: false,
                     defaultSeatPrice: true,
                     vipSeatPrice: true,
+                },
+                {
+                    city: false,
+                    name: false,
+                    cinemaRoomsCount: true,
+                    defaultSeatPrice: false,
+                    vipSeatPrice: false,
                 }
             ]
             
@@ -48,12 +58,16 @@ export default class EditCinemaInfo extends Component{
         this.getCinemaList = this.getCinemaList.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
         this.handleSubmitCinemaChoise = this.handleSubmitCinemaChoise.bind(this);
-        this.ChangeCinemaInfo = this.ChangeCinemaInfo.bind(this);
+        this.receiveCinemaGeneralInfo = this.receiveCinemaGeneralInfo.bind(this);
         this.handleSubmitParamChoise = this.handleSubmitParamChoise.bind(this);
         this.handleSelectParam = this.handleSelectParam.bind(this);
         this.renderEditComponentContent = this.renderEditComponentContent.bind(this);
         this.renderChooseParamToEditContent = this.renderChooseParamToEditContent.bind(this);
-        this.handleCinemaInfoInput = this.handleCinemaInfoInput.bind(this);
+        this.receiveCinemaRoomsInfo = this.receiveCinemaRoomsInfo.bind(this);
+        this.handleCanceltCinemaChoise = this.handleCanceltCinemaChoise.bind(this);
+        this.handleCancelParamChoise = this.handleCancelParamChoise.bind(this);
+        this.handleCancelGeneralCinemaInfoInput = this.handleCancelGeneralCinemaInfoInput.bind(this);
+        this.cancelCinemaRoomsInfoInput = this.cancelCinemaRoomsInfoInput.bind(this);
 
         this.getCinemaList();
     }
@@ -87,18 +101,33 @@ export default class EditCinemaInfo extends Component{
             })
     }
 
-    ChangeCinemaInfo(receivedCinemaInfo){
-        let cinemaInfoToSend = receivedCinemaInfo;
-        delete cinemaInfoToSend["cinemaRoomsCount"];
-        let tempNewName = receivedCinemaInfo.name;
-        cinemaInfoToSend.name = this.state.choosenCinema;
-        cinemaInfoToSend.vipSeatPrice = cinemaInfoToSend.vipSeatPrice ? cinemaInfoToSend.vipSeatPrice : 0;
-        cinemaInfoToSend.defaultSeatPrice = cinemaInfoToSend.defaultSeatPrice ? cinemaInfoToSend.defaultSeatPrice : 0;
-        cinemaInfoToSend["newName"] = tempNewName;
-        console.log(cinemaInfoToSend);
+    receiveCinemaGeneralInfo(receivedCinemaInfo){
+        if (isNaN(receivedCinemaInfo.cinemaRoomsCount)){
+            let cinemaInfoToSend = receivedCinemaInfo;
+            delete cinemaInfoToSend["cinemaRoomsCount"];
+            let tempNewName = receivedCinemaInfo.name;
+            cinemaInfoToSend.name = this.state.choosenCinema;
+            cinemaInfoToSend.vipSeatPrice = cinemaInfoToSend.vipSeatPrice ? cinemaInfoToSend.vipSeatPrice : 0;
+            cinemaInfoToSend.defaultSeatPrice = cinemaInfoToSend.defaultSeatPrice ? cinemaInfoToSend.defaultSeatPrice : 0;
+            cinemaInfoToSend["newName"] = tempNewName;
+            console.log(cinemaInfoToSend);
+            this.props.callBackEditCinemaInfo({
+                ...cinemaInfoToSend,
+            });
+        }
+        else {
+            this.setState({
+                needToFormCinemaRooms: true,
+                cinemaRoomsCount: receivedCinemaInfo.cinemaRoomsCount,
+            })
+        }
+    }
+
+    receiveCinemaRoomsInfo(receivedCinemaInfo){
         this.props.callBackEditCinemaInfo({
-            ...cinemaInfoToSend,
-        });
+            "cinemaRooms": receivedCinemaInfo,
+            "name": this.state.choosenCinema,
+        })
     }
 
     handleSelect(eventKey){
@@ -130,6 +159,30 @@ export default class EditCinemaInfo extends Component{
         }
     }
 
+    handleCanceltCinemaChoise(){
+        this.props.callBackCancelCinemaInfoInput();
+    }
+
+    handleCancelParamChoise(){
+        this.setState({
+            chosenParamsToEdit: {},
+            chosenParamToEditDisplayString: '',
+            isCinemaChosen: false,
+        })
+    }
+
+    handleCancelGeneralCinemaInfoInput(){
+        this.setState({
+            isParamChosen: false,
+        })
+    }
+
+    cancelCinemaRoomsInfoInput(){
+        this.setState({
+            needToFormCinemaRooms: false,
+        })
+    }
+
     renderChooseParamToEditContent(){
         return(
             <div>
@@ -159,27 +212,39 @@ export default class EditCinemaInfo extends Component{
                         </MenuItem>
                 )}
                 </DropdownButton>
-                <Button
-                    bsStyle="Default"
-                    onClick={this.handleSubmitParamChoise}
-                >
-                    Submit
-                </Button>
+                <div>
+                    <Button
+                        bsStyle="primary"
+                        onClick={this.handleSubmitParamChoise}
+                    >
+                        Submit
+                    </Button>
+                    <Button
+                        onClick={this.handleCancelParamChoise}
+                    >
+                        Cancel
+                    </Button>
+                </div>
             </div>
         );
     }
 
-    handleCinemaInfoInput(receivedCinemaEditInfo){
-        this.ChangeCinemaInfo(receivedCinemaEditInfo);
-    }
-
     renderEditComponentContent(){
-        return (
+        let content = this.state.needToFormCinemaRooms ? 
+            <FormCinemaRooms
+                cinemaRoomsCount={this.state.cinemaRoomsCount}
+                callBackReceiveCinemaRoomsInfo={this.receiveCinemaRoomsInfo}
+                callBackCancelCinemaRoomsInfoInput={this.cancelCinemaRoomsInfoInput}
+            /> : 
             <FormGeneralCinemaInfo 
-                callBackFromParent={this.ChangeCinemaInfo}
+                callBackFromParent={this.receiveCinemaGeneralInfo}
                 callBackCancelGeneralCinemaInfoInput={this.handleCancelGeneralCinemaInfoInput}
                 displayedComponents={this.state.chosenParamsToEdit}
-            />
+            />;
+        return (
+            <div>
+                {content}
+            </div>
         )
     }
 
@@ -214,12 +279,19 @@ export default class EditCinemaInfo extends Component{
                         </MenuItem>
                 )}
                 </DropdownButton>
-                <Button
-                    bsStyle="Default"
-                    onClick={this.handleSubmitCinemaChoise}
-                >
-                    Submit
-                </Button>
+                <div>
+                    <Button
+                        bsStyle="primary"
+                        onClick={this.handleSubmitCinemaChoise}
+                    >
+                        Submit
+                    </Button>
+                    <Button
+                        onClick={this.handleCanceltCinemaChoise}
+                    >
+                        Cancel
+                    </Button>
+                </div>
             </div>
         )
     }

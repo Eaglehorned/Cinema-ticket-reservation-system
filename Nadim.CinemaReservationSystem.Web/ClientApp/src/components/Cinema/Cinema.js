@@ -110,6 +110,7 @@ export default class Cinema extends Component{
             return (         
                 <EditCinemaInfo
                     callBackEditCinemaInfo={this.editCinemaInfo}
+                    callBackCancelCinemaInfoInput={this.cancelCinemaCreation}
                 />
             )
         }
@@ -148,7 +149,9 @@ export default class Cinema extends Component{
                         ''
                     }
                 </h2>
-                {content}
+                <div className="well">
+                    {content}
+                </div>
             </div>
         )
     }

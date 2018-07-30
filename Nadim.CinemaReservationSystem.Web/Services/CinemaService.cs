@@ -161,17 +161,62 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        private void ChangeCinemaRooms(string name, List<CinemaRoomCreationInfo> cinemaRooms) {
+        private Result ChangeCinemaRooms(string name, List<CinemaRoomCreationInfo> cinemaRooms)
+        {
+            //dont know how to make
+            foreach (CinemaRoom room in dbContext.Cinemas.First(c => c.Name == name).CinemaRooms)
+            {
+                dbContext.CinemaRooms.Remove(room);
+            }
+
+            dbContext.SaveChanges();
+
+            var changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.Name == name);
+
+            List<CinemaRoom> tempCinemaRooms = new List<CinemaRoom>();
+
+            foreach (CinemaRoomCreationInfo room in cinemaRooms)
+            {
+                tempCinemaRooms.Add(new CinemaRoom
+                {
+                    Name = room.Name,
+                    Seats = new List<Seat>(),
+                });
+                foreach (SeatCreationInfo seat in room.Seats)
+                {
+                    tempCinemaRooms.Last().Seats.Add(new Seat
+                    {
+                        Row = seat.Row,
+                        Column = seat.Column,
+                        Type = seat.Type,
+                    });
+                }
+            }
+
+            changedCinema.CinemaRooms = tempCinemaRooms;
+
+            foreach (CinemaRoom room in changedCinema.CinemaRooms)
+            {
+                dbContext.CinemaRooms.Add(room);
+            }
+
+            dbContext.SaveChanges();
+
+            return new Result
+            {
+                ResultOk = true,
+            };
+
         }
 
         public Result EditCinema(CinemaEditingInfo cinemaInfo)
         {
-            if (cinemaInfo.NewName != "")
+            if (!String.IsNullOrEmpty(cinemaInfo.NewName))
             {
                 return ChangeCinemaName(cinemaInfo.Name, cinemaInfo.NewName);
             }
 
-            if (cinemaInfo.City != "")
+            if (!String.IsNullOrEmpty(cinemaInfo.City))
             {
                 return ChangeCinemaCity(cinemaInfo.Name, cinemaInfo.City);
             }
@@ -188,7 +233,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             if (cinemaInfo.CinemaRooms != null)
             {
-                ChangeCinemaRooms(cinemaInfo.Name, cinemaInfo.CinemaRooms);
+                return ChangeCinemaRooms(cinemaInfo.Name, cinemaInfo.CinemaRooms);
             }
 
             return new DataValidationResult

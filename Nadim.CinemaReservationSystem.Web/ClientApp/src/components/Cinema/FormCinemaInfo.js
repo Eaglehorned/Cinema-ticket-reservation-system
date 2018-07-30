@@ -68,7 +68,7 @@ export default class FormCinemaInfo extends Component {
             /> ;
         return(
             <div>
-                <div className="well">
+                <div>
                 <h1>Create cinema</h1>
                     {content}
                 </div>
