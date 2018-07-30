@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { ButtonToolbar, DropdownButton, MenuItem, Button} from 'react-bootstrap';
+import { Button} from 'react-bootstrap';
 import EditCinemaInfo from './EditCinemaInfo';
 import FormCinemaInfo from './FormCinemaInfo';
 
@@ -19,6 +19,7 @@ export default class Cinema extends Component{
         this.editCinemaInfo = this.editCinemaInfo.bind(this);
         this.renderContent = this.renderContent.bind(this);
         this.handleChooseCreateCinemaAction = this.handleChooseCreateCinemaAction.bind(this);
+        this.handleChooseEditCinemaAction = this.handleChooseEditCinemaAction.bind(this);
         
     }
 
@@ -36,6 +37,7 @@ export default class Cinema extends Component{
     }
 
     createCinema(receivedCinemaInfo){
+        console.log(receivedCinemaInfo);
         fetch('api/Cinema/AddCinema', {
             method: 'POST',
             headers:{
@@ -43,9 +45,7 @@ export default class Cinema extends Component{
                 'Content-Type': 'application/json',
                 'Authorization': 'bearer ' + this.props.token,
             },
-            body: JSON.stringify({
-                ...receivedCinemaInfo
-            })
+            body: JSON.stringify(receivedCinemaInfo)
         }).then(response => response.json())
             .then(parsedJson => {
                 if (parsedJson.resultOk){
@@ -61,16 +61,15 @@ export default class Cinema extends Component{
     }
 
     editCinemaInfo(receivedCinemaInfo){
-        fetch('api/Cinema/AddCinema', {
+        console.log(receivedCinemaInfo);
+        fetch('api/Cinema/EditCinema', {
             method: 'POST',
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': 'bearer ' + this.props.token,
             },
-            body: JSON.stringify({
-                ...receivedCinemaInfo
-            })
+            body: JSON.stringify(receivedCinemaInfo)
         }).then(response => response.json())
             .then(parsedJson => {
                 if (parsedJson.resultOk){
@@ -80,6 +79,9 @@ export default class Cinema extends Component{
                     this.informWithMessage(parsedJson.details);
                 }
             })
+            this.setState({
+                chosenAction: '',
+            })
     }
 
     handleChooseCreateCinemaAction(){
@@ -88,12 +90,26 @@ export default class Cinema extends Component{
         })
     }
 
+    handleChooseEditCinemaAction(){
+        this.setState({
+            chosenAction: 'editCinema',
+        })
+    }
+
     renderContent(){
         if(this.state.chosenAction === 'createCinema'){
             return (         
                 <FormCinemaInfo
                     callBackReceiveCinemaInfo={this.createCinema}
-                    callBackCancelCinemaCreation={this.cancelCinemaCreation}
+                    callBackCancelCinemaInfoInput={this.cancelCinemaCreation}
+                />
+            )
+        }
+
+        if(this.state.chosenAction === 'editCinema'){
+            return (         
+                <EditCinemaInfo
+                    callBackEditCinemaInfo={this.editCinemaInfo}
                 />
             )
         }
@@ -105,6 +121,12 @@ export default class Cinema extends Component{
                     onClick={this.handleChooseCreateCinemaAction}
                 >
                     Create cinema
+                </Button>
+                <Button
+                    bsStyle="primary"
+                    onClick={this.handleChooseEditCinemaAction}
+                >
+                    Edit cinema info
                 </Button>
             </div>
         )
@@ -127,9 +149,6 @@ export default class Cinema extends Component{
                     }
                 </h2>
                 {content}
-                {/* <EditCinemaInfo
-                    callBackEditCinemaInfo={this.EditCinemaInfo}
-                /> */}
             </div>
         )
     }

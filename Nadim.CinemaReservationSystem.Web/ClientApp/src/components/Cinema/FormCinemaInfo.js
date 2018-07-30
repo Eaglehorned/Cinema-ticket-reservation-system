@@ -51,7 +51,7 @@ export default class FormCinemaInfo extends Component {
     }
 
     handleCancelGeneralCinemaInfoInput(){
-        this.props.callBackCancelCinemaCreation();
+        this.props.callBackCancelCinemaInfoInput();
     }
 
     render(){

@@ -14,6 +14,15 @@ export default class FormGeneralCinemaInfo extends Component{
             cinemaRoomColumns: '',
             defaultPrice: '',
             vipPrice: '',
+            displayedComponents: this.props.displayedComponents ? 
+                                    this.props.displayedComponents : 
+                                    {
+                                        city: true,
+                                        name: true,
+                                        cinemaRoomsCount: true,
+                                        defaultSeatPrice: true,
+                                        vipSeatPrice: true,
+                                    }
         }
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -22,6 +31,7 @@ export default class FormGeneralCinemaInfo extends Component{
         this.handleDefaultPriceChange = this.handleDefaultPriceChange.bind(this);
         this.handleVipPriceChange = this.handleVipPriceChange.bind(this);
         this.handleCancelClick = this.handleCancelClick.bind(this);
+        this.allowSubmitClick = this.allowSubmitClick.bind(this);
     }
 
     validateIntNumber(number){
@@ -78,72 +88,108 @@ export default class FormGeneralCinemaInfo extends Component{
         this.props.callBackCancelGeneralCinemaInfoInput();
     }
 
+    allowSubmitClick(){
+        if (this.state.displayedComponents.defaultSeatPrice && !this.validateDoubleNumber(this.state.defaultPrice)){
+            return false;
+        }
+        if (this.state.displayedComponents.vipSeatPrice && !this.validateDoubleNumber(this.state.vipPrice)){
+            return false;
+        }
+        if (this.state.displayedComponents.city && !this.state.city){
+            return false;
+        }
+        if (this.state.displayedComponents.cinemaRoomsCount && !this.validateIntNumber(this.state.cinemaRoomsCount)){
+            return false;
+        }
+        if (this.state.displayedComponents.name && !this.state.name){
+            return false;
+        }
+        return true;
+    }
+
     render(){
         return(
             <div>
                 <h3>
                     Input general cinema information
                 </h3>
-                <h4>
-                    <strong>City : </strong>
-                </h4> 
-                <input 
-                    type="text" 
-                    className="form-control form-control-sm" 
-                    value={this.state.city} 
-                    onChange={this.handleCityChange}
-                    placeholder="City"
-                />
-                <h4>
-                    <strong>Cinema name : </strong>
-                </h4> 
-                <input 
-                    type="text" 
-                    className="form-control form-control-sm" 
-                    value={this.state.name} 
-                    onChange={this.handleNameChange}
-                    placeholder="Name"
-                />
-                <h4>
-                    <strong>Number of cinema rooms : </strong>
-                </h4> 
-                <input 
-                    type="text" 
-                    className="form-control form-control-sm" 
-                    value={this.state.cinemaRoomsCount} 
-                    onChange={this.handleCinemaRoomsChange}
-                    placeholder="Rooms"
-                />
-                <h4>
-                    <strong>Price for default seat USD : </strong>
-                </h4> 
-                <input
-                    type="text" 
-                    className="form-control form-control-sm" 
-                    value={this.state.defaultPrice} 
-                    onChange={this.handleDefaultPriceChange}
-                    placeholder="Price"
-                />
-                <h4>
-                    <strong>Price for VIP seat USD : </strong>
-                </h4> 
-                <input
-                    type="text" 
-                    className="form-control form-control-sm" 
-                    value={this.state.vipPrice} 
-                    onChange={this.handleVipPriceChange}
-                    placeholder="Price"
-                />
+                <br/>
+                <div
+                    className={this.state.displayedComponents.city ? '' : 'hidden'}
+                >
+                    <h4>
+                        <strong>City : </strong>
+                    </h4> 
+                    <input 
+                        type="text" 
+                        className="form-control form-control-sm" 
+                        value={this.state.city} 
+                        onChange={this.handleCityChange}
+                        placeholder="City"
+                    />
+                </div>
+                <div
+                    className={this.state.displayedComponents.name ? '' : 'hidden'}
+                >
+                    <h4>
+                        <strong>Cinema name : </strong>
+                    </h4> 
+                    <input 
+                        type="text" 
+                        className="form-control form-control-sm" 
+                        value={this.state.name} 
+                        onChange={this.handleNameChange}
+                        placeholder="Name"
+                    />
+                </div>
+                <div
+                    className={this.state.displayedComponents.cinemaRoomsCount ? '' : 'hidden'}
+                >
+                    <h4>
+                        <strong>Number of cinema rooms : </strong>
+                    </h4> 
+                    <input 
+                        type="text" 
+                        className="form-control form-control-sm" 
+                        value={this.state.cinemaRoomsCount} 
+                        onChange={this.handleCinemaRoomsChange}
+                        placeholder="Rooms"
+                    />
+                </div>
+                <div
+                    className={this.state.displayedComponents.defaultSeatPrice ? '' : 'hidden'}
+                >
+                    <h4>
+                        <strong>Price for default seat USD : </strong>
+                    </h4> 
+                    <input
+                        type="text" 
+                        className="form-control form-control-sm" 
+                        value={this.state.defaultPrice} 
+                        onChange={this.handleDefaultPriceChange}
+                        placeholder="Price"
+                    />
+                </div>
+                <div
+                    className={this.state.displayedComponents.vipSeatPrice ? '' : 'hidden'}
+                >
+                    <h4>
+                        <strong>Price for VIP seat USD : </strong>
+                    </h4> 
+                    <input
+                        type="text" 
+                        className="form-control form-control-sm" 
+                        value={this.state.vipPrice} 
+                        onChange={this.handleVipPriceChange}
+                        placeholder="Price"
+                    />
+                </div>
                 <Button 
                     bsStyle="primary"
                     onClick={this.handleSubmitCinemaInfoClick} 
                     disabled={
                         !(
-                            this.validateDoubleNumber(this.state.defaultPrice) &&
-                            this.validateDoubleNumber(this.state.vipPrice) &&
-                            this.validateIntNumber(this.state.cinemaRoomsCount) && 
-                            this.state.city && 
-                            this.state.name
+                            this.allowSubmitClick()
                         )
                     }
                 >

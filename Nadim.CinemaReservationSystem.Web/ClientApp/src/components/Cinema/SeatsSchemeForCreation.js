@@ -35,6 +35,7 @@ export default class SeatsSchemeForCreation extends Component{
                 <h3>
                     Edit seat types
                 </h3>
+                <br/>
                 <div className="scheme-container">
                     {this.props.seatsArray.map((item) =>
                         <div key={item[0].row}>

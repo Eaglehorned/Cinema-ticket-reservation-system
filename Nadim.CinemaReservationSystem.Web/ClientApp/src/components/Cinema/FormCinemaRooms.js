@@ -54,7 +54,7 @@ export default class FormCinemaRooms extends Component{
     }
 
     handleSubmitSeatTypeChange(newSeatType){
-        if (newSeatType != this.state.seatInfoToTypeChange.type ){
+        if (newSeatType !== this.state.seatInfoToTypeChange.type ){
             let tempSeatsArray = this.state.cinemaRoomsArray[this.state.currentCinemaRoomId].seatsArray;
             tempSeatsArray[this.state.seatInfoToTypeChange.row][this.state.seatInfoToTypeChange.column].type = newSeatType;
             let tempCinemaRoomsArray = this.state.cinemaRoomsArray;

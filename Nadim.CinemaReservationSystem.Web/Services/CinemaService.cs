@@ -46,14 +46,17 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 CinemaRooms = new List<CinemaRoom>()
             };
 
-            foreach (CinemaRoomCreationInfo room in cinemaInfo.CinemaRooms) {
+            foreach (CinemaRoomCreationInfo room in cinemaInfo.CinemaRooms)
+            {
                 newCinema.CinemaRooms.Add(new CinemaRoom
                 {
                     Name = room.Name,
                     Seats = new List<Seat>(),
                 });
-                foreach (SeatCreationInfo seat in room.Seats) {
-                    newCinema.CinemaRooms.Last().Seats.Add(new Seat {
+                foreach (SeatCreationInfo seat in room.Seats)
+                {
+                    newCinema.CinemaRooms.Last().Seats.Add(new Seat
+                    {
                         Row = seat.Row,
                         Column = seat.Column,
                         Type = seat.Type,
@@ -62,6 +65,137 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             }
 
             return newCinema;
+        }
+
+        private Result ChangeCinemaName(string name, string newName)
+        {
+            if (name == newName)
+            {
+                return new DataValidationResult
+                {
+                    ResultOk = false,
+                    Details = "Name is the same",
+                };
+            }
+
+            Cinema changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.Name == name);
+
+            changedCinema.Name = newName;
+            dbContext.Entry(changedCinema).Property("Name").IsModified = true;
+
+            dbContext.SaveChanges();
+
+            return new Result
+            {
+                ResultOk = true,
+            };
+        }
+
+        private Result ChangeCinemaCity(string name, string city)
+        {
+            var changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.Name == name);
+
+            if (changedCinema.City == city) {
+                return new DataValidationResult
+                {
+                    ResultOk = false,
+                    Details = "City is the same",
+                };
+            }
+
+            changedCinema.City = city;
+            dbContext.Entry(changedCinema).Property("City").IsModified = true;
+
+            dbContext.SaveChanges();
+
+            return new Result
+            {
+                ResultOk = true,
+            };
+        }
+
+        private Result ChangeCinemaDefaultSeatPrice(string name, decimal price)
+        {
+            var changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.Name == name);
+
+            if (changedCinema.DefaultSeatPrice == price && price < 0)
+            {
+                return new DataValidationResult
+                {
+                    ResultOk = false,
+                    Details = "Name is the same",
+                };
+            }
+
+            changedCinema.DefaultSeatPrice = price;
+            dbContext.Entry(changedCinema).Property("DefaultSeatPrice").IsModified = true;
+
+            dbContext.SaveChanges();
+
+            return new Result
+            {
+                ResultOk = true,
+            };
+        }
+
+        private Result ChangeCinemaVipSeatPrice(string name, decimal price) {
+            var changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.Name == name);
+
+            if (changedCinema.VipSeatPrice == price && price < 0)
+            {
+                return new DataValidationResult
+                {
+                    ResultOk = false,
+                    Details = "Name is the same",
+                };
+            }
+
+            changedCinema.VipSeatPrice = price;
+            dbContext.Entry(changedCinema).Property("VipSeatPrice").IsModified = true;
+
+            dbContext.SaveChanges();
+
+            return new Result
+            {
+                ResultOk = true,
+            };
+        }
+
+        private void ChangeCinemaRooms(string name, List<CinemaRoomCreationInfo> cinemaRooms) {
+        }
+
+        public Result EditCinema(CinemaEditingInfo cinemaInfo)
+        {
+            if (cinemaInfo.NewName != "")
+            {
+                return ChangeCinemaName(cinemaInfo.Name, cinemaInfo.NewName);
+            }
+
+            if (cinemaInfo.City != "")
+            {
+                return ChangeCinemaCity(cinemaInfo.Name, cinemaInfo.City);
+            }
+
+            if (cinemaInfo.DefaultSeatPrice != 0)
+            {
+                return ChangeCinemaDefaultSeatPrice(cinemaInfo.Name, cinemaInfo.DefaultSeatPrice);
+            }
+
+            if (cinemaInfo.VipSeatPrice != 0)
+            {
+                return ChangeCinemaVipSeatPrice(cinemaInfo.Name, cinemaInfo.VipSeatPrice);
+            }
+
+            if (cinemaInfo.CinemaRooms != null)
+            {
+                ChangeCinemaRooms(cinemaInfo.Name, cinemaInfo.CinemaRooms);
+            }
+
+            return new DataValidationResult
+            {
+                ResultOk = false,
+                Details = "Nothing changed",
+            };
         }
 
         public Result CreateCinema(CinemaCreationInfo cinemaInfo)
@@ -74,7 +208,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     Details = "Invalid data."
                 };
             }
-            
+
             if (CinemaExists(cinemaInfo.Name))
             {
                 return new DataValidationResult
@@ -93,12 +227,15 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public Result GetCinemaList() {
+        public Result GetCinemaList()
+        {
 
             var cinemaList = dbContext.Cinemas.Select(c => c.Name);
 
-            if (cinemaList == null) {
-                return new DataValidationResult {
+            if (cinemaList == null)
+            {
+                return new DataValidationResult
+                {
                     ResultOk = false,
                     Details = "Cinema list is empty",
                 };

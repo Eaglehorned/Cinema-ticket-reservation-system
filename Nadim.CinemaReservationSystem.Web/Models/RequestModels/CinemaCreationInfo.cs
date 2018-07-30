@@ -10,7 +10,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public string City { get; set; }
         public string Name { get; set; }
         public List<CinemaRoomCreationInfo> CinemaRooms { get; set; }
-        public double VipSeatPrice { get; set; }
-        public double DefaultSeatPrice { get; set; }
+        public decimal VipSeatPrice { get; set; }
+        public decimal DefaultSeatPrice { get; set; }
     }
 }

@@ -32,7 +32,19 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return BadRequest(result);
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
+        [HttpPost("[action]")]
+        public IActionResult EditCinema([FromBody] CinemaEditingInfo cinemaInfo)
+        {
+            Result result = CinemaService.EditCinema(cinemaInfo);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
         [HttpGet("[action]")]
         public IActionResult GetCinemaList()
         {

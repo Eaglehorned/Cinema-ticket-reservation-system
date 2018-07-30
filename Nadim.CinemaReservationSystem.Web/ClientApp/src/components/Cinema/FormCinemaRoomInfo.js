@@ -59,6 +59,7 @@ export default class FormCinemaRoomInfo extends Component{
                 <h3>
                     Input cinema room information
                 </h3>
+                <br/>
                 <h4>
                     <strong>Cinema room name : </strong>
                 </h4> 

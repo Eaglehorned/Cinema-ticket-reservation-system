@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import { ButtonToolbar, DropdownButton, MenuItem, Button, Nav} from 'react-bootstrap';
-import EditCinemaGeneralInfo from './EditCinemaGeneralInfo';
+import { DropdownButton, MenuItem, Button, Nav} from 'react-bootstrap';
+import FormGeneralCinemaInfo from './FormGeneralCinemaInfo';
 import '../../styles/EditCinemaInfo.css';
 
 export default class EditCinemaInfo extends Component{
@@ -13,17 +13,47 @@ export default class EditCinemaInfo extends Component{
             error: '',
             isCinemaChosen: false,
             choosenCinema: '',
-            editComponentChosen:''
+            editComponentChosen:'',
+            params: ['City', 'Name', 'Price'],
+            chosenParamToEditDisplayString: '',
+            chosenParamsToEdit: {},
+            isParamChosen: false,
+            versionsOfChoosedParams:[
+                {
+                    city: true,
+                    name: false,
+                    cinemaRoomsCount: false,
+                    defaultSeatPrice: false,
+                    vipSeatPrice: false,
+                },
+                {
+                    city: false,
+                    name: true,
+                    cinemaRoomsCount: false,
+                    defaultSeatPrice: false,
+                    vipSeatPrice: false,
+                },
+                {
+                    city: false,
+                    name: false,
+                    cinemaRoomsCount: false,
+                    defaultSeatPrice: true,
+                    vipSeatPrice: true,
+                }
+            ]
+            
         }
         this.renderChooseCinemaContent = this.renderChooseCinemaContent.bind(this);
         this.renderCinemaEditContent = this.renderCinemaEditContent.bind(this);
-        this.renderChooseCinemaContent = this.renderChooseCinemaContent.bind(this);
         this.getCinemaList = this.getCinemaList.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
         this.handleSubmitCinemaChoise = this.handleSubmitCinemaChoise.bind(this);
-        this.handleEditGeneralCinemaInfoClick = this.handleEditGeneralCinemaInfoClick.bind(this);
         this.ChangeCinemaInfo = this.ChangeCinemaInfo.bind(this);
-        this.CancelEditingCinemaInfo = this.CancelEditingCinemaInfo.bind(this);
+        this.handleSubmitParamChoise = this.handleSubmitParamChoise.bind(this);
+        this.handleSelectParam = this.handleSelectParam.bind(this);
+        this.renderEditComponentContent = this.renderEditComponentContent.bind(this);
+        this.renderChooseParamToEditContent = this.renderChooseParamToEditContent.bind(this);
+        this.handleCinemaInfoInput = this.handleCinemaInfoInput.bind(this);
 
         this.getCinemaList();
     }
@@ -58,21 +88,29 @@ export default class EditCinemaInfo extends Component{
     }
 
     ChangeCinemaInfo(receivedCinemaInfo){
-        receivedCinemaInfo["name"] = this.state.choosenCinema;
+        let cinemaInfoToSend = receivedCinemaInfo;
+        delete cinemaInfoToSend["cinemaRoomsCount"];
+        let tempNewName = receivedCinemaInfo.name;
+        cinemaInfoToSend.name = this.state.choosenCinema;
+        cinemaInfoToSend.vipSeatPrice = cinemaInfoToSend.vipSeatPrice ? cinemaInfoToSend.vipSeatPrice : 0;
+        cinemaInfoToSend.defaultSeatPrice = cinemaInfoToSend.defaultSeatPrice ? cinemaInfoToSend.defaultSeatPrice : 0;
+        cinemaInfoToSend["newName"] = tempNewName;
+        console.log(cinemaInfoToSend);
         this.props.callBackEditCinemaInfo({
-            receivedCinemaInfo,
+            ...cinemaInfoToSend,
         });
-    }
-
-    CancelEditingCinemaInfo(){
-        this.setState({
-            editComponentChosen:'',
-        })
     }
 
     handleSelect(eventKey){
         this.setState({
             choosenCinema: this.state.cinemaList[eventKey],
+        })
+    }
+
+    handleSelectParam(eventKey){
+        this.setState({
+            chosenParamsToEdit: this.state.versionsOfChoosedParams[eventKey],
+            chosenParamToEditDisplayString: this.state.params[eventKey],
         })
     }
 
@@ -84,76 +122,74 @@ export default class EditCinemaInfo extends Component{
         }
     }
 
-    handleEditGeneralCinemaInfoClick(){
-        this.setState({
-            editComponentChosen: 'editInfo',
-        })
+    handleSubmitParamChoise(){
+        if (this.state.chosenParamsToEdit){
+            this.setState({
+                isParamChosen: true,
+            })
+        }
     }
 
-    renderEditGeneralCinemaInfoContent(){
+    renderChooseParamToEditContent(){
         return(
             <div>
-                <EditCinemaGeneralInfo
-                    callBackChangeInfo={this.ChangeCinemaInfo}
-                    callBackCancelCinemaInfoInput={this.CancelEditingCinemaInfo}
-                />
+                <h3>
+                    Choose what you want to edit
+                </h3>
+                <h3>
+                {
+                    this.state.chosenParamToEditDisplayString ? 
+                    `Parameter : ${this.state.chosenParamToEditDisplayString}` :
+                    ''
+                }
+                </h3>
+                <DropdownButton
+                    bsStyle="default"
+                    title="Parameter"
+                    id="choose-cinema-to-edit"
+                >
+                {
+                    this.state.params.map((el, i)=>
+                        <MenuItem 
+                            eventKey={i}
+                            onSelect={this.handleSelectParam}
+                            key={i}
+                        >
+                            {el}
+                        </MenuItem>
+                )}
+                </DropdownButton>
+                <Button
+                    bsStyle="Default"
+                    onClick={this.handleSubmitParamChoise}
+                >
+                    Submit
+                </Button>
             </div>
+        );
+    }
+
+    handleCinemaInfoInput(receivedCinemaEditInfo){
+        this.ChangeCinemaInfo(receivedCinemaEditInfo);
+    }
+
+    renderEditComponentContent(){
+        return (
+            <FormGeneralCinemaInfo 
+                callBackFromParent={this.ChangeCinemaInfo}
+                callBackCancelGeneralCinemaInfoInput={this.handleCancelGeneralCinemaInfoInput}
+                displayedComponents={this.state.chosenParamsToEdit}
+            />
         )
     }
 
-    renderDeleteCinemaRoomContent(){}
-
-    renderDeleteCinemaContent(){}
-
     renderCinemaEditContent(){
-        let content;
-        if(!this.state.editComponentChosen){
-            content = '';
-        }
-        if(this.state.editComponentChosen === 'editInfo'){
-            content = this.renderEditGeneralCinemaInfoContent();
-        }
-        if(this.state.editComponentChosen === 'deleteCinemaRoom'){
-            content = this.renderDeleteCinemaRoomContent();
-        }
-        if(this.state.editComponentChosen == 'deleteCinemaRoom'){
-            content = this.renderDeleteCinemaContent();
-        }
+        let content = this.state.isParamChosen ? 
+                        this.renderEditComponentContent() :
+                        this.renderChooseParamToEditContent(); 
 
         return(
-            <div className="well">
-                <div>
-                    <Button
-                        bsStyle="default"
-                        onClick={this.handleEditGeneralCinemaInfoClick}
-                    >
-                        Edit info
-                    </Button>
-                </div>
-                <div>
-                    <Button
-                        bsStyle="default"
-                        //onClick={}
-                    >
-                        Add cinema room
-                    </Button>
-                </div>
-                <div>
-                    <Button
-                        bsStyle="default"
-                        //onClick={}
-                    >
-                        Delete cinema room
-                    </Button>
-                </div>
-                <div>
-                    <Button
-                        bsStyle="danger"
-                        //onClick={}
-                    >
-                        Delete cinema
-                    </Button>
-                </div>
+            <div>
                 {content}
             </div>
         )
