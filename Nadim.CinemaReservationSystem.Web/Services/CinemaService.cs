@@ -288,8 +288,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         public Result GetCinemaList()
         {
 
-            var cinemaList = dbContext.Cinemas.Select(c => c.Name);
-
+            //var cinemaList = dbContext.Cinemas.Select(c => new {c.Name, c.City, c.CinemaId}).ToList();
+            var cinemaList = dbContext.Cinemas.Select(c => c.Name).ToList();
             if (cinemaList == null)
             {
                 return new DataValidationResult
@@ -302,7 +302,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new GetCinemaListResult
             {
                 ResultOk = true,
-                CinemaList = cinemaList.ToList(),
+                CinemaList = cinemaList,
             };
         }
     }

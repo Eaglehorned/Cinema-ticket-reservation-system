@@ -17,13 +17,15 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost]
-        public IActionResult AddCinema([FromBody] CinemaCreationInfo cinemaInfo)
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public ActionResult<Result> AddCinema([FromBody] CinemaCreationInfo cinemaInfo)
         {
             Result result = сinemaService.CreateCinema(cinemaInfo);
 
             if (result.ResultOk)
             {
-                return Ok(result);
+                return result;
             }
             return BadRequest(result);
         }
@@ -42,13 +44,14 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCinemaList()
+        public ActionResult<Result> GetCinemaList()
         {
             Result result = сinemaService.GetCinemaList();
 
             if (result.ResultOk)
             {
-                return Ok(result);
+                return result;
+                
             }
             return BadRequest(result);
         }

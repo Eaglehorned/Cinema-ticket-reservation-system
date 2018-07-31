@@ -37,7 +37,7 @@ export default class Cinema extends Component{
     }
 
     createCinema(receivedCinemaInfo){
-        fetch('api/Cinemas', {
+        fetch('api/cinemas', {
             method: 'POST',
             headers:{
                 'Accept': 'application/json',
@@ -46,11 +46,20 @@ export default class Cinema extends Component{
             },
             body: JSON.stringify(receivedCinemaInfo)
         }).then(response => {
+                console.log(response);
                 if (response.ok){
                     return response.json();
                 }
-                else{
-                    throw new Error("Didnt receive the response.");
+                if (response.status === 400){
+                    return response.json().then((err) => {
+                        throw new Error("Bad request. " + err.details);
+                    })
+                }
+                if (response.status === 401){
+                    throw new Error("You need to authorize to do that action. ");
+                }
+                if (response.status === 404){
+                        throw new Error("Cant find resourse. ");
                 }
             })
                 .then(parsedJson => {

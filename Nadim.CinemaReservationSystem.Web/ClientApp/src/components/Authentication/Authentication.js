@@ -61,6 +61,8 @@ export default class Authentication extends Component {
             username: '',
             token: ''
         })
+        localStorage.setItem('username', '');
+        localStorage.setItem('token', '');
         this.props.callBackSetUserInfo({
             username: '',
             token: '',
@@ -88,7 +90,13 @@ export default class Authentication extends Component {
         return(
             <div>
                 <h3>{this.state.username}</h3>
-                <button type="button" className="btn btn-secondary btn-sm" onClick={this.handleLogout}>Log out</button>
+                <button 
+                    type="button" 
+                    className="btn btn-secondary btn-sm" 
+                    onClick={this.handleLogout}
+                >
+                    Log out
+                </button>
             </div>
         );
     }
