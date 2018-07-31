@@ -25,25 +25,29 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
             if (result.ResultOk)
             {
-                return result;
+                return Created("api/cinemas/" + ((ResultCreated)result).Uri, typeof(Cinema));
             }
             return BadRequest(result);
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPut("{name}")]
-        public IActionResult EditCinema([FromBody] CinemaCreationInfo cinemaInfo, string name)
+        [HttpPut("{cinemaId}")]
+        [ProducesResponseType(201, Type = typeof(Cinema))]
+        [ProducesResponseType(400)]
+        public ActionResult<Result> EditCinema([FromBody] CinemaCreationInfo cinemaInfo, int cinemaId)
         {
-            Result result = сinemaService.EditCinema(cinemaInfo, name);
+            Result result = сinemaService.EditCinema(cinemaId, cinemaInfo);
 
             if (result.ResultOk)
             {
-                return Ok(result);
+                return Created("api/cinemas/" + cinemaId.ToString(), typeof(Cinema));
             }
             return BadRequest(result);
         }
 
         [HttpGet]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         public ActionResult<Result> GetCinemaList()
         {
             Result result = сinemaService.GetCinemaList();

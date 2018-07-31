@@ -46,7 +46,7 @@ export default class Cinema extends Component{
             },
             body: JSON.stringify(receivedCinemaInfo)
         }).then(response => {
-                console.log(response);
+            console.log(response);
                 if (response.ok){
                     return response.json();
                 }
@@ -61,13 +61,12 @@ export default class Cinema extends Component{
                 if (response.status === 404){
                         throw new Error("Cant find resourse. ");
                 }
-            })
-                .then(parsedJson => {
-                    if (parsedJson.resultOk){
-                        this.informWithMessage('Cinema created.');
+            }).then(parsedJson => {
+                    if (!parsedJson){
+                        throw new Error("Didnt receive the response.");
                     }
                     else {
-                        this.informWithMessage(parsedJson.details);
+                        this.informWithMessage('Cinema created.');
                     }
                 })
                 .catch(error => this.informWithMessage(error.message));
@@ -77,8 +76,7 @@ export default class Cinema extends Component{
     }
 
     editCinemaInfo(receivedCinemaInfo){
-        console.log(receivedCinemaInfo.cinemaInfoToSend);
-        fetch(`api/cinemas/${receivedCinemaInfo.name}`, {
+        fetch(`api/cinemas/${receivedCinemaInfo.cinemaId}`, {
             method: 'PUT',
             headers:{
                 'Accept': 'application/json',
@@ -90,20 +88,22 @@ export default class Cinema extends Component{
             if (response.ok){
                 return response.json();
             }
-            else{
-                throw new Error("Didnt receive the response.");
+            if (response.status === 400){
+                return response.json().then((err) => {
+                    throw new Error("Bad request. " + err.details);
+                })
             }
-        })
-            .then(parsedJson => {
+            if (response.status === 401){
+                throw new Error("You need to authorize to do that action. ");
+            }
+            if (response.status === 404){
+                    throw new Error("Cant find resourse. ");
+            }
+        }).then(parsedJson => {
                 if(!parsedJson){
                     throw new Error("Didnt receive the response.");
                 }
-                if (parsedJson.resultOk){
                     this.informWithMessage('Cinema information edited.');
-                }
-                else {
-                    this.informWithMessage(parsedJson.details);
-                }
             })
             .catch(error => this.informWithMessage(error.message));
             this.setState({
@@ -138,6 +138,7 @@ export default class Cinema extends Component{
                 <EditCinemaInfo
                     callBackEditCinemaInfo={this.editCinemaInfo}
                     callBackCancelCinemaInfoInput={this.cancelCinemaCreation}
+                    callBackInformWithMessage={this.informWithMessage}
                 />
             )
         }

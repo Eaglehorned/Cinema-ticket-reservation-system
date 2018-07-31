@@ -80,25 +80,30 @@ export default class EditCinemaInfo extends Component{
                 'Content-Type': 'application/json',
                 'Authorization': 'bearer ' + this.props.token,
             }
-        }).then(response => response.json())
-            .then(parsedJson => {
-                if (parsedJson.resultOk){
-                    this.setState({
-                        cinemaList: parsedJson.cinemaList,
-                    });
+        }).then(response => {
+            if (response.ok){
+                return response.json();
+            }
+            if (response.status === 400){
+                return response.json().then((err) => {
+                    throw new Error("Bad request. " + err.details);
+                })
+            }
+            if (response.status === 401){
+                throw new Error("You need to authorize to do that action. ");
+            }
+            if (response.status === 404){
+                    throw new Error("Cant find resourse. ");
+            }
+        }).then(parsedJson => {
+                if (!parsedJson){
+                    throw new Error("Didnt receive the response.");
                 }
-                else {
-                    this.setState({
-                        error: parsedJson.details,
-                    });
-                    let self = this;
-                    setTimeout(()=>{
-                        self.setState({
-                            error: ''
-                        })
-                    }, 5000);
-                }
+                this.setState({
+                    cinemaList: parsedJson.cinemaList,
+                });
             })
+            .catch(error => this.props.callBackInformWithMessage(error.message));
     }
 
     receiveCinemaGeneralInfo(receivedCinemaInfo){
@@ -109,7 +114,7 @@ export default class EditCinemaInfo extends Component{
             cinemaInfoToSend.defaultSeatPrice = cinemaInfoToSend.defaultSeatPrice ? cinemaInfoToSend.defaultSeatPrice : 0;
             this.props.callBackEditCinemaInfo({
                 cinemaInfoToSend,
-                "name": this.state.choosenCinema
+                "cinemaId": this.state.choosenCinema.cinemaId
             });
         }
         else {
@@ -123,7 +128,7 @@ export default class EditCinemaInfo extends Component{
     receiveCinemaRoomsInfo(receivedCinemaInfo){
         this.props.callBackEditCinemaInfo({
             "cinemaRooms": receivedCinemaInfo,
-            "name": this.state.choosenCinema,
+            "cinemaId": this.state.choosenCinema.cinemaId,
         })
     }
 
@@ -276,7 +281,7 @@ export default class EditCinemaInfo extends Component{
                                     onSelect={this.handleSelect}
                                     key={i}
                                 >
-                                    {el}
+                                    {el.name}, {el.city}
                                 </MenuItem>
                             )
                         }
@@ -324,7 +329,7 @@ export default class EditCinemaInfo extends Component{
                 <h3>
                 {
                     this.state.choosenCinema ? 
-                    `Chosen cinema : ${this.state.choosenCinema}` :
+                    `Chosen cinema : ${this.state.choosenCinema.name}, ${this.state.choosenCinema.city}` :
                     ''
                 }
                 </h3>

@@ -12,6 +12,6 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
 
         Result GetCinemaList();
 
-        Result EditCinema(CinemaCreationInfo cinemaInfo, string cinemaName);
+        Result EditCinema(int cinemaId, CinemaCreationInfo cinemaInfo);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Nadim.CinemaReservationSystem.Web.Models;
 
 namespace Nadim.CinemaReservationSystem.Web
 {
@@ -27,6 +28,10 @@ namespace Nadim.CinemaReservationSystem.Web
 
     public class GetCinemaListResult : Result
     {
-        public List<string> CinemaList { get; set; }
+        public List<CinemaListToSend> CinemaList { get; set; }
+    }
+
+    public class ResultCreated: Result {
+        public string Uri { get; set; }
     }
 }
