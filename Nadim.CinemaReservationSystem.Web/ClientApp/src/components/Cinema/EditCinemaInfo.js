@@ -73,7 +73,7 @@ export default class EditCinemaInfo extends Component{
     }
 
     getCinemaList(){
-        fetch('api/Cinema/GetCinemaList', {
+        fetch('api/cinemas', {
             method: 'GET',
             headers:{
                 'Accept': 'application/json',
@@ -105,14 +105,11 @@ export default class EditCinemaInfo extends Component{
         if (isNaN(receivedCinemaInfo.cinemaRoomsCount)){
             let cinemaInfoToSend = receivedCinemaInfo;
             delete cinemaInfoToSend["cinemaRoomsCount"];
-            let tempNewName = receivedCinemaInfo.name;
-            cinemaInfoToSend.name = this.state.choosenCinema;
             cinemaInfoToSend.vipSeatPrice = cinemaInfoToSend.vipSeatPrice ? cinemaInfoToSend.vipSeatPrice : 0;
             cinemaInfoToSend.defaultSeatPrice = cinemaInfoToSend.defaultSeatPrice ? cinemaInfoToSend.defaultSeatPrice : 0;
-            cinemaInfoToSend["newName"] = tempNewName;
-            console.log(cinemaInfoToSend);
             this.props.callBackEditCinemaInfo({
-                ...cinemaInfoToSend,
+                cinemaInfoToSend,
+                "name": this.state.choosenCinema
             });
         }
         else {

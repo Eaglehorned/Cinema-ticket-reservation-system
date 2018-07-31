@@ -222,31 +222,31 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         }
 
-        public Result EditCinema(CinemaEditingInfo cinemaInfo)
+        public Result EditCinema(CinemaCreationInfo cinemaInfo, string cinemaName)
         {
-            if (!String.IsNullOrEmpty(cinemaInfo.NewName))
+            if (!String.IsNullOrEmpty(cinemaInfo.Name))
             {
-                return ChangeCinemaName(cinemaInfo.Name, cinemaInfo.NewName);
+                return ChangeCinemaName(cinemaName, cinemaInfo.Name);
             }
 
             if (!String.IsNullOrEmpty(cinemaInfo.City))
             {
-                return ChangeCinemaCity(cinemaInfo.Name, cinemaInfo.City);
+                return ChangeCinemaCity(cinemaName, cinemaInfo.City);
             }
 
             if (cinemaInfo.DefaultSeatPrice != 0)
             {
-                return ChangeCinemaDefaultSeatPrice(cinemaInfo.Name, cinemaInfo.DefaultSeatPrice);
+                return ChangeCinemaDefaultSeatPrice(cinemaName, cinemaInfo.DefaultSeatPrice);
             }
 
             if (cinemaInfo.VipSeatPrice != 0)
             {
-                return ChangeCinemaVipSeatPrice(cinemaInfo.Name, cinemaInfo.VipSeatPrice);
+                return ChangeCinemaVipSeatPrice(cinemaName, cinemaInfo.VipSeatPrice);
             }
 
             if (cinemaInfo.CinemaRooms != null)
             {
-                return ChangeCinemaRooms(cinemaInfo.Name, cinemaInfo.CinemaRooms);
+                return ChangeCinemaRooms(cinemaName, cinemaInfo.CinemaRooms);
             }
 
             return new DataValidationResult

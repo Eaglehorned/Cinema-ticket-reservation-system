@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nadim.CinemaReservationSystem.Web.Models;
 using Nadim.CinemaReservationSystem.Web.Contracts;
-using Microsoft.AspNetCore.Authorization;
+using Nadim.CinemaReservationSystem.Web.Models;
 
 namespace Nadim.CinemaReservationSystem.Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cinemas")]
     public class CinemaController : Controller
     {
-        private readonly ICinemaService CinemaService;
+        private readonly ICinemaService сinemaService;
 
-        public CinemaController(ICinemaService CinemaService)
+        public CinemaController(ICinemaService сinemaService)
         {
-            this.CinemaService = CinemaService;
+            this.сinemaService = сinemaService;
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPost("[action]")]
+        [HttpPost]
         public IActionResult AddCinema([FromBody] CinemaCreationInfo cinemaInfo)
         {
-            Result result = CinemaService.CreateCinema(cinemaInfo);
+            Result result = сinemaService.CreateCinema(cinemaInfo);
 
             if (result.ResultOk)
             {
@@ -33,10 +29,10 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPost("[action]")]
-        public IActionResult EditCinema([FromBody] CinemaEditingInfo cinemaInfo)
+        [HttpPut("{name}")]
+        public IActionResult EditCinema([FromBody] CinemaCreationInfo cinemaInfo, string name)
         {
-            Result result = CinemaService.EditCinema(cinemaInfo);
+            Result result = сinemaService.EditCinema(cinemaInfo, name);
 
             if (result.ResultOk)
             {
@@ -45,10 +41,10 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
         public IActionResult GetCinemaList()
         {
-            Result result = CinemaService.GetCinemaList();
+            Result result = сinemaService.GetCinemaList();
 
             if (result.ResultOk)
             {

@@ -37,7 +37,7 @@ export default class Cinema extends Component{
     }
 
     createCinema(receivedCinemaInfo){
-        fetch('api/Cinema/AddCinema', {
+        fetch('api/Cinemas', {
             method: 'POST',
             headers:{
                 'Accept': 'application/json',
@@ -68,14 +68,15 @@ export default class Cinema extends Component{
     }
 
     editCinemaInfo(receivedCinemaInfo){
-        fetch('api/Cinema/EditCinema', {
-            method: 'POST',
+        console.log(receivedCinemaInfo.cinemaInfoToSend);
+        fetch(`api/cinemas/${receivedCinemaInfo.name}`, {
+            method: 'PUT',
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': 'bearer ' + this.props.token,
             },
-            body: JSON.stringify(receivedCinemaInfo)
+            body: JSON.stringify(receivedCinemaInfo.cinemaInfoToSend)
         }).then(response => {
             if (response.ok){
                 return response.json();
