@@ -189,13 +189,13 @@ export default class EditCinemaInfo extends Component{
                 <h3>
                     Choose what you want to edit
                 </h3>
-                <h3>
+                <h4>
                 {
                     this.state.chosenParamToEditDisplayString ? 
-                    `Parameter : ${this.state.chosenParamToEditDisplayString}` :
+                    `Chosen parameter : ${this.state.chosenParamToEditDisplayString}` :
                     ''
                 }
-                </h3>
+                </h4>
                 <DropdownButton
                     bsStyle="default"
                     title="Parameter"
@@ -263,35 +263,56 @@ export default class EditCinemaInfo extends Component{
     renderChooseCinemaContent(){
         return(
             <div>
-                <DropdownButton
-                    bsStyle="default"
-                    title="Choose cinema"
-                    id="choose-cinema-to-edit"
-                >
                 {
-                    this.state.cinemaList.map((el, i)=>
-                        <MenuItem 
-                            eventKey={i}
-                            onSelect={this.handleSelect}
-                            key={i}
+                this.state.cinemaList.length !== 0 ?
+                    <div>
+                        <DropdownButton
+                            bsStyle="default"
+                            title="Choose cinema"
+                            id="choose-cinema-to-edit"
                         >
-                            {el}
-                        </MenuItem>
-                )}
-                </DropdownButton>
-                <div>
-                    <Button
-                        bsStyle="primary"
-                        onClick={this.handleSubmitCinemaChoise}
-                    >
-                        Submit
-                    </Button>
-                    <Button
-                        onClick={this.handleCanceltCinemaChoise}
-                    >
-                        Cancel
-                    </Button>
-                </div>
+                        {
+                            
+                            this.state.cinemaList.map((el, i)=>
+                                <MenuItem 
+                                    eventKey={i}
+                                    onSelect={this.handleSelect}
+                                    key={i}
+                                >
+                                    {el}
+                                </MenuItem>
+                            )
+                        }
+                        </DropdownButton>
+                        <div 
+                            className="right-float"
+                        >
+                            <Button
+                                bsStyle="primary"
+                                onClick={this.handleSubmitCinemaChoise}
+                            >
+                                Submit
+                            </Button>
+                            <Button
+                                onClick={this.handleCanceltCinemaChoise}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </div> :
+                    <div>
+                        <h4>
+                            Cinema list is empty
+                        </h4>
+                        <div>
+                            <Button
+                                onClick={this.handleCanceltCinemaChoise}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </div>
+                    }
             </div>
         )
     }

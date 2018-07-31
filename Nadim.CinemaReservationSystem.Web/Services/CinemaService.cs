@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Nadim.CinemaReservationSystem.Web.Contracts;
 using Nadim.CinemaReservationSystem.Web.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Nadim.CinemaReservationSystem.Web.Services
 {
@@ -163,28 +164,42 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         private Result ChangeCinemaRooms(string name, List<CinemaRoomCreationInfo> cinemaRooms)
         {
-            //dont know how to make
-            foreach (CinemaRoom room in dbContext.Cinemas.First(c => c.Name == name).CinemaRooms)
-            {
-                dbContext.CinemaRooms.Remove(room);
-            }
-
-            dbContext.SaveChanges();
-
             var changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.Name == name);
 
-            List<CinemaRoom> tempCinemaRooms = new List<CinemaRoom>();
+            if (changedCinema == null)
+            {
+                return new DataValidationResult
+                {
+                    ResultOk = false,
+                    Details = "Cinema is not available."
+                };
+            }
+
+            var deleteCinemaRooms = dbContext.CinemaRooms.Include(room => room.Seats).Where(room => room.CinemaId == changedCinema.CinemaId);
+
+            if (deleteCinemaRooms.Count() != 0)
+            {
+
+                foreach (var room in deleteCinemaRooms)
+                {
+                    dbContext.Remove(room);
+                }
+                dbContext.SaveChanges();
+            }
+
+            List<CinemaRoom> newCinemaRooms = new List<CinemaRoom>();
 
             foreach (CinemaRoomCreationInfo room in cinemaRooms)
             {
-                tempCinemaRooms.Add(new CinemaRoom
+                newCinemaRooms.Add(new CinemaRoom
                 {
                     Name = room.Name,
                     Seats = new List<Seat>(),
                 });
+
                 foreach (SeatCreationInfo seat in room.Seats)
                 {
-                    tempCinemaRooms.Last().Seats.Add(new Seat
+                    newCinemaRooms.Last().Seats.Add(new Seat
                     {
                         Row = seat.Row,
                         Column = seat.Column,
@@ -193,7 +208,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 }
             }
 
-            changedCinema.CinemaRooms = tempCinemaRooms;
+            changedCinema.CinemaRooms = newCinemaRooms;
 
             foreach (CinemaRoom room in changedCinema.CinemaRooms)
             {
@@ -201,7 +216,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             }
 
             dbContext.SaveChanges();
-
+            
             return new Result
             {
                 ResultOk = true,
