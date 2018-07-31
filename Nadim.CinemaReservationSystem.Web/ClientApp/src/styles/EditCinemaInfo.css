@@ -2,3 +2,12 @@
     padding: 20px;
     width: 100%;
 }
+
+.font-bold{
+    font-weight: bold;
+    font-size: large;
+}
+
+.font-italic{
+    font-style: italic;
+}

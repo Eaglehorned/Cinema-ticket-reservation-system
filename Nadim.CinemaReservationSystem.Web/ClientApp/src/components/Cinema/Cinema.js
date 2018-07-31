@@ -37,7 +37,6 @@ export default class Cinema extends Component{
     }
 
     createCinema(receivedCinemaInfo){
-        console.log(receivedCinemaInfo);
         fetch('api/Cinema/AddCinema', {
             method: 'POST',
             headers:{
@@ -46,22 +45,29 @@ export default class Cinema extends Component{
                 'Authorization': 'bearer ' + this.props.token,
             },
             body: JSON.stringify(receivedCinemaInfo)
-        }).then(response => response.json())
-            .then(parsedJson => {
-                if (parsedJson.resultOk){
-                    this.informWithMessage('Cinema created.');
+        }).then(response => {
+                if (response.ok){
+                    return response.json();
                 }
-                else {
-                    this.informWithMessage(parsedJson.details);
+                else{
+                    throw new Error("Didnt receive the response.");
                 }
-            });
+            })
+                .then(parsedJson => {
+                    if (parsedJson.resultOk){
+                        this.informWithMessage('Cinema created.');
+                    }
+                    else {
+                        this.informWithMessage(parsedJson.details);
+                    }
+                })
+                .catch(error => this.informWithMessage(error.message));
         this.setState({
             chosenAction: '',
-        })
+        });
     }
 
     editCinemaInfo(receivedCinemaInfo){
-        console.log(receivedCinemaInfo);
         fetch('api/Cinema/EditCinema', {
             method: 'POST',
             headers:{
@@ -70,8 +76,18 @@ export default class Cinema extends Component{
                 'Authorization': 'bearer ' + this.props.token,
             },
             body: JSON.stringify(receivedCinemaInfo)
-        }).then(response => response.json())
+        }).then(response => {
+            if (response.ok){
+                return response.json();
+            }
+            else{
+                throw new Error("Didnt receive the response.");
+            }
+        })
             .then(parsedJson => {
+                if(!parsedJson){
+                    throw new Error("Didnt receive the response.");
+                }
                 if (parsedJson.resultOk){
                     this.informWithMessage('Cinema information edited.');
                 }
@@ -79,9 +95,10 @@ export default class Cinema extends Component{
                     this.informWithMessage(parsedJson.details);
                 }
             })
+            .catch(error => this.informWithMessage(error.message));
             this.setState({
                 chosenAction: '',
-            })
+            });
     }
 
     handleChooseCreateCinemaAction(){

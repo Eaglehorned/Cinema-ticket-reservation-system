@@ -185,7 +185,7 @@ export default class EditCinemaInfo extends Component{
 
     renderChooseParamToEditContent(){
         return(
-            <div>
+            <fieldset>
                 <h3>
                     Choose what you want to edit
                 </h3>
@@ -212,7 +212,7 @@ export default class EditCinemaInfo extends Component{
                         </MenuItem>
                 )}
                 </DropdownButton>
-                <div>
+                <fieldset>
                     <Button
                         bsStyle="primary"
                         onClick={this.handleSubmitParamChoise}
@@ -224,8 +224,8 @@ export default class EditCinemaInfo extends Component{
                     >
                         Cancel
                     </Button>
-                </div>
-            </div>
+                </fieldset>
+            </fieldset>
         );
     }
 
@@ -265,7 +265,7 @@ export default class EditCinemaInfo extends Component{
             <div>
                 {
                 this.state.cinemaList.length !== 0 ?
-                    <div>
+                    <fieldset>
                         <DropdownButton
                             bsStyle="default"
                             title="Choose cinema"
@@ -299,7 +299,7 @@ export default class EditCinemaInfo extends Component{
                                 Cancel
                             </Button>
                         </div>
-                    </div> :
+                    </fieldset> :
                     <div>
                         <h4>
                             Cinema list is empty

@@ -109,81 +109,91 @@ export default class FormGeneralCinemaInfo extends Component{
 
     render(){
         return(
-            <div>
+            <fieldset>
                 <h3>
                     Input general cinema information
                 </h3>
-                <br/>
-                <div
+                <fieldset
                     className={this.state.displayedComponents.city ? '' : 'hidden'}
                 >
-                    <h4>
-                        <strong>City : </strong>
-                    </h4> 
+                    <label htmlFor="cityInput" className="font-bold">
+                        City : 
+                    </label> 
                     <input 
                         type="text" 
                         className="form-control form-control-sm" 
+                        id="cityInput"
                         value={this.state.city} 
                         onChange={this.handleCityChange}
                         placeholder="City"
                     />
-                </div>
-                <div
+                </fieldset>
+                <fieldset
                     className={this.state.displayedComponents.name ? '' : 'hidden'}
                 >
-                    <h4>
-                        <strong>Cinema name : </strong>
-                    </h4> 
+                    <label htmlFor="nameInput" className="font-bold">
+                        Cinema name : 
+                    </label> 
                     <input 
                         type="text" 
-                        className="form-control form-control-sm" 
+                        className="form-control form-control-sm"
+                        id="nameInput"
                         value={this.state.name} 
                         onChange={this.handleNameChange}
                         placeholder="Name"
                     />
-                </div>
-                <div
+                </fieldset>
+                <fieldset
                     className={this.state.displayedComponents.cinemaRoomsCount ? '' : 'hidden'}
                 >
-                    <h4>
-                        <strong>Number of cinema rooms : </strong>
-                    </h4> 
+                    <label htmlFor="roomsInput" className="font-bold">
+                        Number of cinema rooms : 
+                    </label> 
                     <input 
                         type="text" 
                         className="form-control form-control-sm" 
+                        id="roomsInput"
                         value={this.state.cinemaRoomsCount} 
                         onChange={this.handleCinemaRoomsChange}
                         placeholder="Rooms"
                     />
-                </div>
-                <div
+                </fieldset>
+                <fieldset
                     className={this.state.displayedComponents.defaultSeatPrice ? '' : 'hidden'}
                 >
-                    <h4>
-                        <strong>Price for default seat USD : </strong>
-                    </h4> 
+                    <label htmlFor="defaultSeatPriceInput" className="font-bold">
+                        Price for default seat USD : 
+                    </label> 
                     <input
                         type="text" 
                         className="form-control form-control-sm" 
+                        id="defaultSeatPriceInput"
                         value={this.state.defaultPrice} 
                         onChange={this.handleDefaultPriceChange}
                         placeholder="Price"
                     />
-                </div>
-                <div
+                </fieldset>
+                <fieldset
                     className={this.state.displayedComponents.vipSeatPrice ? '' : 'hidden'}
                 >
-                    <h4>
-                        <strong>Price for VIP seat USD : </strong>
-                    </h4> 
+                    <label htmlFor="vipSeatPriceInput" className="font-bold">
+                        Price for VIP seat USD : 
+                    </label> 
                     <input
                         type="text" 
                         className="form-control form-control-sm" 
+                        id="vipSeatPriceInput"
                         value={this.state.vipPrice} 
                         onChange={this.handleVipPriceChange}
                         placeholder="Price"
                     />
-                </div>
+                </fieldset>
+                {this.allowSubmitClick() ? 
+                    '' : 
+                    <h4 className="font-italic">
+                        Data invalid or not entered
+                    </h4>
+                }
                 <Button 
                     bsStyle="primary"
                     onClick={this.handleSubmitCinemaInfoClick} 
@@ -200,7 +210,7 @@ export default class FormGeneralCinemaInfo extends Component{
                 >
                     Cancel
                 </Button>
-            </div>
+            </fieldset>
         )
     }
 }

@@ -26,12 +26,10 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         {
             foreach (CinemaRoomCreationInfo room in cinemaInfo.CinemaRooms)
             {
-                {
                     if (!(room.Seats.Count > 0) ||
                         room.Seats.Exists(s => s.Row < 0) ||
                         room.Seats.Exists(s => s.Column < 0))
                         return false;
-                }
             }
             return true;
         }

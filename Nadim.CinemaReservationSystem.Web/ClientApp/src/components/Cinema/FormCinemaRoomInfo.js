@@ -16,6 +16,7 @@ export default class FormCinemaRoomInfo extends Component{
         this.handleRowsChange = this.handleRowsChange.bind(this);
         this.handleColumnsChange = this.handleColumnsChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.allowSubmitClick = this.allowSubmitClick.bind(this);
     }
 
     handleSubmitClick(){
@@ -53,50 +54,66 @@ export default class FormCinemaRoomInfo extends Component{
         });
     }
 
+    allowSubmitClick(){
+        if (!this.state.columns || !this.state.rows || !this.state.name){
+            return false;
+        }
+        if(!this.validateIntNumber(this.state.columns) || !this.validateIntNumber(this.state.rows)) {
+            return false;
+        }
+        return true;
+    }
+
     render(){
         return(
-            <div>
+            <fieldset>
                 <h3>
                     Input cinema room information
                 </h3>
-                <br/>
-                <h4>
-                    <strong>Cinema room name : </strong>
-                </h4> 
+                <label htmlFor="nameInput" className="font-bold">
+                    Cinema room name :
+                </label> 
                 <input
                     type="text" 
                     className="form-control form-control-sm" 
+                    id="nameInput"
                     value={this.state.name} 
                     onChange={this.handleNameChange}
                     placeholder="Name"
                 />
-                <h4>
-                    <strong>Number of rows : </strong>
-                </h4> 
+                <label htmlFor="rowsInput" className="font-bold">
+                    Number of rows : 
+                </label> 
                 <input 
                     type="text" 
                     className="form-control form-control-sm" 
+                    id="rowsInput"
                     value={this.state.rows} 
                     onChange={this.handleRowsChange}
                     placeholder="Rows"
                 />
-                <h4>
-                    <strong>Number of places in row : </strong>
-                </h4> 
+                <label htmlFor="columnsInput" className="font-bold">
+                    Number of places in row : 
+                </label> 
                 <input
                     type="text" 
-                    className="form-control form-control-sm" 
+                    className="form-control form-control-sm"
+                    id="columnsInput"
                     value={this.state.columns} 
                     onChange={this.handleColumnsChange}
                     placeholder="Columns"
                 />
+                {this.allowSubmitClick() ? 
+                    '' : 
+                    <h4 className="font-italic">
+                        Data invalid or not entered
+                    </h4>
+                }
                 <Button 
                     bsStyle="primary"
                     disabled={
                         !(
-                            this.validateIntNumber(this.state.columns) && 
-                            this.validateIntNumber(this.state.rows) &&
-                            this.state.name
+                            this.allowSubmitClick()
                         )}
                     onClick={this.handleSubmitClick}
                 >
@@ -108,7 +125,7 @@ export default class FormCinemaRoomInfo extends Component{
                 >
                     Cancel
                 </Button>
-            </div>
+            </fieldset>
         )
     }
 }

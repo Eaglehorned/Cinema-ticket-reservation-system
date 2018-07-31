@@ -32,7 +32,6 @@ export default class SeatTypeChange extends Component{
         return(
             <div>
                 <h2>Switch seat type</h2>
-                <br/>
                 {this.state.chosenType === this.props.seatInfo.type ? 
                     <p>Current type : {this.state.chosenType}</p> : 
                     <p>Current type : <strong><em>{this.state.chosenType}</em></strong></p>
@@ -59,7 +58,6 @@ export default class SeatTypeChange extends Component{
                         </MenuItem>
                     </DropdownButton>
                 </ButtonToolbar>
-                <br/>
                 <div>
                     <Button 
                         bsStyle="primary" 

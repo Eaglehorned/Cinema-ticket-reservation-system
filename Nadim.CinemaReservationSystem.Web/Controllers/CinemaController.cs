@@ -14,9 +14,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
     {
         private readonly ICinemaService CinemaService;
 
-        public CinemaController(ICinemaService createCinemaService)
+        public CinemaController(ICinemaService CinemaService)
         {
-            this.CinemaService = createCinemaService;
+            this.CinemaService = CinemaService;
         }
 
         [Authorize(Roles = "admin")]
