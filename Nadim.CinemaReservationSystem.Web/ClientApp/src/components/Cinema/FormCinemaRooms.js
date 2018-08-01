@@ -13,7 +13,7 @@ export default class FormCinemaRooms extends Component{
             cinemaRoomsArray: [],
             currentCinemaRoomId: 0,
             modalIsOpen: false,
-            seatInfoToTypeChange: {},
+            seatInfoToTypeChange: {}
         }
         this.createSeatsArray = this.createSeatsArray.bind(this);
         this.handleSeatTypeChange = this.handleSeatTypeChange.bind(this);
@@ -27,9 +27,9 @@ export default class FormCinemaRooms extends Component{
     createSeatsArray(cinemaRoomInfo){
         let seatsArray = [];
         let tempCinemaRoomsArray = this.state.cinemaRoomsArray;
-        for (var i = 0; i < cinemaRoomInfo.rows; i++){
+        for (let i = 0; i < cinemaRoomInfo.rows; i++){
             seatsArray[i] = [];
-            for (var j = 0; j < cinemaRoomInfo.columns; j++) {
+            for (let j = 0; j < cinemaRoomInfo.columns; j++) {
                 seatsArray[i].push({
                     row: i,
                     column: j,
@@ -38,19 +38,19 @@ export default class FormCinemaRooms extends Component{
             }
         }
         tempCinemaRoomsArray[this.state.currentCinemaRoomId] = {
-            "seatsArray" : seatsArray,
-            "name" : cinemaRoomInfo.name
+            'seatsArray' : seatsArray,
+            'name' : cinemaRoomInfo.name
         };
         this.setState({
-            cinemaRoomsArray: tempCinemaRoomsArray,
-        })
+            cinemaRoomsArray: tempCinemaRoomsArray
+        });
     }
 
     handleSeatTypeChange(dataToChangeSeatType){
         this.setState({
             modalIsOpen: true,
-            seatInfoToTypeChange: dataToChangeSeatType,
-        })
+            seatInfoToTypeChange: dataToChangeSeatType
+        });
     }
 
     handleSubmitSeatTypeChange(newSeatType){
@@ -60,7 +60,7 @@ export default class FormCinemaRooms extends Component{
             let tempCinemaRoomsArray = this.state.cinemaRoomsArray;
             tempCinemaRoomsArray[this.state.currentCinemaRoomId].seatsArray = tempSeatsArray;
             this.setState({
-                cinemaRoomsArray: tempCinemaRoomsArray,
+                cinemaRoomsArray: tempCinemaRoomsArray
             });
        }
         this.closeModal();
@@ -72,7 +72,7 @@ export default class FormCinemaRooms extends Component{
         });
         if (this.state.currentCinemaRoomId === this.props.cinemaRoomsCount - 1){
             let tempCinemaRoomsArray = this.state.cinemaRoomsArray;
-            for (var i=0; i < tempCinemaRoomsArray.length; i++){
+            for (let i=0; i < tempCinemaRoomsArray.length; i++){
                 tempCinemaRoomsArray[i].seats = [].concat(...tempCinemaRoomsArray[i].seatsArray);
                 delete tempCinemaRoomsArray[i].seatsArray;
             }
@@ -85,8 +85,8 @@ export default class FormCinemaRooms extends Component{
             let tempCinemaRoomsArray = this.state.cinemaRoomsArray;
             delete tempCinemaRoomsArray[this.state.currentCinemaRoomId];
             this.setState({
-                cinemaRoomsArray: tempCinemaRoomsArray,
-            })
+                cinemaRoomsArray: tempCinemaRoomsArray
+            });
         }
         else{
             if (this.state.currentCinemaRoomId === 0){
@@ -94,32 +94,32 @@ export default class FormCinemaRooms extends Component{
             }
 
             this.setState({
-                currentCinemaRoomId: this.state.currentCinemaRoomId - 1,
-            })
+                currentCinemaRoomId: this.state.currentCinemaRoomId - 1
+            });
         }
     }
 
     closeModal(){
         this.setState({
             modalIsOpen: false
-        })
+        });
     }
 
     openModal(){
         this.setState({
             modalIsOpen: true
-        })
+        });
     }
 
     render(){
-        let content = this.state.cinemaRoomsArray[this.state.currentCinemaRoomId] ?
+        const content = this.state.cinemaRoomsArray[this.state.currentCinemaRoomId] ?
             <SeatsSchemeForCreation 
                 seatsArray={this.state.cinemaRoomsArray[this.state.currentCinemaRoomId].seatsArray}
                 callBackFromParent={this.handleSeatTypeChange}
                 callBackSubmit={this.handleSubmitCinemaRoomInfoInput}
                 callBackCancel={this.handleCancelCinemaRoomInfoInput}
             />  : 
-            <FormCinemaRoomInfo 
+            <FormCinemaRoomInfo
                 callBackReceiveCinemaRoomInfo={this.createSeatsArray}
                 callBackCancel={this.handleCancelCinemaRoomInfoInput}
             />;
@@ -139,6 +139,6 @@ export default class FormCinemaRooms extends Component{
                     />
                 </Modal>
             </div>
-        )
+        );
     }
 }

@@ -17,7 +17,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             this.dbContext = dbContext;
         }
 
-        private bool CinemaExists(CinemaCreationInfo cinema)
+        private bool CinemaExists(CinemaRequestInfo cinema)
         {
             return dbContext.Cinemas.Any(c => c.Name == cinema.Name && c.City == cinema.City);
         }
@@ -26,9 +26,9 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.CinemaRooms.Any(c => c.CinemaId == cinemaId);
         }
 
-        private bool CinemaInputInfoValid(CinemaCreationInfo cinemaInfo)
+        private bool CinemaInputInfoValid(CinemaRequestInfo cinemaInfo)
         {
-            foreach (CinemaRoomCreationInfo room in cinemaInfo.CinemaRooms)
+            foreach (CinemaRoomRequestInfo room in cinemaInfo.CinemaRooms)
             {
                     if (!(room.Seats.Count > 0) ||
                         room.Seats.Exists(s => s.Row < 0) ||
@@ -38,7 +38,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return true;
         }
 
-        private Cinema GenerateCinema(CinemaCreationInfo cinemaInfo)
+        private Cinema GenerateCinema(CinemaRequestInfo cinemaInfo)
         {
             var newCinema = new Cinema
             {
@@ -49,14 +49,14 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 CinemaRooms = new List<CinemaRoom>()
             };
 
-            foreach (CinemaRoomCreationInfo room in cinemaInfo.CinemaRooms)
+            foreach (CinemaRoomRequestInfo room in cinemaInfo.CinemaRooms)
             {
                 newCinema.CinemaRooms.Add(new CinemaRoom
                 {
                     Name = room.Name,
                     Seats = new List<Seat>(),
                 });
-                foreach (SeatCreationInfo seat in room.Seats)
+                foreach (SeatRequestInfo seat in room.Seats)
                 {
                     newCinema.CinemaRooms.Last().Seats.Add(new Seat
                     {
@@ -179,7 +179,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        private Result ChangeCinemaRooms(int cinemaId, List<CinemaRoomCreationInfo> cinemaRooms)
+        private Result ChangeCinemaRooms(int cinemaId, List<CinemaRoomRequestInfo> cinemaRooms)
         {
             Cinema changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.CinemaId == cinemaId);
 
@@ -196,7 +196,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             List<CinemaRoom> newCinemaRooms = new List<CinemaRoom>();
 
-            foreach (CinemaRoomCreationInfo room in cinemaRooms)
+            foreach (CinemaRoomRequestInfo room in cinemaRooms)
             {
                 newCinemaRooms.Add(new CinemaRoom
                 {
@@ -204,7 +204,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     Seats = new List<Seat>(),
                 });
 
-                foreach (SeatCreationInfo seat in room.Seats)
+                foreach (SeatRequestInfo seat in room.Seats)
                 {
                     newCinemaRooms.Last().Seats.Add(new Seat
                     {
@@ -231,7 +231,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         }
 
-        public Result EditCinema(int cinemaId, CinemaCreationInfo cinemaInfo)
+        public Result EditCinema(int cinemaId, CinemaRequestInfo cinemaInfo)
         {
             if (!CinemaExists(cinemaId)) {
                 return new DataValidationResult
@@ -272,7 +272,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public Result CreateCinema(CinemaCreationInfo cinemaInfo)
+        public Result CreateCinema(CinemaRequestInfo cinemaInfo)
         {
             if (!CinemaInputInfoValid(cinemaInfo))
             {
@@ -300,37 +300,16 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new ResultCreated
             {
                 ResultOk = true,
-                Uri = generatedCinema.CinemaId.ToString(),
+                Id = generatedCinema.CinemaId.ToString(),
             };
         }
 
         public Result GetCinemaList()
         {
-            List<CinemaListToSend> cinemaList = new List<CinemaListToSend>();
-
-            foreach (var c in dbContext.Cinemas.Select(c => new { c.Name, c.City, c.CinemaId }))
-            {
-                cinemaList.Add(new CinemaListToSend
-                {
-                    Name = c.Name,
-                    City = c.City,
-                    CinemaId = c.CinemaId,
-                });
-            }
-            
-            if (cinemaList == null)
-            {
-                return new DataValidationResult
-                {
-                    ResultOk = false,
-                    Details = "Cinema list is empty",
-                };
-            }
-
             return new GetCinemaListResult
             {
                 ResultOk = true,
-                CinemaList = cinemaList,
+                CinemaList = dbContext.Cinemas.Select(c => new { c.Name, c.City, c.CinemaId })
             };
         }
     }

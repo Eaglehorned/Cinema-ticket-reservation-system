@@ -10,7 +10,7 @@ export default class Authentication extends Component {
         this.state = {
             modalIsOpen: false,
             username: this.props.username,
-            token: this.props.token,
+            token: this.props.token
         }
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
@@ -102,7 +102,7 @@ export default class Authentication extends Component {
     }
 
     render(){
-        let content = this.state.username ? this.renderLogoutContent() : this.renderAuthenticationContent();
+        const content = this.state.username ? this.renderLogoutContent() : this.renderAuthenticationContent();
         return(
             <div className="authentication-container">
                 {content}

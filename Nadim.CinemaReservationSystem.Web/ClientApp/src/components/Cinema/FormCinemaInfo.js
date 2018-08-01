@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FormGeneralCinemaInfo from './FormGeneralCinemaInfo';
 import FormCinemaRooms from './FormCinemaRooms';
+import FormCinemaRoom from './FormCinema';
 import '../../styles/Cinema.css';
 
 export default class FormCinemaInfo extends Component {
@@ -14,6 +15,7 @@ export default class FormCinemaInfo extends Component {
             modalIsOpen: false,
             seatInfoToTypeChange: {},
             error: '',
+            cinemaRooms: {}
         }
         this.handleCinemaInfoInput = this.handleCinemaInfoInput.bind(this);
         this.handleCancelCinemaDataInput = this.handleCancelCinemaDataInput.bind(this);
@@ -26,28 +28,28 @@ export default class FormCinemaInfo extends Component {
         this.setState({
             cinemaInfoInputted: true,
             cinemaGeneralInfo: cinemaData
-        })
+        });
     }
 
     handleCancelCinemaDataInput(){
         this.setState({
-            cinemaInfoInputted: false,
-        })
+            cinemaInfoInputted: false
+        });
     }
 
     handleReceiveCinemaRoomsInfo(cinemaRooms){
         let cinemaInfoToSend = this.state.cinemaGeneralInfo;
-        cinemaInfoToSend["cinemaRooms"] = cinemaRooms;
-        delete cinemaInfoToSend["cinemaRoomsCount"];
+        cinemaInfoToSend['cinemaRooms'] = cinemaRooms;
+        delete cinemaInfoToSend['cinemaRoomsCount'];
         this.props.callBackReceiveCinemaInfo({
-            ...cinemaInfoToSend,
+            ...cinemaInfoToSend
         });
     }
 
     handleCancelCinemaRoomsInfoInput(){
         this.setState({
-            cinemaInfoInputted: false,
-        })
+            cinemaInfoInputted: false
+        });
     }
 
     handleCancelGeneralCinemaInfoInput(){
@@ -55,7 +57,7 @@ export default class FormCinemaInfo extends Component {
     }
 
     render(){
-        let content = this.state.cinemaInfoInputted ? 
+        const content = this.state.cinemaInfoInputted ? 
             <FormCinemaRooms
                 cinemaRoomsCount={this.state.cinemaGeneralInfo.cinemaRoomsCount}
                 callBackReceiveCinemaRoomsInfo={this.handleReceiveCinemaRoomsInfo}
@@ -70,7 +72,15 @@ export default class FormCinemaInfo extends Component {
             <div>
                 <h1>Create cinema</h1>
                     {content}
+                    <FormCinemaRoom 
+                        cinema={{
+                            'name': 'asd',
+                            'city': 'as',
+                            'defaultSeatPrice': 10,
+                            'vipSeatPrice': 20,
+                        }}
+                    />
             </div>
-        )
+        );
     }
 }

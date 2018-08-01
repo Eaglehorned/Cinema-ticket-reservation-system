@@ -28,10 +28,10 @@ namespace Nadim.CinemaReservationSystem.Web
 
     public class GetCinemaListResult : Result
     {
-        public List<CinemaListToSend> CinemaList { get; set; }
+        public dynamic CinemaList { get; set; }
     }
 
     public class ResultCreated: Result {
-        public string Uri { get; set; }
+        public string Id { get; set; }
     }
 }

@@ -18,7 +18,7 @@ export default class Login extends Component {
     }
 
     validateEmail(email) {
-        let result = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+        const result = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
         return result.test(String(email).toLowerCase());
     }
 
@@ -75,7 +75,6 @@ export default class Login extends Component {
     render() {
         return (
             <fieldset>
-                <h3 className="error-text">{this.state.error}</h3>
                 <input 
                     type="email" 
                     className="form-control form-control-sm" 
@@ -90,6 +89,7 @@ export default class Login extends Component {
                     onChange={this.handlePasswordChange} 
                     placeholder="Password"
                 />
+                <h4 className="error-text">{this.state.error}</h4>
                 <button 
                     type="button" 
                     className="btn btn-primary" 

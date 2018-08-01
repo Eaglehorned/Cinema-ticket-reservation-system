@@ -17,20 +17,20 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost]
-        public ActionResult<Result> AddCinema([FromBody] CinemaCreationInfo cinemaInfo)
+        public ActionResult<Result> AddCinema([FromBody] CinemaRequestInfo cinemaInfo)
         {
             Result result = сinemaService.CreateCinema(cinemaInfo);
 
             if (result.ResultOk)
             {
-                return Created("api/cinemas/" + ((ResultCreated)result).Uri, typeof(Cinema));
+                return Created("api/cinemas/" + ((ResultCreated)result).Id, typeof(Cinema));
             }
             return BadRequest(result);
         }
 
         [Authorize(Roles = "admin")]
         [HttpPut("{cinemaId}")]
-        public ActionResult<Result> EditCinema([FromBody] CinemaCreationInfo cinemaInfo, int cinemaId)
+        public ActionResult<Result> EditCinema([FromBody] CinemaRequestInfo cinemaInfo, int cinemaId)
         {
             Result result = сinemaService.EditCinema(cinemaId, cinemaInfo);
 

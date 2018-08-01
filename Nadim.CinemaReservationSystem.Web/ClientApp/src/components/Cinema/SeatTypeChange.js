@@ -7,7 +7,7 @@ export default class SeatTypeChange extends Component{
     constructor(props){
         super(props);
         this.state={
-            chosenType: this.props.seatInfo.type,
+            chosenType: this.props.seatInfo.type
         }
         this.handleTypeClick = this.handleTypeClick.bind(this);
         this.handleSubmitClick = this.handleSubmitClick.bind(this);
@@ -17,7 +17,7 @@ export default class SeatTypeChange extends Component{
     handleTypeClick(value){
         this.setState({
             chosenType: value,
-        })
+        });
     }
 
     handleSubmitClick(){
@@ -31,7 +31,11 @@ export default class SeatTypeChange extends Component{
     render(){
         return(
             <fieldset>
-                <h2>Switch seat type</h2>
+                <h1 
+                    className="font-bold"
+                >
+                    Switch seat type
+                </h1>
                 {this.state.chosenType === this.props.seatInfo.type ? 
                     <p>Current type : {this.state.chosenType}</p> : 
                     <p>Current type : <span className="font-bold font-italic">{this.state.chosenType}</span></p>
@@ -46,13 +50,13 @@ export default class SeatTypeChange extends Component{
                     >
                         <MenuItem 
                             eventKey="1" 
-                            onClick={this.handleTypeClick.bind(this, "default")}
+                            onClick={this.handleTypeClick.bind(this, 'default')}
                         >
                             Default
                         </MenuItem>
                         <MenuItem 
                             eventKey="2" 
-                            onClick={this.handleTypeClick.bind(this, "vip")}
+                            onClick={this.handleTypeClick.bind(this, 'vip')}
                         >
                             Vip
                         </MenuItem>
@@ -72,7 +76,6 @@ export default class SeatTypeChange extends Component{
                     </Button>
                 </div>
             </fieldset>
-        )
+        );
     }
-
 }

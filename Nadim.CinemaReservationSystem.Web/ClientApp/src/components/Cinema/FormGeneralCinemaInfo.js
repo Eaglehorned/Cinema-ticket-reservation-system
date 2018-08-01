@@ -35,42 +35,42 @@ export default class FormGeneralCinemaInfo extends Component{
     }
 
     validateIntNumber(number){
-        let result = /^\d+$/;
+        const result = /^\d+$/;
         return result.test(String(number));
     }
 
     validateDoubleNumber(number){
-        let result = /^\d+([.,]\d+)?$/;
+        const result = /^\d+([.,]\d+)?$/;
         return result.test(String(number));
     }
 
     handleCityChange(event){
         this.setState({
-            city: event.target.value, 
+            city: event.target.value
         });
     }
 
     handleNameChange(event){
         this.setState({
-            name: event.target.value, 
+            name: event.target.value
         });
     }
 
     handleCinemaRoomsChange(event){
         this.setState({
-            cinemaRoomsCount: event.target.value, 
+            cinemaRoomsCount: event.target.value 
         });
     }
 
     handleDefaultPriceChange(event){
         this.setState({
-            defaultPrice: event.target.value, 
+            defaultPrice: event.target.value
         });
     }
 
     handleVipPriceChange(event){
         this.setState({
-            vipPrice: event.target.value, 
+            vipPrice: event.target.value
         });
     }
 
@@ -80,7 +80,7 @@ export default class FormGeneralCinemaInfo extends Component{
             name: this.state.name,
             cinemaRoomsCount: parseInt(this.state.cinemaRoomsCount),
             defaultSeatPrice: this.state.defaultPrice,
-            vipSeatPrice: this.state.vipPrice,
+            vipSeatPrice: this.state.vipPrice
         });
     }
 
@@ -110,9 +110,9 @@ export default class FormGeneralCinemaInfo extends Component{
     render(){
         return(
             <fieldset>
-                <h3>
+                <h2>
                     Input general cinema information
-                </h3>
+                </h2>
                 <fieldset
                     className={this.state.displayedComponents.city ? '' : 'hidden'}
                 >
@@ -211,6 +211,6 @@ export default class FormGeneralCinemaInfo extends Component{
                     Cancel
                 </Button>
             </fieldset>
-        )
+        );
     }
 }

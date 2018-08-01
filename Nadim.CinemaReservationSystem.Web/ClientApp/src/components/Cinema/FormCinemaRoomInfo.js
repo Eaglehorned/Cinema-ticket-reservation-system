@@ -7,9 +7,9 @@ export default class FormCinemaRoomInfo extends Component{
     constructor(props){
         super(props);
         this.state = {
-            rows: '',
-            columns: '',
-            name: '',
+            rows: this.props.rows ? this.props.rows : '',
+            columns: this.props.rows ? this.props.rows : '',
+            name: this.props.rows ? this.props.rows : ''
         }
         this.handleSubmitClick = this.handleSubmitClick.bind(this);
         this.handleCancelClick = this.handleCancelClick.bind(this);
@@ -23,8 +23,8 @@ export default class FormCinemaRoomInfo extends Component{
         this.props.callBackReceiveCinemaRoomInfo({
             rows : this.state.rows,
             columns: this.state.columns,
-            name: this.state.name,
-        })
+            name: this.state.name
+        });
     }
 
     handleCancelClick(){
@@ -32,25 +32,25 @@ export default class FormCinemaRoomInfo extends Component{
     }
 
     validateIntNumber(number){
-        let result = /^\d+$/;
+        const result = /^\d+$/;
         return result.test(String(number));
     }
 
     handleRowsChange(event){
         this.setState({
-            rows: event.target.value, 
+            rows: event.target.value
         });
     }
     
     handleColumnsChange(event){
         this.setState({
-            columns: event.target.value, 
+            columns: event.target.value
         });
     }
 
     handleNameChange(event){
         this.setState({
-            name: event.target.value, 
+            name: event.target.value
         });
     }
 
@@ -67,9 +67,9 @@ export default class FormCinemaRoomInfo extends Component{
     render(){
         return(
             <fieldset>
-                <h3>
+                <h2>
                     Input cinema room information
-                </h3>
+                </h2>
                 <label htmlFor="nameInput" className="font-bold-large">
                     Cinema room name :
                 </label> 
@@ -126,6 +126,6 @@ export default class FormCinemaRoomInfo extends Component{
                     Cancel
                 </Button>
             </fieldset>
-        )
+        );
     }
 }

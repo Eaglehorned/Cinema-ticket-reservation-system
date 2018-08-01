@@ -11,9 +11,8 @@ export default class EditCinemaInfo extends Component{
         super(props);
         this.state={
             cinemaList: [],
-            error: '',
             isCinemaChosen: false,
-            choosenCinema: '',
+            chosenCinema: '',
             editComponentChosen:'',
             params: ['City', 'Name', 'Price', 'Cinema rooms'],
             chosenParamToEditDisplayString: '',
@@ -50,8 +49,7 @@ export default class EditCinemaInfo extends Component{
                     defaultSeatPrice: false,
                     vipSeatPrice: false,
                 }
-            ]
-            
+            ] 
         }
         this.renderChooseCinemaContent = this.renderChooseCinemaContent.bind(this);
         this.renderCinemaEditContent = this.renderCinemaEditContent.bind(this);
@@ -78,7 +76,7 @@ export default class EditCinemaInfo extends Component{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'bearer ' + this.props.token,
+                'Authorization': `bearer ${this.props.token}`
             }
         }).then(response => {
             if (response.ok){
@@ -86,18 +84,18 @@ export default class EditCinemaInfo extends Component{
             }
             if (response.status === 400){
                 return response.json().then((err) => {
-                    throw new Error("Bad request. " + err.details);
-                })
+                    throw new Error(`Bad request. ${err.details}`);
+                });
             }
             if (response.status === 401){
-                throw new Error("You need to authorize to do that action. ");
+                throw new Error('You need to authorize to do that action.');
             }
             if (response.status === 404){
-                    throw new Error("Cant find resourse. ");
+                    throw new Error('Cant find resourse.');
             }
         }).then(parsedJson => {
                 this.setState({
-                    cinemaList: parsedJson.cinemaList,
+                    cinemaList: parsedJson.cinemaList
                 });
             })
             .catch(error => this.props.callBackInformWithMessage(error.message));
@@ -106,55 +104,55 @@ export default class EditCinemaInfo extends Component{
     receiveCinemaGeneralInfo(receivedCinemaInfo){
         if (isNaN(receivedCinemaInfo.cinemaRoomsCount)){
             let cinemaInfoToSend = receivedCinemaInfo;
-            delete cinemaInfoToSend["cinemaRoomsCount"];
+            delete cinemaInfoToSend['cinemaRoomsCount'];
             cinemaInfoToSend.vipSeatPrice = cinemaInfoToSend.vipSeatPrice ? cinemaInfoToSend.vipSeatPrice : 0;
             cinemaInfoToSend.defaultSeatPrice = cinemaInfoToSend.defaultSeatPrice ? cinemaInfoToSend.defaultSeatPrice : 0;
             this.props.callBackEditCinemaInfo({
                 cinemaInfoToSend,
-                "cinemaId": this.state.choosenCinema.cinemaId
+                'cinemaId': this.state.chosenCinema.cinemaId
             });
         }
         else {
             this.setState({
                 needToFormCinemaRooms: true,
-                cinemaRoomsCount: receivedCinemaInfo.cinemaRoomsCount,
-            })
+                cinemaRoomsCount: receivedCinemaInfo.cinemaRoomsCount
+            });
         }
     }
 
     receiveCinemaRoomsInfo(receivedCinemaInfo){
         this.props.callBackEditCinemaInfo({
-            "cinemaRooms": receivedCinemaInfo,
-            "cinemaId": this.state.choosenCinema.cinemaId,
-        })
+            'cinemaRooms': receivedCinemaInfo,
+            'cinemaId': this.state.chosenCinema.cinemaId
+        });
     }
 
     handleSelect(eventKey){
         this.setState({
-            choosenCinema: this.state.cinemaList[eventKey],
-        })
+            chosenCinema: this.state.cinemaList[eventKey]
+        });
     }
 
     handleSelectParam(eventKey){
         this.setState({
             chosenParamsToEdit: this.state.versionsOfChoosedParams[eventKey],
-            chosenParamToEditDisplayString: this.state.params[eventKey],
-        })
+            chosenParamToEditDisplayString: this.state.params[eventKey]
+        });
     }
 
     handleSubmitCinemaChoise(){
-        if (this.state.choosenCinema){
+        if (this.state.chosenCinema){
             this.setState({
-                isCinemaChosen: true,
-            })
+                isCinemaChosen: true
+            });
         }
     }
 
     handleSubmitParamChoise(){
         if (this.state.chosenParamsToEdit){
             this.setState({
-                isParamChosen: true,
-            })
+                isParamChosen: true
+            });
         }
     }
 
@@ -166,35 +164,35 @@ export default class EditCinemaInfo extends Component{
         this.setState({
             chosenParamsToEdit: {},
             chosenParamToEditDisplayString: '',
-            isCinemaChosen: false,
-        })
+            isCinemaChosen: false
+        });
     }
 
     handleCancelGeneralCinemaInfoInput(){
         this.setState({
-            isParamChosen: false,
-        })
+            isParamChosen: false
+        });
     }
 
     cancelCinemaRoomsInfoInput(){
         this.setState({
-            needToFormCinemaRooms: false,
-        })
+            needToFormCinemaRooms: false
+        });
     }
 
     renderChooseParamToEditContent(){
         return(
             <fieldset>
-                <h3>
+                <h2>
                     Choose what you want to edit
-                </h3>
-                <h4>
+                </h2>
+                <div className="font-x-large">
                 {
                     this.state.chosenParamToEditDisplayString ? 
                     `Chosen parameter : ${this.state.chosenParamToEditDisplayString}` :
                     ''
                 }
-                </h4>
+                </div>
                 <DropdownButton
                     bsStyle="default"
                     title="Parameter"
@@ -229,7 +227,7 @@ export default class EditCinemaInfo extends Component{
     }
 
     renderEditComponentContent(){
-        let content = this.state.needToFormCinemaRooms ? 
+        const content = this.state.needToFormCinemaRooms ? 
             <FormCinemaRooms
                 cinemaRoomsCount={this.state.cinemaRoomsCount}
                 callBackReceiveCinemaRoomsInfo={this.receiveCinemaRoomsInfo}
@@ -248,10 +246,9 @@ export default class EditCinemaInfo extends Component{
     }
 
     renderCinemaEditContent(){
-        let content = this.state.isParamChosen ? 
+        const content = this.state.isParamChosen ? 
                         this.renderEditComponentContent() :
                         this.renderChooseParamToEditContent(); 
-
         return(
             <div>
                 {content}
@@ -265,6 +262,16 @@ export default class EditCinemaInfo extends Component{
                 {
                 this.state.cinemaList.length !== 0 ?
                     <fieldset>
+                        <h2>
+                            Choose cinema
+                        </h2>
+                        <div className="font-x-large">
+                        {
+                            this.state.chosenCinema ? 
+                                `Chosen cinema : ${this.state.chosenCinema.name}, ${this.state.chosenCinema.city}` :
+                                ''
+                        }
+                        </div>
                         <DropdownButton
                             bsStyle="default"
                             title="Choose cinema"
@@ -311,28 +318,25 @@ export default class EditCinemaInfo extends Component{
                     </div>
                     }
             </fieldset>
-        )
+        );
     }
 
     render(){
-        let content = this.state.isCinemaChosen && this.state.cinemaList ? 
+        const content = this.state.isCinemaChosen && this.state.cinemaList ? 
             this.renderCinemaEditContent() : 
             this.renderChooseCinemaContent();
         return(
             <div className="edit-cinema-info-container">
                 <h1>Edit cinema information</h1>
-                <h3>
+                <div className="font-x-large">
                 {
-                    this.state.choosenCinema ? 
-                    `Chosen cinema : ${this.state.choosenCinema.name}, ${this.state.choosenCinema.city}` :
+                    this.state.chosenCinema && this.state.isCinemaChosen ? 
+                    `Chosen cinema : ${this.state.chosenCinema.name}, ${this.state.chosenCinema.city}` :
                     ''
                 }
-                </h3>
-                <h3 className="error-text">
-                    {this.state.error}
-                </h3>
+                </div>
                 {content}
             </div>
-        )
+        );
     }
 }

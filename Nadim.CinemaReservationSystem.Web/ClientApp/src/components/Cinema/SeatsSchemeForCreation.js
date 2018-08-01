@@ -32,9 +32,9 @@ export default class SeatsSchemeForCreation extends Component{
     render(){
         return(
             <div>
-                <h3>
+                <h2>
                     Edit seat types
-                </h3>
+                </h2>
                 <div className="scheme-container">
                     {this.props.seatsArray.map((item) =>
                         <div key={item[0].row}>
@@ -61,6 +61,6 @@ export default class SeatsSchemeForCreation extends Component{
                     </Button>
                 </div>
             </div>
-        )
+        );
     }
 }

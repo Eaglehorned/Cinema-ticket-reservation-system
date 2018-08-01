@@ -13,10 +13,10 @@ export default class SeatBoxForCreation extends Component{
     }
 
     render(){
-        let styleName = "seat-" + this.props.seatInfo.type;
+        const styleName = `seat-${this.props.seatInfo.type}`;
         return(
             <div className={styleName} onClick={this.handleOnSeatClick}>
             </div>
-        )
+        );
     }
 }

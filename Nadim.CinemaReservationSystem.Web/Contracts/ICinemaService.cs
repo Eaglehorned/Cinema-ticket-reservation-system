@@ -8,10 +8,10 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
 {
     public interface ICinemaService
     {
-        Result CreateCinema(CinemaCreationInfo cinemaInfo);
+        Result CreateCinema(CinemaRequestInfo cinemaInfo);
 
         Result GetCinemaList();
 
-        Result EditCinema(int cinemaId, CinemaCreationInfo cinemaInfo);
+        Result EditCinema(int cinemaId, CinemaRequestInfo cinemaInfo);
     }
 }
