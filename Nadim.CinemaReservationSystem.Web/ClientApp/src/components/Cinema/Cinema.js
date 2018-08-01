@@ -62,12 +62,7 @@ export default class Cinema extends Component{
                         throw new Error("Cant find resourse. ");
                 }
             }).then(parsedJson => {
-                    if (!parsedJson){
-                        throw new Error("Didnt receive the response.");
-                    }
-                    else {
-                        this.informWithMessage('Cinema created.');
-                    }
+                    this.informWithMessage('Cinema created.');
                 })
                 .catch(error => this.informWithMessage(error.message));
         this.setState({
@@ -85,6 +80,7 @@ export default class Cinema extends Component{
             },
             body: JSON.stringify(receivedCinemaInfo.cinemaInfoToSend)
         }).then(response => {
+            console.log(response);
             if (response.ok){
                 return response.json();
             }
@@ -100,10 +96,7 @@ export default class Cinema extends Component{
                     throw new Error("Cant find resourse. ");
             }
         }).then(parsedJson => {
-                if(!parsedJson){
-                    throw new Error("Didnt receive the response.");
-                }
-                    this.informWithMessage('Cinema information edited.');
+                this.informWithMessage('Cinema information edited.');
             })
             .catch(error => this.informWithMessage(error.message));
             this.setState({
@@ -144,7 +137,7 @@ export default class Cinema extends Component{
         }
 
         return(
-            <div>
+            <fieldset>
                 <Button
                     bsStyle="primary"
                     onClick={this.handleChooseCreateCinemaAction}
@@ -157,7 +150,7 @@ export default class Cinema extends Component{
                 >
                     Edit cinema info
                 </Button>
-            </div>
+            </fieldset>
         )
     }
 

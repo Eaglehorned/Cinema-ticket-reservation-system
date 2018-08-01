@@ -70,7 +70,7 @@ export default class FormCinemaRoomInfo extends Component{
                 <h3>
                     Input cinema room information
                 </h3>
-                <label htmlFor="nameInput" className="font-bold">
+                <label htmlFor="nameInput" className="font-bold-large">
                     Cinema room name :
                 </label> 
                 <input
@@ -81,7 +81,7 @@ export default class FormCinemaRoomInfo extends Component{
                     onChange={this.handleNameChange}
                     placeholder="Name"
                 />
-                <label htmlFor="rowsInput" className="font-bold">
+                <label htmlFor="rowsInput" className="font-bold-large">
                     Number of rows : 
                 </label> 
                 <input 
@@ -92,7 +92,7 @@ export default class FormCinemaRoomInfo extends Component{
                     onChange={this.handleRowsChange}
                     placeholder="Rows"
                 />
-                <label htmlFor="columnsInput" className="font-bold">
+                <label htmlFor="columnsInput" className="font-bold-large">
                     Number of places in row : 
                 </label> 
                 <input

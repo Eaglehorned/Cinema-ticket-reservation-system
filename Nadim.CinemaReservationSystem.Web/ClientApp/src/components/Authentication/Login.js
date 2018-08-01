@@ -74,7 +74,7 @@ export default class Login extends Component {
 
     render() {
         return (
-            <div>
+            <fieldset>
                 <h3 className="error-text">{this.state.error}</h3>
                 <input 
                     type="email" 
@@ -98,7 +98,7 @@ export default class Login extends Component {
                 >
                     Log in
                 </button>
-            </div>
+            </fieldset>
         )
     }
 }

@@ -17,8 +17,6 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
         public ActionResult<Result> AddCinema([FromBody] CinemaCreationInfo cinemaInfo)
         {
             Result result = сinemaService.CreateCinema(cinemaInfo);
@@ -32,8 +30,6 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPut("{cinemaId}")]
-        [ProducesResponseType(201, Type = typeof(Cinema))]
-        [ProducesResponseType(400)]
         public ActionResult<Result> EditCinema([FromBody] CinemaCreationInfo cinemaInfo, int cinemaId)
         {
             Result result = сinemaService.EditCinema(cinemaId, cinemaInfo);
@@ -46,8 +42,6 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(201)]
-        [ProducesResponseType(400)]
         public ActionResult<Result> GetCinemaList()
         {
             Result result = сinemaService.GetCinemaList();

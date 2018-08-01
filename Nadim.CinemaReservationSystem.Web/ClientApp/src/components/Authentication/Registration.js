@@ -99,7 +99,7 @@ export default class Registration extends Component {
 
     render() {
         return (
-            <div className="authentication-container">
+            <fieldset className="authentication-container">
                 <h3 className="error-text">{this.state.error}</h3>
                 <input 
                     type="email" 
@@ -139,7 +139,7 @@ export default class Registration extends Component {
                 >
                     Register
                 </button>
-            </div>
+            </fieldset>
         ); 
     }
 }

@@ -71,7 +71,7 @@ export default class Authentication extends Component {
 
     renderAuthenticationContent() {
         return(
-            <div>
+            <fieldset>
                 <Login callBackFromParent={this.handleLogin}/>
                 <button type="button" className="btn btn-primary" onClick={this.openModal}>Register</button>
                 <Modal     
@@ -82,7 +82,7 @@ export default class Authentication extends Component {
                 >
                     <Registration callBackFromParent={this.handleRegistration}/>
                 </Modal>
-            </div>
+            </fieldset>
         );
     }
 

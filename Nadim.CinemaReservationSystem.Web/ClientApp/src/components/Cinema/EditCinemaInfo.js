@@ -96,9 +96,6 @@ export default class EditCinemaInfo extends Component{
                     throw new Error("Cant find resourse. ");
             }
         }).then(parsedJson => {
-                if (!parsedJson){
-                    throw new Error("Didnt receive the response.");
-                }
                 this.setState({
                     cinemaList: parsedJson.cinemaList,
                 });
@@ -264,7 +261,7 @@ export default class EditCinemaInfo extends Component{
 
     renderChooseCinemaContent(){
         return(
-            <div>
+            <fieldset>
                 {
                 this.state.cinemaList.length !== 0 ?
                     <fieldset>
@@ -286,9 +283,7 @@ export default class EditCinemaInfo extends Component{
                             )
                         }
                         </DropdownButton>
-                        <div 
-                            className="right-float"
-                        >
+                        <div>
                             <Button
                                 bsStyle="primary"
                                 onClick={this.handleSubmitCinemaChoise}
@@ -315,7 +310,7 @@ export default class EditCinemaInfo extends Component{
                         </div>
                     </div>
                     }
-            </div>
+            </fieldset>
         )
     }
 

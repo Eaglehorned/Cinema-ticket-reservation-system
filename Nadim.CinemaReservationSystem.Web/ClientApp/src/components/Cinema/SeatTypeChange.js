@@ -30,11 +30,11 @@ export default class SeatTypeChange extends Component{
 
     render(){
         return(
-            <div>
+            <fieldset>
                 <h2>Switch seat type</h2>
                 {this.state.chosenType === this.props.seatInfo.type ? 
                     <p>Current type : {this.state.chosenType}</p> : 
-                    <p>Current type : <strong><em>{this.state.chosenType}</em></strong></p>
+                    <p>Current type : <span className="font-bold font-italic">{this.state.chosenType}</span></p>
                 }
                 <p>Seat row : {this.props.seatInfo.row + 1}</p>
                 <p>Seat column : {this.props.seatInfo.column + 1}</p> 
@@ -71,7 +71,7 @@ export default class SeatTypeChange extends Component{
                         Cancel
                     </Button>
                 </div>
-            </div>
+            </fieldset>
         )
     }
 

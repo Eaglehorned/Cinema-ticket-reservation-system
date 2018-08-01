@@ -126,20 +126,18 @@ export default class FormCinemaRooms extends Component{
         return(
             <div>
                 {content}
-                <div>
-                    <Modal     
-                        isOpen={this.state.modalIsOpen}
-                        onRequestClose={this.closeModal}
-                        ariaHideApp={false}
-                        className="add-cinema-Modal"
-                    >
-                        <SeatTypeChange
-                            seatInfo={this.state.seatInfoToTypeChange}
-                            callBackSubmitSeatTypeChange={this.handleSubmitSeatTypeChange}
-                            callBackCancelSeatTypeChange={this.closeModal}
-                        />
-                    </Modal>
-                </div>
+                <Modal     
+                    isOpen={this.state.modalIsOpen}
+                    onRequestClose={this.closeModal}
+                    ariaHideApp={false}
+                    className="add-cinema-Modal"
+                >
+                    <SeatTypeChange
+                        seatInfo={this.state.seatInfoToTypeChange}
+                        callBackSubmitSeatTypeChange={this.handleSubmitSeatTypeChange}
+                        callBackCancelSeatTypeChange={this.closeModal}
+                    />
+                </Modal>
             </div>
         )
     }

@@ -68,10 +68,8 @@ export default class FormCinemaInfo extends Component {
             /> ;
         return(
             <div>
-                <div>
                 <h1>Create cinema</h1>
                     {content}
-                </div>
             </div>
         )
     }

@@ -116,7 +116,7 @@ export default class FormGeneralCinemaInfo extends Component{
                 <fieldset
                     className={this.state.displayedComponents.city ? '' : 'hidden'}
                 >
-                    <label htmlFor="cityInput" className="font-bold">
+                    <label htmlFor="cityInput" className="font-bold-large">
                         City : 
                     </label> 
                     <input 
@@ -131,7 +131,7 @@ export default class FormGeneralCinemaInfo extends Component{
                 <fieldset
                     className={this.state.displayedComponents.name ? '' : 'hidden'}
                 >
-                    <label htmlFor="nameInput" className="font-bold">
+                    <label htmlFor="nameInput" className="font-bold-large">
                         Cinema name : 
                     </label> 
                     <input 
@@ -146,7 +146,7 @@ export default class FormGeneralCinemaInfo extends Component{
                 <fieldset
                     className={this.state.displayedComponents.cinemaRoomsCount ? '' : 'hidden'}
                 >
-                    <label htmlFor="roomsInput" className="font-bold">
+                    <label htmlFor="roomsInput" className="font-bold-large">
                         Number of cinema rooms : 
                     </label> 
                     <input 
@@ -161,7 +161,7 @@ export default class FormGeneralCinemaInfo extends Component{
                 <fieldset
                     className={this.state.displayedComponents.defaultSeatPrice ? '' : 'hidden'}
                 >
-                    <label htmlFor="defaultSeatPriceInput" className="font-bold">
+                    <label htmlFor="defaultSeatPriceInput" className="font-bold-large">
                         Price for default seat USD : 
                     </label> 
                     <input
@@ -176,7 +176,7 @@ export default class FormGeneralCinemaInfo extends Component{
                 <fieldset
                     className={this.state.displayedComponents.vipSeatPrice ? '' : 'hidden'}
                 >
-                    <label htmlFor="vipSeatPriceInput" className="font-bold">
+                    <label htmlFor="vipSeatPriceInput" className="font-bold-large">
                         Price for VIP seat USD : 
                     </label> 
                     <input
