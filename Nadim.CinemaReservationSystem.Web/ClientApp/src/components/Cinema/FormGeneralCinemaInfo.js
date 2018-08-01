@@ -7,13 +7,11 @@ export default class FormGeneralCinemaInfo extends Component{
     constructor(props){
         super(props);
         this.state = {
-            city:'',
-            name: '',
+            city: this.props.cinemaInfo ? this.props.cinemaInfo.city : '',
+            name: this.props.cinemaInfo ? this.props.cinemaInfo.name : '',
             cinemaRoomsCount: '',
-            cinemaRoomRows: '',
-            cinemaRoomColumns: '',
-            defaultPrice: '',
-            vipPrice: '',
+            defaultPrice: this.props.cinemaInfo ? this.props.cinemaInfo.defaultSeatPrice : '',
+            vipPrice: this.props.cinemaInfo ? this.props.cinemaInfo.vipSeatPrice : '',
             displayedComponents: this.props.displayedComponents ? 
                                     this.props.displayedComponents : 
                                     {

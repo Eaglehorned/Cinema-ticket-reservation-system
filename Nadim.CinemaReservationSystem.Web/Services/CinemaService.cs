@@ -169,7 +169,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             }
 
             changedCinema.VipSeatPrice = price;
-            dbContext.Entry(changedCinema).Property("VipSeatPrice").IsModified = true;
+            //dbContext.Entry(changedCinema).Property("VipSeatPrice").IsModified = true;
 
             dbContext.SaveChanges();
 
@@ -182,7 +182,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         private Result ChangeCinemaRooms(int cinemaId, List<CinemaRoomRequestInfo> cinemaRooms)
         {
             Cinema changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.CinemaId == cinemaId);
-
+            
             var deleteCinemaRooms = dbContext.CinemaRooms.Include(room => room.Seats).Where(room => room.CinemaId == changedCinema.CinemaId);
 
             if (deleteCinemaRooms.Count() != 0)
@@ -216,11 +216,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             }
 
             changedCinema.CinemaRooms = newCinemaRooms;
-
-            foreach (CinemaRoom room in changedCinema.CinemaRooms)
-            {
-                dbContext.CinemaRooms.Add(room);
-            }
 
             dbContext.SaveChanges();
             

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Button} from 'react-bootstrap';
 import EditCinemaInfo from './EditCinemaInfo';
 import FormCinemaInfo from './FormCinemaInfo';
+import FormCinema from './FormCinema';
 
 export default class Cinema extends Component{
     displayName = Cinema.displayName;
@@ -170,6 +171,19 @@ export default class Cinema extends Component{
                 </div>
                 <div className="well">
                     {content}
+                    <FormCinema
+                        // cinema={
+                        //     {
+                        //         'info':
+                        //         {
+                        //             'name': 'asd',
+                        //             'city': 'as',
+                        //             'defaultSeatPrice': 10,
+                        //             'vipSeatPrice': 20
+                        //         }
+                        //     }
+                        // }
+                    />
                 </div>
             </div>
         );

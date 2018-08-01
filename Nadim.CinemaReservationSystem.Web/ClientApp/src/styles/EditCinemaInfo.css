@@ -3,6 +3,11 @@
     width: 100%;
 }
 
+.font-bold-x-large, .font-bold-large, .font-bold, 
+.font-large, .font-x-large,.font-italic {
+    margin: 5px; 
+}
+
 .font-bold-x-large, .font-bold-large, .font-bold{
     font-weight: bold;
 }

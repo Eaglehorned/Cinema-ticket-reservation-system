@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import FormGeneralCinemaInfo from './FormGeneralCinemaInfo';
 import FormCinemaRooms from './FormCinemaRooms';
-import FormCinemaRoom from './FormCinema';
 import '../../styles/Cinema.css';
 
 export default class FormCinemaInfo extends Component {
@@ -72,14 +71,6 @@ export default class FormCinemaInfo extends Component {
             <div>
                 <h1>Create cinema</h1>
                     {content}
-                    <FormCinemaRoom 
-                        cinema={{
-                            'name': 'asd',
-                            'city': 'as',
-                            'defaultSeatPrice': 10,
-                            'vipSeatPrice': 20,
-                        }}
-                    />
             </div>
         );
     }
