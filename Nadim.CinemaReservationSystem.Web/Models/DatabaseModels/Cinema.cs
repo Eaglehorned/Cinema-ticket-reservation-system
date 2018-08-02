@@ -15,6 +15,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public decimal VipSeatPrice {get; set;}
         public decimal DefaultSeatPrice { get; set; }
 
-        public List<CinemaRoom> CinemaRooms { get; set; }
+        public virtual List<CinemaRoom> CinemaRooms { get; set; }
     }
 }

@@ -83,7 +83,7 @@ export default class FormGeneralCinemaInfo extends Component{
     }
 
     handleCancelClick(){
-        this.props.callBackCancelGeneralCinemaInfoInput();
+        this.props.callBackCancel();
     }
 
     allowSubmitClick(){

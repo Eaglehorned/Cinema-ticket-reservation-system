@@ -15,6 +15,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public int CinemaId { get; set; }
         public Cinema Cinema { get; set; }
 
-        public List<Seat> Seats { get; set; }
+        public virtual List<Seat> Seats { get; set; }
     }
 }

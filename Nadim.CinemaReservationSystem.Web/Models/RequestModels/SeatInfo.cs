@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Nadim.CinemaReservationSystem.Web.Models
 {
-    public class CinemaListToSend
+    public class SeatInfo
     {
-        public int CinemaId { get; set; }
-        public string Name { get; set; }
-        public string City { get; set; }
+        public int Row { get; set; }
+        public int Column { get; set; }
+        public string Type { get; set; }
     }
 }

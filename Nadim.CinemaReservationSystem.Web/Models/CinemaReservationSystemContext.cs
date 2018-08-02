@@ -9,7 +9,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
     public class CinemaReservationSystemContext : DbContext
     {
         public CinemaReservationSystemContext(DbContextOptions<CinemaReservationSystemContext> options): base(options) { }
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CinemaRoom>()
@@ -22,7 +22,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
                 .WithMany(r => r.Seats)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-
+        
         public DbSet<User> Users { get; set; }
         public DbSet<Cinema> Cinemas { get; set; }
         public DbSet<CinemaRoom> CinemaRooms { get; set; }

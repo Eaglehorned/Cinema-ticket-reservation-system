@@ -122,7 +122,7 @@ export default class EditCinemaInfo extends Component{
 
     receiveCinemaRoomsInfo(receivedCinemaInfo){
         this.props.callBackEditCinemaInfo({
-            'cinemaRooms': receivedCinemaInfo,
+            'cinemaInfoToSend':{ 'cinemaRooms': receivedCinemaInfo},
             'cinemaId': this.state.chosenCinema.cinemaId
         });
     }

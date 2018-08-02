@@ -32,6 +32,7 @@ export default class FormCinemaRoom extends Component{
         this.renderCinemaRoomChangeSeatsSchemeContent = this.renderCinemaRoomChangeSeatsSchemeContent.bind(this);
         this.cancelFormCinemaRoom = this.cancelFormCinemaRoom.bind(this);
         this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
+        this.renderCinemaRoomChangeSeatTypesContent = this.renderCinemaRoomChangeSeatTypesContent.bind(this);
     }
 
     cancelFormCinemaRoom(){
