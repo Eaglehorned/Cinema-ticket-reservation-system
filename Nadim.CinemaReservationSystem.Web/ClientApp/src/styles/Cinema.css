@@ -4,11 +4,12 @@
 }
 
 .add-cinema-container .scheme-container{
+    overflow: auto;
     text-align: center;
     margin: 20px;
 }
 
-.add-cinema-container .seat-default{
+.add-cinema-container .seat-default, .seat-vip{
     width: 30px;
     height: 30px;
     border: solid black;
@@ -17,11 +18,6 @@
 }
 
 .add-cinema-container .seat-vip{
-    width: 30px;
-    height: 30px;
-    border: solid black;
-    margin: 5px;
-    display: inline-block;
     background-color: aquamarine;
 }
 
@@ -62,4 +58,25 @@
 
 .hidden{
     display: none;
+}
+
+.error{
+    border-color: rgb(255, 133, 133);
+}
+
+.overflow{
+    overflow: scroll;
+    padding: 5px; 
+} 
+
+.row{
+    white-space: nowrap;
+    padding: 0;
+    margin: 0;
+}
+
+.concluding-buttons{
+    margin-top: 5px; 
+    padding: 15px 0;
+    border-top: solid 1px #e5e5e5; 
 }

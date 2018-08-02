@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import FormCinemaRoomInfo from './FormCinemaRoomInfo';
-import SeatsSchemeForCreation from './SeatsSchemeForCreation';
+import SeatsScheme from './SeatsScheme';
 import SeatTypeChange from './SeatTypeChange';
 import Modal from 'react-modal';
 
@@ -113,7 +113,7 @@ export default class FormCinemaRooms extends Component{
 
     render(){
         const content = this.state.cinemaRoomsArray[this.state.currentCinemaRoomId] ?
-            <SeatsSchemeForCreation 
+            <SeatsScheme 
                 seatsArray={this.state.cinemaRoomsArray[this.state.currentCinemaRoomId].seatsArray}
                 callBackFromParent={this.handleSeatTypeChange}
                 callBackSubmit={this.handleSubmitCinemaRoomInfoInput}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
-import Authentication from './components/Authentication/Authentication'
+import Header from './components/Header';
+import Authentication from './components/Authentication/Authentication';
 import Cinema from './components/Cinema/Cinema';
 
 export default class App extends Component {
@@ -24,7 +24,11 @@ export default class App extends Component {
 
     render() {
         return (
-            <div>
+            <React.Fragment>
+                {/* <Header
+                    username={this.state.username}
+                    callBackSetUserInfo={this.setUserInfo}
+                /> */}
                 <Authentication 
                     username={this.state.username}
                     callBackSetUserInfo={this.setUserInfo}
@@ -33,7 +37,7 @@ export default class App extends Component {
                     username={this.state.username}
                     token={this.state.token}
                 />
-            </div>
+            </React.Fragment>
         );
     }
 }

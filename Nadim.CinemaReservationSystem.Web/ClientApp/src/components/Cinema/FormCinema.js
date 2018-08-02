@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, DropdownButton, MenuItem } from 'react-bootstrap';
 import FormGeneralCinemaInfo from './FormGeneralCinemaInfo';
+import FormCinemaRoom from './FormCinemaRoom';
 import '../../styles/FormCinema.css';
 
 export default class FormCinema extends Component{
@@ -20,11 +21,26 @@ export default class FormCinema extends Component{
         this.handleMenuItemSelect = this.handleMenuItemSelect.bind(this);
         this.handleChangeCinemaInfoClick = this.handleChangeCinemaInfoClick.bind(this);
         this.renderComponentContent = this.renderComponentContent.bind(this);
+        this.renderFormCinemaRoomContent = this.renderFormCinemaRoomContent.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.receiveCinemaRoom = this.receiveCinemaRoom.bind(this);
+        this.getCinemaRoom = this.getCinemaRoom.bind(this);
     }
+
+    getCinemaRoom(){
+        //TODO fetch to get cinema room whole info
+    }
+
+    receiveCinemaRoom(){
+        //TODO fetch to add/edit cinema room
+    }
+
+    callBackCancel(){}
 
     handleCinemaGeneralInfoInput(cinemaData){
         this.setState({
-            cinemaInfo: cinemaData
+            cinemaInfo: cinemaData,
+            chosenOperation: ''
         });
     }
 
@@ -40,9 +56,15 @@ export default class FormCinema extends Component{
         });
     }
 
+    handleCancel(){
+        this.setState({
+            chosenOperation:''
+        })
+    }
+
     renderCinemaActionButtons(){
         return(
-            <div>
+            <React.Fragment>
                 <fieldset>
                     <legend>
                         Cinema
@@ -81,7 +103,9 @@ export default class FormCinema extends Component{
                         </div>
                     }
                     <div>
-                        <Button>
+                        <Button
+                            onClick={() => this.setState({ chosenOperation: 'createCinemaRoom'})}
+                        >
                             Add cinema room
                         </Button>
                     </div>
@@ -97,24 +121,52 @@ export default class FormCinema extends Component{
                         </Button>
                     </div>
                 </fieldset>
-            </div>
+                <fieldset className="concluding-buttons">
+                    <Button
+                    >
+                        Submit
+                    </Button>
+                    <Button
+                    >
+                        Cancel
+                    </Button>
+                </fieldset>
+            </React.Fragment>
         )
+    }
+
+    renderFormCinemaRoomContent(){
+        let cinemaRoom = this.state.chosenOperation !== 'createCinemaRoom' 
+            ? this.getCinemaRoom() 
+            : undefined;
+        return(
+            <FormCinemaRoom
+                callBackReceiveCinemaRoom={this.receiveCinemaRoom}
+                cinemaRoom={cinemaRoom}
+                callBackCancel={this.handleCancel}
+            />
+        );
     }
 
     renderFormCinemaContent(){
         return(
-            <FormGeneralCinemaInfo 
-                callBackFromParent={this.handleCinemaGeneralInfoInput}
-                callBackCancelGeneralCinemaInfoInput={this.handleCancelGeneralCinemaInfoInput}
-                cinemaInfo={this.state.cinemaInfo}
-            />
+            <React.Fragment>
+                <h1>Cinema</h1>
+                <FormGeneralCinemaInfo 
+                    callBackFromParent={this.handleCinemaGeneralInfoInput}
+                    callBackCancelGeneralCinemaInfoInput={this.handleCancelGeneralCinemaInfoInput}
+                    cinemaInfo={this.state.cinemaInfo}
+                />
+            </React.Fragment>
         );
     }
 
     renderCinemaInfoAndActionsContent(){
         return (
-            <div>
+            <React.Fragment>
+                <h1>Cinema</h1>
                 <div className="form-cinema-room-container cinema-room-information-container">
+                <h2>Cinema information</h2>
                     <div className="font-x-large">
                         <span className="font-bold"> Cinema name : </span>{this.state.cinemaInfo.name}
                     </div>
@@ -131,7 +183,7 @@ export default class FormCinema extends Component{
                 <div className="form-cinema-room-container cinema-room-buttons-container">
                     {this.renderCinemaActionButtons()}
                 </div>
-            </div>
+            </React.Fragment>
         );
     }
 
@@ -139,10 +191,15 @@ export default class FormCinema extends Component{
         if (!this.state.cinemaInfo){
             return this.renderFormCinemaContent();
         }
-        if(this.state.chosenOperation === 'editCinemaInfo'){
-            return this.renderFormCinemaContent();
+        switch(this.state.chosenOperation){
+            case 'editCinemaInfo':
+                return this.renderFormCinemaContent();
+            case 'createCinemaRoom':
+                return this.renderFormCinemaRoomContent();
+            default:
+                return this.renderCinemaInfoAndActionsContent();
         }
-        return this.renderCinemaInfoAndActionsContent();
+
     }
 
     render(){

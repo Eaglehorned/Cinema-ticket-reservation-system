@@ -2,11 +2,14 @@ import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
 import SeatBoxForCreation from './SeatBoxForCreation';
 
-export default class SeatsSchemeForCreation extends Component{
-    displayName = SeatsSchemeForCreation.displayName;
+export default class SeatsScheme extends Component{
+    displayName = SeatsScheme.displayName;
 
     constructor(props){
         super(props);
+        this.state={
+            mode: this.props.mode ? this.props.mode : 'edit'
+        }
         this.handleSeatTypeChange = this.handleSeatTypeChange.bind(this);
         this.generateKey = this.generateKey.bind(this);
         this.handleSubmitClick = this.handleSubmitClick.bind(this);
@@ -31,13 +34,18 @@ export default class SeatsSchemeForCreation extends Component{
 
     render(){
         return(
-            <div>
-                <h2>
-                    Edit seat types
-                </h2>
+            <React.Fragment>
+
+                    {
+                        this.state.mode === 'display' 
+                        ? <h2>Cinema room seats scheme</h2>
+                        : <h3>Edit seat types</h3>
+                    }
                 <div className="scheme-container">
                     {this.props.seatsArray.map((item) =>
-                        <div key={item[0].row}>
+                        <div 
+                            className="row"
+                            key={item[0].row}>
                             {item.map((itemArray) => 
                                 <SeatBoxForCreation 
                                     key={this.generateKey(itemArray.row, itemArray.column)}
@@ -48,19 +56,16 @@ export default class SeatsSchemeForCreation extends Component{
                         </div>
                     )}
                 </div>
-                <div className="button-container">
+                <div 
+                    className={this.state.mode ==='display' ? 'hidden' : 'button-container'}
+                >
                     <Button
                         bsStyle="primary" onClick={this.handleSubmitClick}
                     >
                         Submit
                     </Button>
-                    <Button 
-                        onClick={this.handleCancelClick}
-                    >
-                        Cancel
-                    </Button>
                 </div>
-            </div>
+            </React.Fragment>
         );
     }
 }

@@ -11,7 +11,6 @@ export default class FormCinemaInfo extends Component {
         this.state={
             cinemaInfoInputted: false,
             cinemaGeneralInfo: {},
-            modalIsOpen: false,
             seatInfoToTypeChange: {},
             error: '',
             cinemaRooms: {}
