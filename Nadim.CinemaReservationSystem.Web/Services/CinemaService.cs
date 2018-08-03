@@ -27,18 +27,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.CinemaRooms.Any(c => c.CinemaId == cinemaId);
         }
 
-        private bool CinemaInputInfoValid(CinemaInfo cinemaInfo)
-        {
-            foreach (CinemaRoomInfo room in cinemaInfo.CinemaRooms)
-            {
-                if (!(room.Seats.Count > 0) ||
-                    room.Seats.Exists(s => s.Row < 0) ||
-                    room.Seats.Exists(s => s.Column < 0))
-                    return false;
-            }
-            return true;
-        }
-
         private Cinema GenerateCinema(CinemaInfo cinemaInfo)
         {
             var newCinema = new Cinema
@@ -49,24 +37,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 VipSeatPrice = cinemaInfo.VipSeatPrice,
                 CinemaRooms = new List<CinemaRoom>()
             };
-
-            foreach (CinemaRoomInfo room in cinemaInfo.CinemaRooms)
-            {
-                newCinema.CinemaRooms.Add(new CinemaRoom
-                {
-                    Name = room.Name,
-                    Seats = new List<Seat>(),
-                });
-                foreach (SeatInfo seat in room.Seats)
-                {
-                    newCinema.CinemaRooms.Last().Seats.Add(new Seat
-                    {
-                        Row = seat.Row,
-                        Column = seat.Column,
-                        Type = seat.Type,
-                    });
-                }
-            }
 
             return newCinema;
         }
@@ -171,7 +141,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             }
 
             changedCinema.VipSeatPrice = price;
-            //dbContext.Entry(changedCinema).Property("VipSeatPrice").IsModified = true;
 
             dbContext.SaveChanges();
 
@@ -259,11 +228,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 return ChangeCinemaVipSeatPrice(cinemaId, cinemaInfo.VipSeatPrice);
             }
 
-            if (cinemaInfo.CinemaRooms != null)
-            {
-                return ChangeCinemaRooms(cinemaId, cinemaInfo.CinemaRooms);
-            }
-
             return new Result
             {
                 ResultOk = true,
@@ -272,15 +236,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         public Result CreateCinema(CinemaInfo cinemaInfo)
         {
-            if (!CinemaInputInfoValid(cinemaInfo))
-            {
-                return new DataValidationResult
-                {
-                    ResultOk = false,
-                    Details = "Invalid data."
-                };
-            }
-
             if (CinemaExists(cinemaInfo))
             {
                 return new DataValidationResult
@@ -298,7 +253,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new ResultCreated
             {
                 ResultOk = true,
-                Id = generatedCinema.CinemaId.ToString(),
+                Id = generatedCinema.CinemaId,
             };
         }
 
@@ -313,14 +268,73 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         public Result GetCinema(int id)
         {
-            Cinema cinema = dbContext.Cinemas
+            var cinema = dbContext.Cinemas
                 .Include(c => c.CinemaRooms)
-                    .ThenInclude(r => r.Seats)
                 .FirstOrDefault(c => c.CinemaId == id);
 
-            return new Result
+            if (!CinemaExists(id))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                };
+            }
+
+            return new GetCinemaResult
             {
                 ResultOk = true,
+                Cinema = (from c in dbContext.Cinemas
+                          where c.CinemaId == id
+                          select new
+                          {
+                              Info = new
+                              {
+                                  c.Name,
+                                  c.City,
+                                  c.DefaultSeatPrice,
+                                  c.VipSeatPrice,
+                              },
+                              CinemaRooms = (from r in c.CinemaRooms
+                                             select new { r.CinemaRoomId, r.Name })
+                          }).FirstOrDefault()
+            };
+        }
+
+        public Result CreateCinemaRoom(int cinemaId, CinemaRoomInfo cinemaRoomInfo)
+        {
+            if (!CinemaExists(cinemaId)) {
+                return new Result
+                {
+                    ResultOk = false
+                };
+            }
+
+            CinemaRoom cinemaRoom = new CinemaRoom
+            {
+                Name = cinemaRoomInfo.Name,
+                Seats = new List<Seat>()
+            };
+
+            foreach (var s in cinemaRoomInfo.Seats) {
+                cinemaRoom.Seats.Add(new Seat {
+                    Type = s.Type,
+                    Row = s.Row,
+                    Column = s.Column
+                });
+            }
+
+            Cinema cinema = dbContext.Cinemas
+                .Include(c => c.CinemaRooms)
+                .FirstOrDefault(c => c.CinemaId == cinemaId);
+
+            cinema.CinemaRooms.Add(cinemaRoom);
+
+            dbContext.SaveChanges();
+
+            return new ResultCreated
+            {
+                ResultOk = true,
+                Id = cinemaRoom.CinemaRoomId
             };
         }
     }

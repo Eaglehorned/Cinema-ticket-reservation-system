@@ -17,6 +17,7 @@ export default class FormCinemaRoom extends Component{
             modalIsOpen: false,
             seatToChangeType: {}
         }
+        this.returnCinemaRoom = this.returnCinemaRoom.bind(this);
         this.createSeatsArray = this.createSeatsArray.bind(this);
         this.changeSeatType = this.changeSeatType.bind(this);
         this.closeModal= this.closeModal.bind(this);
@@ -24,15 +25,22 @@ export default class FormCinemaRoom extends Component{
         this.submitSeatTypeChange = this.submitSeatTypeChange.bind(this);
         this.submitCinemaRoomSeats = this.submitCinemaRoomSeats.bind(this);
         this.submitChangeName = this.submitChangeName.bind(this);
+        this.cancelFormCinemaRoom = this.cancelFormCinemaRoom.bind(this);
+        this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
+        this.renderCinemaRoomChangeSeatTypesContent = this.renderCinemaRoomChangeSeatTypesContent.bind(this);
         this.renderFormCinemaRoomContent = this.renderFormCinemaRoomContent.bind(this);
         this.renderFormCinemaRoomInfoContent = this.renderFormCinemaRoomInfoContent.bind(this);
         this.renderCinemaRoomInfoAndActionsContent = this.renderCinemaRoomInfoAndActionsContent.bind(this);
         this.renderCinemaActionButtons = this.renderCinemaActionButtons.bind(this);
         this.renderChangeCinemaRoomNameContent = this.renderChangeCinemaRoomNameContent.bind(this);
         this.renderCinemaRoomChangeSeatsSchemeContent = this.renderCinemaRoomChangeSeatsSchemeContent.bind(this);
-        this.cancelFormCinemaRoom = this.cancelFormCinemaRoom.bind(this);
-        this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
-        this.renderCinemaRoomChangeSeatTypesContent = this.renderCinemaRoomChangeSeatTypesContent.bind(this);
+    }
+
+    returnCinemaRoom(){
+        this.props.callBackReceiveCinemaRoom({
+            name: this.state.cinemaRoomInfo.name,
+            cinemaRoomSeats: this.state.cinemaRoomSeats
+        });
     }
 
     cancelFormCinemaRoom(){
@@ -163,7 +171,7 @@ export default class FormCinemaRoom extends Component{
                 </fieldset>
                 <fieldset className="concluding-buttons">
                     <Button
-                        //TODO return cinema room
+                        onClick={this.returnCinemaRoom}
                     >
                         Submit
                     </Button>
@@ -232,7 +240,6 @@ export default class FormCinemaRoom extends Component{
     }
 
     renderFormCinemaRoomContent(){
-        console.log(this.state.chosenOperation);
         if(!this.state.cinemaRoomInfo){
             return this.renderFormCinemaRoomInfoContent();
         }
@@ -245,7 +252,6 @@ export default class FormCinemaRoom extends Component{
                 return this.renderCinemaRoomChangeSeatsSchemeContent();
             default:
                 return this.renderCinemaRoomInfoAndActionsContent();
-            
         }
     }
 

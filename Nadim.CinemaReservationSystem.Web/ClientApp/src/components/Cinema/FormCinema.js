@@ -10,33 +10,101 @@ export default class FormCinema extends Component{
         super(props);
         this.state={
             cinemaInfo: this.props.cinema ? this.props.cinema.info : undefined,
-            cinemaRooms: this.props.cinema ? this.props.cinema.rooms : undefined,
+            cinemaRooms: this.props.cinema ? this.props.cinema.cinemaRooms : undefined,
             chosenRoom: {},
             chosenOperation: '',
             chosenCinemaRoom: {}
         };
+        this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
+        this.cancelFormCinema = this.cancelFormCinema.bind(this);
+        this.getCinemaRoom = this.getCinemaRoom.bind(this);
+        this.editCinemaInfo = this.editCinemaInfo.bind(this);
+        this.createCinemaRoom = this.createCinemaRoom.bind(this);
+        this.handleCinemaCreateGeneralInfo = this.handleCinemaCreateGeneralInfo.bind(this);
+        this.handleMenuItemSelect = this.handleMenuItemSelect.bind(this);
+        this.handleChangeCinemaInfoClick = this.handleChangeCinemaInfoClick.bind(this);
+        this.handleCinemaEditGeneralInfo = this.handleCinemaEditGeneralInfo.bind(this);
         this.renderFormCreateCinemaContent = this.renderFormCreateCinemaContent.bind(this);
         this.renderFormEditCinemaContent = this.renderFormEditCinemaContent.bind(this);
         this.renderCinemaInfoAndActionsContent = this.renderCinemaInfoAndActionsContent.bind(this);
         this.renderCinemaActionButtons = this.renderCinemaActionButtons.bind(this);
-        this.handleCinemaGeneralInfoInput = this.handleCinemaGeneralInfoInput.bind(this);
-        this.handleMenuItemSelect = this.handleMenuItemSelect.bind(this);
-        this.handleChangeCinemaInfoClick = this.handleChangeCinemaInfoClick.bind(this);
         this.renderComponentContent = this.renderComponentContent.bind(this);
         this.renderFormCinemaRoomCreateContent = this.renderFormCinemaRoomCreateContent.bind(this);
         this.renderFormCinemaRoomEditContent = this.renderFormCinemaRoomEditContent.bind(this);
-        this.receiveCinemaRoom = this.receiveCinemaRoom.bind(this);
-        this.cancelFormCinema = this.cancelFormCinema.bind(this);
-        this.getCinemaRoom = this.getCinemaRoom.bind(this);
-        this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
     }
 
     getCinemaRoom(){
         //TODO fetch to get cinema room whole info
     }
 
-    receiveCinemaRoom(){
-        //TODO fetch to add/edit cinema room
+    createCinemaRoom(cinemaRoomData){
+        this.setState({
+            chosenOperation: ''
+        });
+        fetch(`api/cinemas/${this.state.cinemaInfo.cinemaId}/cinemaRooms`, {
+            method:'POST',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${this.props.token}`
+            },
+            body: JSON.stringify({
+                cinemaId: this.state.cinemaInfo.cinemaId,
+                name: cinemaRoomData.name,
+                seats: [].concat(...cinemaRoomData.cinemaRoomSeats)
+            })
+        }).then(response => {
+                if (response.ok){
+                    return response;
+                }
+                if (response.status === 400){
+                    return response.json().then((err) => {
+                        throw new Error(`Bad request. ${err.details}`);
+                    });
+                }
+                if (response.status === 401){
+                    throw new Error('You need to authorize to do that action. ');
+                }
+                if (response.status === 404){
+                        throw new Error('Cant find resourse. ');
+                }
+            }).then(parsedJson => {
+                //add room to room list
+            })
+            .catch(error => this.props.callBackInformWithMessage(error.message));
+    }
+    
+    editCinemaInfo(){
+        fetch(`api/cinemas/${this.state.cinemaInfo.cinemaId}`, {
+            method: 'PUT',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${this.props.token}`
+            },
+            body: JSON.stringify(this.state.cinemaInfo)
+        }).then(response => {
+            if (response.ok){
+                return response.json();
+            }
+            if (response.status === 400){
+                return response.json().then((err) => {
+                    throw new Error(`Bad request. ${err.details}`);
+                });
+            }
+            if (response.status === 401){
+                throw new Error('You need to authorize to do that action.');
+            }
+            if (response.status === 404){
+                    throw new Error('Cant find resourse. ');
+            }
+        }).then(parsedJson => {
+                this.informWithMessage('Cinema information edited.');
+            })
+            .catch(error => this.informWithMessage(error.message));
+            this.setState({
+                chosenOperation: ''
+            });
     }
 
     cancelFormCinema(){
@@ -49,8 +117,8 @@ export default class FormCinema extends Component{
         })
     }
 
-
-    handleCinemaGeneralInfoInput(cinemaData){
+    handleCinemaCreateGeneralInfo(cinemaData){
+        this.props.callBackReceiveCinemaInfo(cinemaData);
         this.setState({
             cinemaInfo: cinemaData,
             chosenOperation: ''
@@ -67,6 +135,10 @@ export default class FormCinema extends Component{
         this.setState({
             chosenOperation: 'editCinemaInfo'
         });
+    }
+
+    handleCinemaEditGeneralInfo(){
+
     }
 
     renderCinemaActionButtons(){
@@ -142,7 +214,7 @@ export default class FormCinema extends Component{
     renderFormCinemaRoomCreateContent(){
         return(
             <FormCinemaRoom
-                callBackReceiveCinemaRoom={this.receiveCinemaRoom}
+                callBackReceiveCinemaRoom={this.createCinemaRoom}
                 callBackCancel={this.cancelCurrentOperation}
             />
         );
@@ -151,7 +223,7 @@ export default class FormCinema extends Component{
     renderFormCinemaRoomEditContent(){
         return(
             <FormCinemaRoom
-                callBackReceiveCinemaRoom={this.receiveCinemaRoom}
+                callBackReceiveCinemaRoom={this.createCinemaRoom}
                 cinemaRoom={this.state.chosenCinemaRoom}
                 //TODO get cinemaRoom info
                 callBackCancel={this.cancelCurrentOperation}
@@ -164,7 +236,7 @@ export default class FormCinema extends Component{
             <React.Fragment>
                 <h1>Cinema</h1>
                 <FormGeneralCinemaInfo 
-                    callBackFromParent={this.handleCinemaGeneralInfoInput}
+                    callBackFromParent={this.handleCinemaCreateGeneralInfo}
                     callBackCancel={this.cancelFormCinema}
                 />
             </React.Fragment>
@@ -176,7 +248,7 @@ export default class FormCinema extends Component{
             <React.Fragment>
                 <h1>Cinema</h1>
                 <FormGeneralCinemaInfo 
-                    callBackFromParent={this.handleCinemaGeneralInfoInput}
+                    callBackFromParent={this.handleCinemaEditGeneralInfo}
                     callBackCancel={this.cancelCurrentOperation}
                     cinemaInfo={this.state.cinemaInfo}
                 />

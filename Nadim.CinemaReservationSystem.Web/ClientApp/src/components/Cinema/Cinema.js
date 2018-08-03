@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Button, DropdownButton, MenuItem } from 'react-bootstrap';
-import EditCinemaInfo from './EditCinemaInfo';
-import FormCinemaInfo from './FormCinemaInfo';
+import '../../styles/EditCinemaInfo.css';
+import '../../styles/Cinema.css';
 import FormCinema from './FormCinema';
 
 export default class Cinema extends Component{
@@ -15,6 +15,7 @@ export default class Cinema extends Component{
             chosenOperation: '',
             cinemaList: [],
             chosenCinema: undefined,
+            chosenCinemaInfo: undefined
         };
         this.informWithMessage = this.informWithMessage.bind(this);
         this.createCinema = this.createCinema.bind(this);
@@ -74,14 +75,13 @@ export default class Cinema extends Component{
             }
         }).then(parsedJson => {
                 this.setState({
-                    cinemaList: parsedJson.cinemaList
+                    cinemaList: parsedJson.cinemaList,
                 });
             })
             .catch(error => this.informWithMessage(error.message));
     }
 
     getCinema(id){
-        console.log(this.state.chosenCinema);
         fetch(`api/cinemas/${id}`, {
             method: 'GET',
             headers:{
@@ -105,15 +105,25 @@ export default class Cinema extends Component{
                     throw new Error('Cant find resourse.');
             }
         }).then(parsedJson => {
-                return parsedJson;
+                let tempParsedJson = parsedJson.cinema;
+                tempParsedJson.info.cinemaId = id;
+                this.setState({
+                    chosenCinemaInfo: tempParsedJson,
+                    chosenOperation: 'editCinema'
+                })
             })
             .catch(error => {
+                this.setState({
+                    chosenOperation:''
+                })
                 this.informWithMessage(error.message);
-                return undefined;
             });
     }
 
     createCinema(receivedCinemaInfo){
+        this.setState({
+            chosenOperation: 'editCinemaLoading'
+        });
         fetch('api/cinemas', {
             method: 'POST',
             headers:{
@@ -124,7 +134,7 @@ export default class Cinema extends Component{
             body: JSON.stringify(receivedCinemaInfo)
         }).then(response => {
                 if (response.ok){
-                    return response.json();
+                    return response;
                 }
                 if (response.status === 400){
                     return response.json().then((err) => {
@@ -137,13 +147,16 @@ export default class Cinema extends Component{
                 if (response.status === 404){
                         throw new Error('Cant find resourse. ');
                 }
-            }).then(parsedJson => {
-                    this.informWithMessage('Cinema created.');
+            }).then(response => {
+                    let tempCinemaInfo = {};
+                    tempCinemaInfo.info = receivedCinemaInfo;
+                    tempCinemaInfo.info.cinemaId = response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length);
+                    this.setState({
+                        chosenCinemaInfo: tempCinemaInfo,
+                        chosenOperation: 'editCinema'
+                    })
                 })
                 .catch(error => this.informWithMessage(error.message));
-        this.setState({
-            chosenAction: '',
-        });
     }
 
     editCinemaInfo(receivedCinemaInfo){
@@ -156,21 +169,21 @@ export default class Cinema extends Component{
             },
             body: JSON.stringify(receivedCinemaInfo.cinemaInfoToSend)
         }).then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                    throw new Error('Cant find resourse. ');
-            }
-        }).then(parsedJson => {
+                if (response.ok){
+                    return response.json();
+                }
+                if (response.status === 400){
+                    return response.json().then((err) => {
+                        throw new Error(`Bad request. ${err.details}`);
+                    });
+                }
+                if (response.status === 401){
+                    throw new Error('You need to authorize to do that action.');
+                }
+                if (response.status === 404){
+                        throw new Error('Cant find resourse. ');
+                }
+            }).then(parsedJson => {
                 this.informWithMessage('Cinema information edited.');
             })
             .catch(error => this.informWithMessage(error.message));
@@ -181,14 +194,17 @@ export default class Cinema extends Component{
 
     handleChooseCreateCinemaAction(){
         this.setState({
-            chosenOperation: 'createCinema'
+            chosenOperation: 'createCinema',
+            chosenCinema: undefined,
+            chosenCinemaInfo: undefined,
         });
     }
 
     handleChooseEditCinemaAction(){
         this.setState({
-            chosenOperation: 'editCinema'
+            chosenOperation: 'editCinemaLoading'
         });
+        this.getCinema(this.state.chosenCinema.cinemaId);
     }
 
     handleSelect(eventKey){
@@ -247,6 +263,7 @@ export default class Cinema extends Component{
                 <Button
                     bsStyle="primary"
                     onClick={this.handleChooseEditCinemaAction}
+                    disabled={!this.state.chosenCinema}
                 >
                     Edit cinema info
                 </Button>
@@ -259,16 +276,25 @@ export default class Cinema extends Component{
             case 'createCinema':
                 return (         
                     <FormCinema
+                        token={this.props.token}
+                        cinema={this.state.chosenCinemaInfo}
                         callBackReceiveCinemaInfo={this.createCinema}
                         callBackCancel={this.cancelFormCinema}
                         callBackInformWithMessage={this.informWithMessage}
                     />
                 );
+            case 'editCinemaLoading':
+                return (
+                    <div className="font-x-large font-italic">
+                        Loading...
+                    </div>
+                );
             case 'editCinema':
-                let cinema = this.getCinema(this.state.chosenCinema.cinemaId);
-                if (cinema){
+                if (this.state.chosenCinemaInfo){
                     return(         
                         <FormCinema
+                            token={this.props.token}
+                            cinema={this.state.chosenCinemaInfo}
                             callBackEditCinemaInfo={this.editCinemaInfo}
                             callBackCancel={this.cancelFormCinema}
                             callBackInformWithMessage={this.informWithMessage}
@@ -294,19 +320,6 @@ export default class Cinema extends Component{
                 </div>
                 <div className="well">
                     {content}
-                    {/* //<FormCinema
-                        // cinema={
-                        //     {
-                        //         'info':
-                        //         {
-                        //             'name': 'asd',
-                        //             'city': 'as',
-                        //             'defaultSeatPrice': 10,
-                        //             'vipSeatPrice': 20
-                        //         }
-                        //     }
-                        // }
-                    /> */}
                 </div>
             </div>
         );

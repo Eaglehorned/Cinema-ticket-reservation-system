@@ -9,7 +9,6 @@ export default class FormGeneralCinemaInfo extends Component{
         this.state = {
             city: this.props.cinemaInfo ? this.props.cinemaInfo.city : '',
             name: this.props.cinemaInfo ? this.props.cinemaInfo.name : '',
-            cinemaRoomsCount: '',
             defaultPrice: this.props.cinemaInfo ? this.props.cinemaInfo.defaultSeatPrice : '',
             vipPrice: this.props.cinemaInfo ? this.props.cinemaInfo.vipSeatPrice : '',
             displayedComponents: this.props.displayedComponents ? 
@@ -17,14 +16,12 @@ export default class FormGeneralCinemaInfo extends Component{
                                     {
                                         city: true,
                                         name: true,
-                                        cinemaRoomsCount: true,
                                         defaultSeatPrice: true,
                                         vipSeatPrice: true,
                                     }
         }
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleCinemaRoomsChange = this.handleCinemaRoomsChange.bind(this);
         this.handleSubmitCinemaInfoClick = this.handleSubmitCinemaInfoClick.bind(this);
         this.handleDefaultPriceChange = this.handleDefaultPriceChange.bind(this);
         this.handleVipPriceChange = this.handleVipPriceChange.bind(this);
@@ -54,12 +51,6 @@ export default class FormGeneralCinemaInfo extends Component{
         });
     }
 
-    handleCinemaRoomsChange(event){
-        this.setState({
-            cinemaRoomsCount: event.target.value 
-        });
-    }
-
     handleDefaultPriceChange(event){
         this.setState({
             defaultPrice: event.target.value
@@ -76,7 +67,6 @@ export default class FormGeneralCinemaInfo extends Component{
         this.props.callBackFromParent({
             city: this.state.city,
             name: this.state.name,
-            cinemaRoomsCount: parseInt(this.state.cinemaRoomsCount),
             defaultSeatPrice: this.state.defaultPrice,
             vipSeatPrice: this.state.vipPrice
         });
@@ -96,9 +86,6 @@ export default class FormGeneralCinemaInfo extends Component{
         if (this.state.displayedComponents.city && !this.state.city){
             return false;
         }
-        if (this.state.displayedComponents.cinemaRoomsCount && !this.validateIntNumber(this.state.cinemaRoomsCount)){
-            return false;
-        }
         if (this.state.displayedComponents.name && !this.state.name){
             return false;
         }
@@ -112,29 +99,22 @@ export default class FormGeneralCinemaInfo extends Component{
                     Input general cinema information
                 </h2>
                 <fieldset
-                    className={this.state.displayedComponents.city ? '' : 'hidden'}
-                >
-                    <label htmlFor="cityInput" className="font-bold-large">
-                        City : 
-                    </label> 
-                    <input 
-                        type="text" 
-                        className="form-control form-control-sm" 
-                        id="cityInput"
-                        value={this.state.city} 
-                        onChange={this.handleCityChange}
-                        placeholder="City"
-                    />
-                </fieldset>
-                <fieldset
                     className={this.state.displayedComponents.name ? '' : 'hidden'}
                 >
                     <label htmlFor="nameInput" className="font-bold-large">
-                        Cinema name : 
+                        Name : 
                     </label> 
                     <input 
                         type="text" 
-                        className="form-control form-control-sm"
+                        className=
+                        {
+                            `form-control form-control-sm
+                            ${
+                                this.state.name
+                                ? ''
+                                :' error'
+                            }`
+                        }
                         id="nameInput"
                         value={this.state.name} 
                         onChange={this.handleNameChange}
@@ -142,18 +122,26 @@ export default class FormGeneralCinemaInfo extends Component{
                     />
                 </fieldset>
                 <fieldset
-                    className={this.state.displayedComponents.cinemaRoomsCount ? '' : 'hidden'}
+                    className={this.state.displayedComponents.city ? '' : 'hidden'}
                 >
-                    <label htmlFor="roomsInput" className="font-bold-large">
-                        Number of cinema rooms : 
+                    <label htmlFor="cityInput" className="font-bold-large">
+                        City : 
                     </label> 
                     <input 
                         type="text" 
-                        className="form-control form-control-sm" 
-                        id="roomsInput"
-                        value={this.state.cinemaRoomsCount} 
-                        onChange={this.handleCinemaRoomsChange}
-                        placeholder="Rooms"
+                        className=
+                        {
+                            `form-control form-control-sm
+                            ${
+                                this.state.city
+                                ? ''
+                                :' error'
+                            }`
+                        }
+                        id="cityInput"
+                        value={this.state.city} 
+                        onChange={this.handleCityChange}
+                        placeholder="City"
                     />
                 </fieldset>
                 <fieldset
@@ -164,7 +152,15 @@ export default class FormGeneralCinemaInfo extends Component{
                     </label> 
                     <input
                         type="text" 
-                        className="form-control form-control-sm" 
+                        className=
+                        {
+                            `form-control form-control-sm
+                            ${
+                                this.validateDoubleNumber(this.state.defaultPrice)
+                                ? ''
+                                :' error'
+                            }`
+                        }
                         id="defaultSeatPriceInput"
                         value={this.state.defaultPrice} 
                         onChange={this.handleDefaultPriceChange}
@@ -179,7 +175,15 @@ export default class FormGeneralCinemaInfo extends Component{
                     </label> 
                     <input
                         type="text" 
-                        className="form-control form-control-sm" 
+                        className=
+                        {
+                            `form-control form-control-sm
+                            ${
+                                this.validateDoubleNumber(this.state.vipPrice)
+                                ? ''
+                                :' error'
+                            }`
+                        }
                         id="vipSeatPriceInput"
                         value={this.state.vipPrice} 
                         onChange={this.handleVipPriceChange}
