@@ -54,7 +54,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize]
         [HttpGet("{cinemaId}")]
         public ActionResult<Result> GetCinema(int cinemaId)
         {
@@ -64,21 +64,45 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             {
                 return result;
             }
-            else
-            {
-                return NotFound(result);
+            return NotFound(result);
+            
+        }
+
+        [Authorize]
+        [HttpGet("{cinemaId}/cinemaRooms/{cinemaRoomId}")]
+        public ActionResult<Result> GetCinemaRoom(int cinemaId, int cinemaRoomId)
+        {
+            Result result = сinemaService.GetCinemaRoom(cinemaId, cinemaRoomId);
+
+            if (result.ResultOk) {
+                return Ok(result);
             }
+            return NotFound();
         }
 
         [Authorize(Roles = "admin")]
         [HttpPost("{cinemaId}/cinemaRooms")]
-        public ActionResult<Result> CreateCinemaRoom([FromBody] CinemaRoomInfo cinemaRoom, int cinemaId)
+        public ActionResult<ResultCreated> CreateCinemaRoom([FromBody] CinemaRoomInfo cinemaRoom, int cinemaId)
         {
-            Result result = сinemaService.CreateCinemaRoom(cinemaId, cinemaRoom);
+            ResultCreated result = сinemaService.CreateCinemaRoom(cinemaId, cinemaRoom);
 
             if (result.ResultOk)
             {
-                return result;
+                return Created($"api/cinemas/{cinemaId}/cinemaRooms/{result.Id}", typeof(CinemaRoom));
+            }
+            else
+                return NotFound();
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPut("{cinemaId}/cinemaRooms/{cinemaRoomId}")]
+        public ActionResult<Result> EditCinemaRoom([FromBody] CinemaRoomInfo cinemaRoomInfo, int cinemaId, int cinemaRoomId)
+        {
+            Result result = сinemaService.EditCinemaRoom(cinemaId, cinemaRoomId, cinemaRoomInfo);
+
+            if (result.ResultOk)
+            {
+                return Created($"api/cinemas/{cinemaId}/cinemaRooms/{cinemaRoomId}", typeof(CinemaRoom));
             }
             else
                 return NotFound();

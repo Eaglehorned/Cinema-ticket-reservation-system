@@ -10,12 +10,16 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
     {
         Result CreateCinema(CinemaInfo cinemaInfo);
 
-        Result CreateCinemaRoom(int cinemaId, CinemaRoomInfo cinemaRoom);
+        ResultCreated CreateCinemaRoom(int cinemaId, CinemaRoomInfo cinemaRoom);
 
         Result GetCinemaList();
 
         Result EditCinema(int cinemaId, CinemaInfo cinemaInfo);
 
         Result GetCinema(int id);
+
+        ResultCreated EditCinemaRoom(int cinemaId, int cinemaRoomId, CinemaRoomInfo cinemaRoomInfo);
+
+        Result GetCinemaRoom(int cinemaId, int cinemaRoomId);
     }
 }

@@ -36,6 +36,11 @@ namespace Nadim.CinemaReservationSystem.Web
         public dynamic Cinema { get; set; }
     }
 
+    public class GetCinemaRoomResult : Result
+    {
+        public dynamic CinemaRoom { get; set; }
+    }
+
     public class ResultCreated: Result {
         public int Id { get; set; }
     }
