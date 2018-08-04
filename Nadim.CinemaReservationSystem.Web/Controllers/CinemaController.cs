@@ -29,7 +29,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPut("{cinemaId}")]
+        [HttpPut("{cinemaId}/info")]
         public ActionResult<Result> EditCinema([FromBody] CinemaInfo cinemaInfo, int cinemaId)
         {
             Result result = сinemaService.EditCinema(cinemaId, cinemaInfo);
@@ -65,7 +65,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 return result;
             }
             return NotFound(result);
-            
+
         }
 
         [Authorize]
@@ -107,5 +107,6 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             else
                 return NotFound();
         }
+
     }
 }

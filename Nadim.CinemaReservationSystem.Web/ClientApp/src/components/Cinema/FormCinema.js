@@ -16,7 +16,6 @@ export default class FormCinema extends Component{
             chosenCinemaRoomInfo: undefined
         };
         
-        console.log(this.props.cinema);
         this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
         this.cancelFormCinema = this.cancelFormCinema.bind(this);
         this.getCinemaRoom = this.getCinemaRoom.bind(this);
@@ -26,7 +25,6 @@ export default class FormCinema extends Component{
         this.handleCinemaCreateGeneralInfo = this.handleCinemaCreateGeneralInfo.bind(this);
         this.handleMenuItemSelect = this.handleMenuItemSelect.bind(this);
         this.handleChangeCinemaInfoClick = this.handleChangeCinemaInfoClick.bind(this);
-        this.handleCinemaEditGeneralInfo = this.handleCinemaEditGeneralInfo.bind(this);
         this.handleChooseEditCinemaAction = this.handleChooseEditCinemaAction.bind(this);
         this.renderFormCreateCinemaContent = this.renderFormCreateCinemaContent.bind(this);
         this.renderFormEditCinemaContent = this.renderFormEditCinemaContent.bind(this);
@@ -140,16 +138,18 @@ export default class FormCinema extends Component{
                 if (response.status === 404){
                         throw new Error('Cant find resourse. ');
                 }
-            }).then(parsedJson => {
-                //add room to room list
+            }).then(response => {
+                this.setState({
+                    cinemaRooms: this.state.cinemaRooms.concat({
+                        name: cinemaRoomData.name,
+                        cinemaRoomId: response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length)
+                    })
+                })
             })
             .catch(error => this.props.callBackInformWithMessage(error.message));
     }
     
     editCinemaRoom(cinemaRoomData){
-        this.setState({
-            chosenOperation: ''
-        });
         fetch(`api/cinemas/${this.state.cinemaInfo.cinemaId}/cinemaRooms/${this.state.chosenRoom.cinemaRoomId}`, {
             method:'PUT',
             headers:{
@@ -177,24 +177,31 @@ export default class FormCinema extends Component{
                         throw new Error('Cant find resourse.');
                 }
             }).then(parsedJson => {
-                //add room to room list
+                let tempCinemaRooms = this.state.cinemaRooms;
+                tempCinemaRooms.find((el) => el.cinemaRoomId === this.state.chosenRoom.cinemaRoomId).name = cinemaRoomData.name;
+                this.setState({
+                    cinemaRooms: tempCinemaRooms
+                });
                 this.props.callBackInformWithMessage('Cinema room edited.');
             })
             .catch(error => this.props.callBackInformWithMessage(error.message));
+            this.setState({
+                chosenOperation: '',
+            });
     }
 
-    editCinemaInfo(){
-        fetch(`api/cinemas/${this.state.cinemaInfo.cinemaId}`, {
+    editCinemaInfo(receivedCinemaInfo){
+        fetch(`api/cinemas/${this.state.cinemaInfo.cinemaId}/info`, {
             method: 'PUT',
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': `bearer ${this.props.token}`
             },
-            body: JSON.stringify(this.state.cinemaInfo)
+            body: JSON.stringify(receivedCinemaInfo)
         }).then(response => {
             if (response.ok){
-                return response.json();
+                return response;
             }
             if (response.status === 400){
                 return response.json().then((err) => {
@@ -208,6 +215,12 @@ export default class FormCinema extends Component{
                     throw new Error('Cant find resourse. ');
             }
         }).then(parsedJson => {
+                this.setState({
+                    cinemaInfo: {
+                        ...receivedCinemaInfo,
+                        cinemaId: this.state.cinemaInfo.cinemaId
+                    }
+                })
                 this.props.callBackInformWithMessage('Cinema information edited.');
             })
             .catch(error => this.props.callBackInformWithMessage(error.message));
@@ -244,10 +257,6 @@ export default class FormCinema extends Component{
         this.setState({
             chosenOperation: 'editCinemaInfo'
         });
-    }
-
-    handleCinemaEditGeneralInfo(){
-
     }
 
     handleChooseEditCinemaAction(){
@@ -371,7 +380,7 @@ export default class FormCinema extends Component{
             <React.Fragment>
                 <h1>Cinema</h1>
                 <FormGeneralCinemaInfo 
-                    callBackFromParent={this.handleCinemaEditGeneralInfo}
+                    callBackFromParent={this.editCinemaInfo}
                     callBackCancel={this.cancelCurrentOperation}
                     cinemaInfo={this.state.cinemaInfo}
                 />

@@ -134,6 +134,7 @@ export default class FormCinemaRoom extends Component{
             <React.Fragment>
                 <FormCinemaRoomInfo
                     callBackReceiveCinemaRoomInfo={this.submitChangeName}
+                    cinemaRoomInfo={this.state.cinemaRoomInfo}
                     callBackCancel={this.cancelCurrentOperation}
                     displayedComponents={{name: true}}
                 />

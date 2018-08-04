@@ -41,162 +41,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return newCinema;
         }
 
-        private Result ChangeCinemaName(int cinemaId, string newName)
-        {
-            Cinema changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.CinemaId == cinemaId);
-
-            if (changedCinema.Name == newName)
-            {
-                return new Result
-                {
-                    ResultOk = true,
-                };
-            }
-
-            changedCinema.Name = newName;
-            dbContext.Entry(changedCinema).Property("Name").IsModified = true;
-
-            dbContext.SaveChanges();
-
-            return new Result
-            {
-                ResultOk = true,
-            };
-        }
-
-        private Result ChangeCinemaCity(int cinemaId, string city)
-        {
-            Cinema changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.CinemaId == cinemaId);
-
-            if (changedCinema.City == city)
-            {
-                return new Result
-                {
-                    ResultOk = true,
-                };
-            }
-
-            changedCinema.City = city;
-            dbContext.Entry(changedCinema).Property("City").IsModified = true;
-
-            dbContext.SaveChanges();
-
-            return new Result
-            {
-                ResultOk = true,
-            };
-        }
-
-        private Result ChangeCinemaDefaultSeatPrice(int cinemaId, decimal price)
-        {
-            if (price < 0)
-            {
-                return new DataValidationResult
-                {
-                    ResultOk = false,
-                    Details = "Invalid data.",
-                };
-            }
-
-            Cinema changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.CinemaId == cinemaId);
-
-            if (changedCinema.DefaultSeatPrice == price)
-            {
-                return new Result
-                {
-                    ResultOk = true,
-                };
-            }
-
-            changedCinema.DefaultSeatPrice = price;
-            dbContext.Entry(changedCinema).Property("DefaultSeatPrice").IsModified = true;
-
-            dbContext.SaveChanges();
-
-            return new Result
-            {
-                ResultOk = true,
-            };
-        }
-
-        private Result ChangeCinemaVipSeatPrice(int cinemaId, decimal price)
-        {
-            if (price < 0)
-            {
-                return new DataValidationResult
-                {
-                    ResultOk = false,
-                    Details = "Invalid data.",
-                };
-            }
-
-            Cinema changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.CinemaId == cinemaId);
-
-            if (changedCinema.DefaultSeatPrice == price)
-            {
-                return new Result
-                {
-                    ResultOk = true,
-                };
-            }
-
-            changedCinema.VipSeatPrice = price;
-
-            dbContext.SaveChanges();
-
-            return new Result
-            {
-                ResultOk = true,
-            };
-        }
-
-        private Result ChangeCinemaRooms(int cinemaId, List<CinemaRoomInfo> cinemaRooms)
-        {
-            Cinema changedCinema = dbContext.Cinemas.FirstOrDefault(c => c.CinemaId == cinemaId);
-
-            var deleteCinemaRooms = dbContext.CinemaRooms.Include(room => room.Seats).Where(room => room.CinemaId == changedCinema.CinemaId);
-
-            if (deleteCinemaRooms.Count() != 0)
-            {
-                foreach (var room in deleteCinemaRooms)
-                {
-                    dbContext.Remove(room);
-                }
-                dbContext.SaveChanges();
-            }
-
-            List<CinemaRoom> newCinemaRooms = new List<CinemaRoom>();
-
-            foreach (CinemaRoomInfo room in cinemaRooms)
-            {
-                newCinemaRooms.Add(new CinemaRoom
-                {
-                    Name = room.Name,
-                    Seats = new List<Seat>(),
-                });
-
-                foreach (SeatInfo seat in room.Seats)
-                {
-                    newCinemaRooms.Last().Seats.Add(new Seat
-                    {
-                        Row = seat.Row,
-                        Column = seat.Column,
-                        Type = seat.Type,
-                    });
-                }
-            }
-
-            changedCinema.CinemaRooms = newCinemaRooms;
-
-            dbContext.SaveChanges();
-
-            return new Result
-            {
-                ResultOk = true,
-            };
-
-        }
-
         private bool CinemaRoomExists(int cinemaRoomId)
         {
             return dbContext.CinemaRooms.Any(c => c.CinemaRoomId == cinemaRoomId);
@@ -213,25 +57,14 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
-            if (!String.IsNullOrEmpty(cinemaInfo.Name))
-            {
-                return ChangeCinemaName(cinemaId, cinemaInfo.Name);
-            }
+            var cinema = dbContext.Cinemas.FirstOrDefault(c => c.CinemaId == cinemaId);
 
-            if (!String.IsNullOrEmpty(cinemaInfo.City))
-            {
-                return ChangeCinemaCity(cinemaId, cinemaInfo.City);
-            }
+            cinema.Name = cinemaInfo.Name;
+            cinema.City = cinemaInfo.City;
+            cinema.DefaultSeatPrice = cinema.DefaultSeatPrice;
+            cinema.VipSeatPrice = cinema.VipSeatPrice;
 
-            if (cinemaInfo.DefaultSeatPrice != 0)
-            {
-                return ChangeCinemaDefaultSeatPrice(cinemaId, cinemaInfo.DefaultSeatPrice);
-            }
-
-            if (cinemaInfo.VipSeatPrice != 0)
-            {
-                return ChangeCinemaVipSeatPrice(cinemaId, cinemaInfo.VipSeatPrice);
-            }
+            dbContext.SaveChanges();
 
             return new Result
             {

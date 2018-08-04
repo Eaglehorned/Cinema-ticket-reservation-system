@@ -151,7 +151,13 @@ export default class Cinema extends Component{
                     let tempCinemaInfo = {};
                     tempCinemaInfo.info = receivedCinemaInfo;
                     tempCinemaInfo.info.cinemaId = response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length);
+                    
                     this.setState({
+                        cinemaList: this.state.cinemaList.concat({
+                            name: tempCinemaInfo.info.name , 
+                            city: tempCinemaInfo.info.city, 
+                            cinemaId: tempCinemaInfo.info.cinemaId
+                        }),
                         chosenCinemaInfo: tempCinemaInfo,
                         chosenOperation: 'editCinema'
                     })
