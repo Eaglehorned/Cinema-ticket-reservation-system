@@ -25,7 +25,6 @@ export default class Cinema extends Component{
         this.handleChooseCreateCinemaAction = this.handleChooseCreateCinemaAction.bind(this);
         this.handleChooseEditCinemaAction = this.handleChooseEditCinemaAction.bind(this);
         this.renderActionsContent = this.renderActionsContent.bind(this);
-        this.renderChooseCinemaContent = this.renderChooseCinemaContent.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
 
         this.getCinemaList();
@@ -115,7 +114,7 @@ export default class Cinema extends Component{
             .catch(error => {
                 this.setState({
                     chosenOperation:''
-                })
+                });
                 this.informWithMessage(error.message);
             });
     }
@@ -151,7 +150,8 @@ export default class Cinema extends Component{
                     let tempCinemaInfo = {};
                     tempCinemaInfo.info = receivedCinemaInfo;
                     tempCinemaInfo.info.cinemaId = response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length);
-                    
+                    tempCinemaInfo.cinemaRooms = [];
+
                     this.setState({
                         cinemaList: this.state.cinemaList.concat({
                             name: tempCinemaInfo.info.name , 
@@ -162,7 +162,12 @@ export default class Cinema extends Component{
                         chosenOperation: 'editCinema'
                     })
                 })
-                .catch(error => this.informWithMessage(error.message));
+                .catch(error => {
+                    this.setState({
+                    chosenOperation: ''
+                    });
+                    this.informWithMessage(error.message)
+                });
     }
 
     editCinemaInfo(receivedCinemaInfo){
@@ -218,41 +223,6 @@ export default class Cinema extends Component{
             chosenCinema: this.state.cinemaList[eventKey]
         });
     }
-    
-    renderChooseCinemaContent(){
-        return(
-            <fieldset>
-                <legend>
-                    Choose cinema
-                </legend>
-                <div className="font-large">
-                {
-                    this.state.chosenCinema ? 
-                        `Chosen cinema : ${this.state.chosenCinema.name}, ${this.state.chosenCinema.city}` :
-                        ''
-                }
-                </div>
-                <DropdownButton
-                    bsStyle="default"
-                    title="Choose cinema"
-                    id="choose-cinema-to-edit"
-                >
-                {
-                    
-                    this.state.cinemaList.map((el, i)=>
-                        <MenuItem 
-                            eventKey={i}
-                            onSelect={this.handleSelect}
-                            key={i}
-                        >
-                            {el.name}, {el.city}
-                        </MenuItem>
-                    )
-                }
-                </DropdownButton>
-            </fieldset>
-        );
-    }
 
     renderActionsContent(){
         return(
@@ -265,7 +235,41 @@ export default class Cinema extends Component{
                         Create cinema
                     </Button>
                 </fieldset>
-                {this.renderChooseCinemaContent()}
+                <fieldset>
+                <legend>
+                    Choose cinema
+                </legend>
+                <div className="font-large">
+                {
+                    this.state.chosenCinema ? 
+                        `Chosen cinema : ${this.state.chosenCinema.name}, ${this.state.chosenCinema.city}` :
+                        ''
+                }
+                </div>
+                {
+                    this.state.cinemaList && this.state.cinemaList.length !== 0 ?
+                    <DropdownButton
+                        bsStyle="default"
+                        title="Choose cinema"
+                        id="choose-cinema-to-edit"
+                    >
+                    {
+                        this.state.cinemaList.map((el, i)=>
+                            <MenuItem 
+                                eventKey={i}
+                                onSelect={this.handleSelect}
+                                key={i}
+                            >
+                                {el.name}, {el.city}
+                            </MenuItem>
+                        )
+                    }
+                    </DropdownButton> :
+                    <div className="font-bold-large">
+                        Cinema list is empty
+                    </div>
+                }
+            </fieldset>
                 <Button
                     bsStyle="primary"
                     onClick={this.handleChooseEditCinemaAction}

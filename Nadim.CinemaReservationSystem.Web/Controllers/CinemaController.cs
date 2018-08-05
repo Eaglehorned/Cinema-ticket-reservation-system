@@ -17,13 +17,13 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost]
-        public ActionResult<Result> CreateCinema([FromBody] CinemaInfo cinemaInfo)
+        public ActionResult<ResultCreated> CreateCinema([FromBody] CinemaInfo cinemaInfo)
         {
-            Result result = сinemaService.CreateCinema(cinemaInfo);
+            ResultCreated result = сinemaService.CreateCinema(cinemaInfo);
 
             if (result.ResultOk)
             {
-                return Created("api/cinemas/" + ((ResultCreated)result).Id.ToString(), typeof(Cinema));
+                return Created($"api/cinemas/{result.Id}", typeof(Cinema));
             }
             return BadRequest(result);
         }
@@ -38,7 +38,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             {
                 return Created("api/cinemas/" + cinemaId.ToString(), typeof(Cinema));
             }
-            return BadRequest(result);
+            return NotFound();
         }
 
         [HttpGet]
@@ -51,7 +51,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 return result;
 
             }
-            return BadRequest(result);
+            return NotFound();
         }
 
         [Authorize]
@@ -64,7 +64,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             {
                 return result;
             }
-            return NotFound(result);
+            return NotFound();
 
         }
 
@@ -91,7 +91,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 return Created($"api/cinemas/{cinemaId}/cinemaRooms/{result.Id}", typeof(CinemaRoom));
             }
             else
-                return NotFound();
+                return BadRequest(result);
         }
 
         [Authorize(Roles = "admin")]
@@ -107,6 +107,5 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             else
                 return NotFound();
         }
-
     }
 }

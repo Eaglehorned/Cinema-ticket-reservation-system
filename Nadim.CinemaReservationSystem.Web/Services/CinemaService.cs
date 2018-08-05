@@ -72,11 +72,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public Result CreateCinema(CinemaInfo cinemaInfo)
+        public ResultCreated CreateCinema(CinemaInfo cinemaInfo)
         {
             if (CinemaExists(cinemaInfo))
             {
-                return new DataValidationResult
+                return new ResultCreated
                 {
                     ResultOk = false,
                     Details = "Such cinema already exists."
@@ -144,7 +144,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 return new ResultCreated
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Cinema does not exist."
                 };
             }
 

@@ -10,14 +10,14 @@ export default class FormCinema extends Component{
         super(props);
         this.state={
             cinemaInfo: this.props.cinema ? this.props.cinema.info : undefined,
-            cinemaRooms: this.props.cinema ? this.props.cinema.cinemaRooms : undefined,
+            cinemaRooms: this.props.cinema ? this.props.cinema.cinemaRooms : [],
             chosenRoom: undefined,
             chosenOperation: '',
             chosenCinemaRoomInfo: undefined
         };
         
         this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
-        this.cancelFormCinema = this.cancelFormCinema.bind(this);
+        this.SubmitFormCinema = this.SubmitFormCinema.bind(this);
         this.getCinemaRoom = this.getCinemaRoom.bind(this);
         this.editCinemaInfo = this.editCinemaInfo.bind(this);
         this.createCinemaRoom = this.createCinemaRoom.bind(this);
@@ -140,7 +140,8 @@ export default class FormCinema extends Component{
                 }
             }).then(response => {
                 this.setState({
-                    cinemaRooms: this.state.cinemaRooms.concat({
+                    cinemaRooms: 
+                        this.state.cinemaRooms.concat({
                         name: cinemaRoomData.name,
                         cinemaRoomId: response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length)
                     })
@@ -229,7 +230,7 @@ export default class FormCinema extends Component{
             });
     }
 
-    cancelFormCinema(){
+    SubmitFormCinema(){
         this.props.callBackCancel();
     }
 
@@ -330,13 +331,9 @@ export default class FormCinema extends Component{
                 </fieldset>
                 <fieldset className="concluding-buttons">
                     <Button
+                        onClick={this.SubmitFormCinema}
                     >
                         Submit
-                    </Button>
-                    <Button
-                        onClick={this.cancelFormCinema}
-                    >
-                        Cancel
                     </Button>
                 </fieldset>
             </React.Fragment>
@@ -369,7 +366,7 @@ export default class FormCinema extends Component{
                 <h1>Cinema</h1>
                 <FormGeneralCinemaInfo 
                     callBackFromParent={this.handleCinemaCreateGeneralInfo}
-                    callBackCancel={this.cancelFormCinema}
+                    callBackCancel={this.SubmitFormCinema}
                 />
             </React.Fragment>
         );
