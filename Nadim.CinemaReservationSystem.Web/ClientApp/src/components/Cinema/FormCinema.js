@@ -16,8 +16,9 @@ export default class FormCinema extends Component{
             chosenCinemaRoomInfo: undefined
         };
         
+        this.cancelCreateCinema = this.cancelCreateCinema.bind(this);
         this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
-        this.SubmitFormCinema = this.SubmitFormCinema.bind(this);
+        this.submitFormCinema = this.submitFormCinema.bind(this);
         this.getCinemaRoom = this.getCinemaRoom.bind(this);
         this.editCinemaInfo = this.editCinemaInfo.bind(this);
         this.createCinemaRoom = this.createCinemaRoom.bind(this);
@@ -230,8 +231,16 @@ export default class FormCinema extends Component{
             });
     }
 
-    SubmitFormCinema(){
-        this.props.callBackCancel();
+    cancelCreateCinema(){
+        this.props.callBackCancelCreateCinema();
+    }
+
+    submitFormCinema(){
+        this.props.callBackFormCinemaInfo({
+            cinemaId: this.state.cinemaInfo.cinemaId,
+            name: this.state.cinemaInfo.name,
+            city: this.state.cinemaInfo.city
+        });
     }
 
     cancelCurrentOperation(){
@@ -324,14 +333,15 @@ export default class FormCinema extends Component{
                     <div>
                         <Button
                             onClick={this.handleChooseEditCinemaAction}
+                            disabled={!this.state.chosenRoom}
                         >
-                            Edit cinema room
+                            Edit chosen cinema room
                         </Button>
                     </div>
                 </fieldset>
                 <fieldset className="concluding-buttons">
                     <Button
-                        onClick={this.SubmitFormCinema}
+                        onClick={this.submitFormCinema}
                     >
                         Submit
                     </Button>
@@ -354,7 +364,6 @@ export default class FormCinema extends Component{
             <FormCinemaRoom
                 callBackReceiveCinemaRoom={this.editCinemaRoom}
                 cinemaRoom={this.state.chosenCinemaRoomInfo}
-                //TODO get cinemaRoom info
                 callBackCancel={this.cancelCurrentOperation}
             />
         );
@@ -366,7 +375,7 @@ export default class FormCinema extends Component{
                 <h1>Cinema</h1>
                 <FormGeneralCinemaInfo 
                     callBackFromParent={this.handleCinemaCreateGeneralInfo}
-                    callBackCancel={this.SubmitFormCinema}
+                    callBackCancel={this.cancelCreateCinema}
                 />
             </React.Fragment>
         );

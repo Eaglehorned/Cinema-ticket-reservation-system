@@ -61,8 +61,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             cinema.Name = cinemaInfo.Name;
             cinema.City = cinemaInfo.City;
-            cinema.DefaultSeatPrice = cinema.DefaultSeatPrice;
-            cinema.VipSeatPrice = cinema.VipSeatPrice;
+            cinema.DefaultSeatPrice = cinemaInfo.DefaultSeatPrice;
+            cinema.VipSeatPrice = cinemaInfo.VipSeatPrice;
 
             dbContext.SaveChanges();
 
@@ -97,10 +97,10 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         public Result GetCinemaList()
         {
-            return new GetCinemaListResult
+            return new GetInfoResult
             {
                 ResultOk = true,
-                CinemaList = dbContext.Cinemas.Select(c => new { c.Name, c.City, c.CinemaId })
+                Info = dbContext.Cinemas.Select(c => new { c.Name, c.City, c.CinemaId })
             };
         }
 
@@ -118,10 +118,10 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
-            return new GetCinemaResult
+            return new GetInfoResult
             {
                 ResultOk = true,
-                Cinema = (from c in dbContext.Cinemas
+                Info = (from c in dbContext.Cinemas
                           where c.CinemaId == id
                           select new
                           {

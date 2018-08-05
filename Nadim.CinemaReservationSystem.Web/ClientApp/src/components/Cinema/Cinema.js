@@ -19,7 +19,8 @@ export default class Cinema extends Component{
         };
         this.informWithMessage = this.informWithMessage.bind(this);
         this.createCinema = this.createCinema.bind(this);
-        this.cancelFormCinema = this.cancelFormCinema.bind(this);
+        this.cancelCurrentAction = this.cancelCurrentAction.bind(this);
+        this.receiveFormCinemaInfo = this.receiveFormCinemaInfo.bind(this);
         this.editCinemaInfo = this.editCinemaInfo.bind(this);
         this.renderContent = this.renderContent.bind(this);
         this.handleChooseCreateCinemaAction = this.handleChooseCreateCinemaAction.bind(this);
@@ -30,8 +31,19 @@ export default class Cinema extends Component{
         this.getCinemaList();
     }
 
-    cancelFormCinema(){
+    cancelCurrentAction(){
         this.setState({
+            chosenOperation:''
+        });
+    }
+
+    receiveFormCinemaInfo(receivedCinemaInfo){
+        let tempCinemaList = this.state.cinemaList;
+        tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinema.cinemaId).name = receivedCinemaInfo.name;
+        tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinema.cinemaId).city = receivedCinemaInfo.city;
+        this.setState({
+            chosenCinema: tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinema.cinemaId),
+            cinemaList: tempCinemaList,
             chosenOperation: ''
         });
     }
@@ -74,7 +86,7 @@ export default class Cinema extends Component{
             }
         }).then(parsedJson => {
                 this.setState({
-                    cinemaList: parsedJson.cinemaList,
+                    cinemaList: parsedJson.info,
                 });
             })
             .catch(error => this.informWithMessage(error.message));
@@ -104,7 +116,7 @@ export default class Cinema extends Component{
                     throw new Error('Cant find resourse.');
             }
         }).then(parsedJson => {
-                let tempParsedJson = parsedJson.cinema;
+                let tempParsedJson = parsedJson.info;
                 tempParsedJson.info.cinemaId = id;
                 this.setState({
                     chosenCinemaInfo: tempParsedJson,
@@ -121,6 +133,7 @@ export default class Cinema extends Component{
 
     createCinema(receivedCinemaInfo){
         this.setState({
+
             chosenOperation: 'editCinemaLoading'
         });
         fetch('api/cinemas', {
@@ -159,7 +172,12 @@ export default class Cinema extends Component{
                             cinemaId: tempCinemaInfo.info.cinemaId
                         }),
                         chosenCinemaInfo: tempCinemaInfo,
-                        chosenOperation: 'editCinema'
+                        chosenOperation: 'editCinema',
+                        chosenCinema: {
+                            name: tempCinemaInfo.info.name , 
+                            city: tempCinemaInfo.info.city, 
+                            cinemaId: tempCinemaInfo.info.cinemaId
+                        }
                     })
                 })
                 .catch(error => {
@@ -206,8 +224,6 @@ export default class Cinema extends Component{
     handleChooseCreateCinemaAction(){
         this.setState({
             chosenOperation: 'createCinema',
-            chosenCinema: undefined,
-            chosenCinemaInfo: undefined,
         });
     }
 
@@ -275,7 +291,7 @@ export default class Cinema extends Component{
                     onClick={this.handleChooseEditCinemaAction}
                     disabled={!this.state.chosenCinema}
                 >
-                    Edit cinema info
+                    Edit chosen cinema
                 </Button>
             </fieldset>
         );
@@ -287,9 +303,8 @@ export default class Cinema extends Component{
                 return (         
                     <FormCinema
                         token={this.props.token}
-                        cinema={this.state.chosenCinemaInfo}
                         callBackReceiveCinemaInfo={this.createCinema}
-                        callBackCancel={this.cancelFormCinema}
+                        callBackCancelCreateCinema={this.cancelCurrentAction}
                         callBackInformWithMessage={this.informWithMessage}
                     />
                 );
@@ -305,8 +320,7 @@ export default class Cinema extends Component{
                         <FormCinema
                             token={this.props.token}
                             cinema={this.state.chosenCinemaInfo}
-                            callBackEditCinemaInfo={this.editCinemaInfo}
-                            callBackCancel={this.cancelFormCinema}
+                            callBackFormCinemaInfo={this.receiveFormCinemaInfo}
                             callBackInformWithMessage={this.informWithMessage}
                         />
                     )
