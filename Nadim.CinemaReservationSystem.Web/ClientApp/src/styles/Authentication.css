@@ -1,12 +1,11 @@
 .authentication-container{
     position: relative;
-    left: 0;
-    top: 0;
-    padding: 10px;
-    height: 192px;
-    width: 500px;
+    margin-left: calc(100% - 400px); 
+    padding: 5px;
+    height: 185px;
+    width: 400px;
     text-align: center;
-    margin: auto;
+    border-left: groove 1px black;
 }
 
 .authentication-container button{
@@ -24,4 +23,8 @@
     border:solid 2px #80b6e4;
     border-radius: 5px; 
     background-color: whitesmoke;
+}
+
+.input-container{
+    margin: 0;
 }

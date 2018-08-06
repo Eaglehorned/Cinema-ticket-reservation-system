@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react';
+import { FormControl, FormGroup, Button } from 'react-bootstrap'; 
 
 export default class Login extends Component {
     displayName = Login.name;
@@ -75,29 +76,32 @@ export default class Login extends Component {
     render() {
         return (
             <fieldset>
-                <input 
-                    type="email" 
-                    className="form-control form-control-sm" 
-                    value={this.state.email} 
-                    onChange={this.handleEmailChange} 
-                    placeholder="Example@example.com"
-                />
-                <input 
-                    type="password" 
-                    className="form-control form-control-sm" 
-                    value={this.state.password} 
-                    onChange={this.handlePasswordChange} 
-                    placeholder="Password"
-                />
+                <FormGroup 
+                    bsSize="small"
+                    bsClass="form-group form-group-sm input-container"
+                >
+                    <FormControl 
+                        type="text"
+                        value={this.state.email} 
+                        onChange={this.handleEmailChange} 
+                        placeholder="Example@example.com"
+                    />
+                    <FormControl 
+                        type="password" 
+                        value={this.state.password} 
+                        onChange={this.handlePasswordChange} 
+                        placeholder="Password"
+                    />
+                </FormGroup>
                 <h4 className="error-text">{this.state.error}</h4>
-                <button 
-                    type="button" 
-                    className="btn btn-primary" 
+                <Button  
+                    bsStyle="primary"
+                    bsSize="small"
                     onClick={this.handleLoginClick} 
                     disabled={!(this.validateEmail(this.state.email) && this.state.password)}
                 >
                     Log in
-                </button>
+                </Button>
             </fieldset>
         )
     }

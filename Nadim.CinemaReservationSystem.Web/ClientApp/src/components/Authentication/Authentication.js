@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Button } from 'react-bootstrap';
 import Login from './Login';
 import Registration from './Registration';
 import Modal from 'react-modal';
@@ -72,8 +73,16 @@ export default class Authentication extends Component {
     renderAuthenticationContent() {
         return(
             <fieldset>
-                <Login callBackFromParent={this.handleLogin}/>
-                <button type="button" className="btn btn-primary" onClick={this.openModal}>Register</button>
+                <Login 
+                    callBackFromParent={this.handleLogin}
+                />
+                <Button
+                    bsStyle="primary"
+                    bsSize="small"
+                    onClick={this.openModal}
+                >
+                    Register
+                </Button>
                 <Modal     
                     isOpen={this.state.modalIsOpen}
                     onRequestClose={this.closeModal}

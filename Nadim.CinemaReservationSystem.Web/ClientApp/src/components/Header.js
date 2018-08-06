@@ -7,11 +7,12 @@ export default class Header extends Component{
 
     constructor(props){
         super(props);
+        this.state={};
         this.setUserInfo = this.setUserInfo.bind(this);
     }
 
     setUserInfo(userInfo){
-        this.prop.callBackSetUserInfo(userInfo);
+        this.props.callBackSetUserInfo(userInfo);
     }
 
     render(){

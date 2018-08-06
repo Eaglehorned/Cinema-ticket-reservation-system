@@ -5,3 +5,8 @@ input {
 .error-text{
     color: #f80000;
 }
+
+.body{
+    width: 100%;
+    margin-top: 186px;
+}

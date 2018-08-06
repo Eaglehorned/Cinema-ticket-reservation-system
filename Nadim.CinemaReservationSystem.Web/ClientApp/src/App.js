@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Header from './components/Header';
-import Authentication from './components/Authentication/Authentication';
-import Cinema from './components/Cinema/Cinema';
+import Body from './components/Body';
 
 export default class App extends Component {
     displayName = App.name
@@ -25,16 +24,11 @@ export default class App extends Component {
     render() {
         return (
             <React.Fragment>
-                {/* <Header
-                    username={this.state.username}
-                    callBackSetUserInfo={this.setUserInfo}
-                /> */}
-                <Authentication 
+                <Header
                     username={this.state.username}
                     callBackSetUserInfo={this.setUserInfo}
                 />
-                <Cinema 
-                    username={this.state.username}
+                <Body
                     token={this.state.token}
                 />
             </React.Fragment>
