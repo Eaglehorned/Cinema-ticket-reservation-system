@@ -60,10 +60,7 @@ export default class Login extends Component {
                     this.props.callBackFromParent({
                         username: parsedJson.fullUserName,
                         token: parsedJson.token
-                    })
-                    this.setState({
-                        error:'',
-                    })
+                    });
                 }
                 else{
                    this.setState({

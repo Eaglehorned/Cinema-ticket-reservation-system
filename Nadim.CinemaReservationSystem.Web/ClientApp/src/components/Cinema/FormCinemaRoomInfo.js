@@ -10,6 +10,7 @@ export default class FormCinemaRoomInfo extends Component{
             rows: this.props.cinemaRoomInfo ? this.props.cinemaRoomInfo.rows : '',
             columns: this.props.cinemaRoomInfo ? this.props.cinemaRoomInfo.columns : '',
             name: this.props.cinemaRoomInfo ? this.props.cinemaRoomInfo.name : '',
+            showHint: false,
             displayedComponents: this.props.displayedComponents ? 
             this.props.displayedComponents : 
             {
@@ -27,11 +28,18 @@ export default class FormCinemaRoomInfo extends Component{
     }
 
     handleSubmitClick(){
-        this.props.callBackReceiveCinemaRoomInfo({
-            rows : this.state.rows,
-            columns: this.state.columns,
-            name: this.state.name
-        });
+        if (this.allowSubmitClick()){
+            this.props.callBackReceiveCinemaRoomInfo({
+                rows : this.state.rows,
+                columns: this.state.columns,
+                name: this.state.name
+            });
+        }
+        else {
+            this.setState({
+                showHint: true
+            });
+        }
     }
 
     handleCancelClick(){
@@ -88,20 +96,19 @@ export default class FormCinemaRoomInfo extends Component{
                     </label> 
                     <input
                         type="text" 
-                        className=
-                        {
-                            `form-control form-control-sm
-                            ${
-                                this.state.name
-                                ? ''
-                                :' error'
-                            }`
-                        }
+                        className="form-control form-control-sm"
                         id="nameInput"
                         value={this.state.name} 
                         onChange={this.handleNameChange}
                         placeholder="Name"
                     />
+                    <p className="font-italic error-text">
+                        {
+                            !this.state.showHint || this.state.name 
+                            ?''
+                            :'Data not entered'
+                        }
+                    </p>
                 </fieldset>
                 <fieldset
                     className={this.state.displayedComponents.rows ? '' : 'hidden'}
@@ -111,20 +118,25 @@ export default class FormCinemaRoomInfo extends Component{
                     </label> 
                     <input 
                         type="text" 
-                        className=
-                        {
-                            `form-control form-control-sm
-                            ${
-                                this.validateIntNumber(this.state.rows)
-                                ? ''
-                                :' error'
-                            }`
-                        }
+                        className="form-control form-control-sm"
                         id="rowsInput"
                         value={this.state.rows} 
                         onChange={this.handleRowsChange}
                         placeholder="Rows"
                     />
+                    <p className="font-italic error-text">
+                    {
+                        this.state.showHint
+                        ?(this.state.rows
+                            ?(this.validateIntNumber(this.state.rows)
+                                ?''
+                                :'Data not valid'
+                            )
+                            :'Data not entered'
+                        )
+                        :''
+                    }
+                    </p>
                 </fieldset>
                 <fieldset
                     className={this.state.displayedComponents.columns ? '' : 'hidden'}
@@ -134,33 +146,28 @@ export default class FormCinemaRoomInfo extends Component{
                 </label> 
                     <input
                         type="text" 
-                        className=
-                        {
-                            `form-control form-control-sm
-                            ${
-                                this.validateIntNumber(this.state.columns)
-                                ? ''
-                                :' error'
-                            }`
-                        }
+                        className="form-control form-control-sm"
                         id="columnsInput"
                         value={this.state.columns} 
                         onChange={this.handleColumnsChange}
                         placeholder="Columns"
                     />
+                    <p className="font-italic error-text">
+                    {
+                        this.state.showHint
+                        ?(this.state.columns
+                            ?(this.validateIntNumber(this.state.columns)
+                                ?''
+                                :'Data not valid'
+                            )
+                            :'Data not entered'
+                        )
+                        :''
+                    }
+                    </p>
                 </fieldset>
-                {this.allowSubmitClick() ? 
-                    '' : 
-                    <h4 className="font-italic">
-                        Data invalid or not entered
-                    </h4>
-                }
                 <Button 
                     bsStyle="primary"
-                    disabled={
-                        !(
-                            this.allowSubmitClick()
-                        )}
                     onClick={this.handleSubmitClick}
                 >
                     Submit

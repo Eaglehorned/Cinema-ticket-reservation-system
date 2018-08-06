@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, NavItem, Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab } from 'react-bootstrap';
 import Cinema from './Cinema/Cinema';
 
 export default class Body extends Component{
@@ -24,6 +24,7 @@ export default class Body extends Component{
                 justified
                 activeKey={this.state.chosenOperation}
                 onSelect={key => this.handleSelectNav(key)}
+                id="select_operation"
             >
                 <Tab 
                     eventKey={'cinema'}

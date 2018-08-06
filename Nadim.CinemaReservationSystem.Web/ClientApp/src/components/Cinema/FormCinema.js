@@ -61,7 +61,9 @@ export default class FormCinema extends Component{
             }
         }).then(parsedJson => {
                 let tempChosenCinemaInfo = parsedJson.cinemaRoom;
-
+                tempChosenCinemaInfo.info = {};
+                tempChosenCinemaInfo.info.name = tempChosenCinemaInfo.name;
+                delete tempChosenCinemaInfo['name'];
                 tempChosenCinemaInfo.seats.sort((a, b) => {
                     if (a.row > b.row){
                         return 1;
@@ -105,7 +107,11 @@ export default class FormCinema extends Component{
                 this.setState({
                     chosenOperation:''
                 });
-                this.props.callBackInformWithMessage(error.message);
+                this.props.callBackInformWithMessage(                
+                { 
+                    text: error.message,
+                    isError: true
+                });
             });
     }
 
@@ -146,9 +152,15 @@ export default class FormCinema extends Component{
                         name: cinemaRoomData.name,
                         cinemaRoomId: response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length)
                     })
-                })
+                });
+                this.props.callBackInformWithMessage('Cinema room created');
             })
-            .catch(error => this.props.callBackInformWithMessage(error.message));
+            .catch(error => this.props.callBackInformWithMessage(
+                { 
+                    text: error.message,
+                    isError: true
+                }
+            ));
     }
     
     editCinemaRoom(cinemaRoomData){
@@ -186,7 +198,12 @@ export default class FormCinema extends Component{
                 });
                 this.props.callBackInformWithMessage('Cinema room edited.');
             })
-            .catch(error => this.props.callBackInformWithMessage(error.message));
+            .catch(error => this.props.callBackInformWithMessage(
+                { 
+                    text: error.message,
+                    isError: true
+                }
+            ));
             this.setState({
                 chosenOperation: '',
             });
@@ -225,7 +242,12 @@ export default class FormCinema extends Component{
                 })
                 this.props.callBackInformWithMessage('Cinema information edited.');
             })
-            .catch(error => this.props.callBackInformWithMessage(error.message));
+            .catch(error => this.props.callBackInformWithMessage(
+                { 
+                    text: error.message,
+                    isError: true
+                }
+            ));
             this.setState({
                 chosenOperation: ''
             });

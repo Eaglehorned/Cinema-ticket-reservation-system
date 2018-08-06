@@ -11,6 +11,7 @@ export default class FormGeneralCinemaInfo extends Component{
             name: this.props.cinemaInfo ? this.props.cinemaInfo.name : '',
             defaultPrice: this.props.cinemaInfo ? this.props.cinemaInfo.defaultSeatPrice : '',
             vipPrice: this.props.cinemaInfo ? this.props.cinemaInfo.vipSeatPrice : '',
+            showHint: false,
             displayedComponents: this.props.displayedComponents ? 
                                     this.props.displayedComponents : 
                                     {
@@ -64,11 +65,15 @@ export default class FormGeneralCinemaInfo extends Component{
     }
 
     handleSubmitCinemaInfoClick(){
-        this.props.callBackFromParent({
+        this.allowSubmitClick()
+        ?this.props.callBackFromParent({
             city: this.state.city,
             name: this.state.name,
             defaultSeatPrice: this.state.defaultPrice,
             vipSeatPrice: this.state.vipPrice
+        })
+        : this.setState({
+            showHint: true
         });
     }
 
@@ -93,6 +98,7 @@ export default class FormGeneralCinemaInfo extends Component{
     }
 
     render(){
+        console.log(this.validateDoubleNumber(this.state.vipPrice));
         return(
             <fieldset>
                 <h2>
@@ -106,20 +112,19 @@ export default class FormGeneralCinemaInfo extends Component{
                     </label> 
                     <input 
                         type="text" 
-                        className=
-                        {
-                            `form-control form-control-sm
-                            ${
-                                this.state.name
-                                ? ''
-                                :' error'
-                            }`
-                        }
+                        className="form-control form-control-sm"
                         id="nameInput"
                         value={this.state.name} 
                         onChange={this.handleNameChange}
                         placeholder="Name"
                     />
+                    <p className="font-italic error-text">
+                    {
+                        !this.state.showHint || this.state.name 
+                        ?''
+                        :'Data not entered'
+                    }
+                    </p>
                 </fieldset>
                 <fieldset
                     className={this.state.displayedComponents.city ? '' : 'hidden'}
@@ -129,20 +134,19 @@ export default class FormGeneralCinemaInfo extends Component{
                     </label> 
                     <input 
                         type="text" 
-                        className=
-                        {
-                            `form-control form-control-sm
-                            ${
-                                this.state.city
-                                ? ''
-                                :' error'
-                            }`
-                        }
+                        className="form-control form-control-sm"
                         id="cityInput"
                         value={this.state.city} 
                         onChange={this.handleCityChange}
                         placeholder="City"
                     />
+                    <p className="font-italic error-text">
+                    {
+                        !this.state.showHint || this.state.city 
+                        ?''
+                        :'Data not entered'
+                    }
+                    </p>
                 </fieldset>
                 <fieldset
                     className={this.state.displayedComponents.defaultSeatPrice ? '' : 'hidden'}
@@ -152,20 +156,25 @@ export default class FormGeneralCinemaInfo extends Component{
                     </label> 
                     <input
                         type="text" 
-                        className=
-                        {
-                            `form-control form-control-sm
-                            ${
-                                this.validateDoubleNumber(this.state.defaultPrice)
-                                ? ''
-                                :' error'
-                            }`
-                        }
+                        className="form-control form-control-sm"
                         id="defaultSeatPriceInput"
                         value={this.state.defaultPrice} 
                         onChange={this.handleDefaultPriceChange}
                         placeholder="Price"
                     />
+                    <p className="font-italic error-text">
+                    {
+                        this.state.showHint
+                        ?(this.state.defaultPrice
+                            ?(this.validateDoubleNumber(this.state.defaultPrice)
+                                ?''
+                                :'Data not valid'
+                            )
+                            :'Data not entered'
+                        )
+                        :''
+                    }
+                    </p>
                 </fieldset>
                 <fieldset
                     className={this.state.displayedComponents.vipSeatPrice ? '' : 'hidden'}
@@ -175,35 +184,29 @@ export default class FormGeneralCinemaInfo extends Component{
                     </label> 
                     <input
                         type="text" 
-                        className=
-                        {
-                            `form-control form-control-sm
-                            ${
-                                this.validateDoubleNumber(this.state.vipPrice)
-                                ? ''
-                                :' error'
-                            }`
-                        }
+                        className="form-control form-control-sm"
                         id="vipSeatPriceInput"
                         value={this.state.vipPrice} 
                         onChange={this.handleVipPriceChange}
                         placeholder="Price"
                     />
+                    <p className="font-italic error-text">
+                    {
+                        this.state.showHint
+                        ?(this.state.vipPrice
+                            ?(this.validateDoubleNumber(this.state.vipPrice)
+                                ?''
+                                :'Data not valid'
+                            )
+                            :'Data not entered'
+                        )
+                        :''
+                    }
+                    </p>
                 </fieldset>
-                {this.allowSubmitClick() ? 
-                    '' : 
-                    <h4 className="font-italic">
-                        Data invalid or not entered
-                    </h4>
-                }
                 <Button 
                     bsStyle="primary"
                     onClick={this.handleSubmitCinemaInfoClick} 
-                    disabled={
-                        !(
-                            this.allowSubmitClick()
-                        )
-                    }
                 >
                     Submit
                 </Button>

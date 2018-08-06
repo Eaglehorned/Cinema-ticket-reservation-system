@@ -36,7 +36,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
             if (result.ResultOk)
             {
-                return Created("api/cinemas/" + cinemaId.ToString(), typeof(Cinema));
+                return Ok();
             }
             return NotFound();
         }
@@ -65,7 +65,6 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 return result;
             }
             return NotFound();
-
         }
 
         [Authorize]
@@ -90,8 +89,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             {
                 return Created($"api/cinemas/{cinemaId}/cinemaRooms/{result.Id}", typeof(CinemaRoom));
             }
-            else
-                return BadRequest(result);
+            return BadRequest(result);
         }
 
         [Authorize(Roles = "admin")]
@@ -102,7 +100,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
             if (result.ResultOk)
             {
-                return Created($"api/cinemas/{cinemaId}/cinemaRooms/{cinemaRoomId}", typeof(CinemaRoom));
+                return Ok();
             }
             else
                 return NotFound();

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Button, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Button, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 import '../../styles/EditCinemaInfo.css';
 import '../../styles/Cinema.css';
 import FormCinema from './FormCinema';
@@ -15,7 +15,8 @@ export default class Cinema extends Component{
             chosenOperation: '',
             cinemaList: [],
             chosenCinema: undefined,
-            chosenCinemaInfo: undefined
+            chosenCinemaInfo: undefined,
+            alertStyle:'info'
         };
         this.informWithMessage = this.informWithMessage.bind(this);
         this.createCinema = this.createCinema.bind(this);
@@ -27,6 +28,7 @@ export default class Cinema extends Component{
         this.handleChooseEditCinemaAction = this.handleChooseEditCinemaAction.bind(this);
         this.renderActionsContent = this.renderActionsContent.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
+        this.renderAlertMessage = this.renderAlertMessage.bind(this);
 
         this.getCinemaList();
     }
@@ -49,10 +51,20 @@ export default class Cinema extends Component{
     }
     
     informWithMessage(message){
-        this.setState({
-            show: true,
-            infoMessage: message,
-        });
+        if (message.isError){
+            this.setState({
+                show: true,
+                infoMessage: message.text,
+                alertStyle: 'danger'
+            });
+        }
+        else {
+            this.setState({
+                show: true,
+                infoMessage: message,
+                alertStyle: 'info'
+            });
+        }
         const self = this;
         setTimeout(() => 
             self.setState({
@@ -86,10 +98,15 @@ export default class Cinema extends Component{
             }
         }).then(parsedJson => {
                 this.setState({
-                    cinemaList: parsedJson.info,
+                    cinemaList: parsedJson.cinemaList,
                 });
             })
-            .catch(error => this.informWithMessage(error.message));
+            .catch(error => this.informWithMessage(
+                { 
+                    text: error.message,
+                    isError: true
+                })
+            );
     }
 
     getCinema(id){
@@ -127,7 +144,11 @@ export default class Cinema extends Component{
                 this.setState({
                     chosenOperation:''
                 });
-                this.informWithMessage(error.message);
+                this.informWithMessage(
+                    { 
+                        text: error.message,
+                        isError: true
+                    });
             });
     }
 
@@ -182,9 +203,13 @@ export default class Cinema extends Component{
                 })
                 .catch(error => {
                     this.setState({
-                    chosenOperation: ''
+                        chosenOperation: ''
                     });
-                    this.informWithMessage(error.message)
+                    this.informWithMessage(
+                    { 
+                        text: error.message,
+                        isError: true
+                    });
                 });
     }
 
@@ -215,7 +240,12 @@ export default class Cinema extends Component{
             }).then(parsedJson => {
                 this.informWithMessage('Cinema information edited.');
             })
-            .catch(error => this.informWithMessage(error.message));
+            .catch(error => this.informWithMessage(
+                { 
+                    text: error.message,
+                    isError: true
+                })
+            );
             this.setState({
                 chosenOperation: ''
             });
@@ -332,13 +362,30 @@ export default class Cinema extends Component{
         }
     }
 
+    renderAlertMessage(){
+        return(
+            <Alert
+                bsStyle={this.state.alertStyle}
+                onDismiss={() => this.setState({show: false})}
+            >
+                <div className="font-bold-x-large">
+                    Something happened
+                </div>
+                <div className="font-large">
+                    {this.state.infoMessage}
+                </div>
+
+            </Alert>
+        )
+    }
+
     render(){
         const content = this.renderContent();
         return(
             <div className="add-cinema-container">
                 <div className="font-x-large">
                     {this.state.show ? 
-                        this.state.infoMessage :
+                        this.renderAlertMessage() :
                         ''
                     }
                 </div>
