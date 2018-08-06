@@ -19,6 +19,8 @@ export default class FormGeneralCinemaInfo extends Component{
                                         name: true,
                                         defaultSeatPrice: true,
                                         vipSeatPrice: true,
+                                        submit: true,
+                                        cancel: true
                                     }
         }
         this.handleCityChange = this.handleCityChange.bind(this);
@@ -44,23 +46,53 @@ export default class FormGeneralCinemaInfo extends Component{
         this.setState({
             city: event.target.value
         });
+        if (this.props.callBackHandleInfoChange){
+            this.props.callBackHandleInfoChange({
+                city: event.target.value,
+                name: this.state.name,
+                defaultSeatPrice: this.state.defaultPrice,
+                vipSeatPrice: this.state.vipPrice
+            });
+        }
     }
 
     handleNameChange(event){
         this.setState({
             name: event.target.value
         });
+        if (this.props.callBackHandleInfoChange){
+            this.props.callBackHandleInfoChange({
+                city: this.state.city,
+                name: event.target.value,
+                defaultSeatPrice: this.state.defaultPrice,
+                vipSeatPrice: this.state.vipPrice
+            });
+        }
     }
 
     handleDefaultPriceChange(event){
         this.setState({
             defaultPrice: event.target.value
         });
+        if (this.props.callBackHandleInfoChange){
+            this.props.callBackHandleInfoChange({
+                city: this.state.city,
+                name: this.state.name,
+                defaultSeatPrice: event.target.value,
+                vipSeatPrice: this.state.vipPrice
+            });
+        }
     }
 
     handleVipPriceChange(event){
         this.setState({
             vipPrice: event.target.value
+        });
+        this.props.callBackHandleInfoChange({
+            city: this.state.city,
+            name: this.state.name,
+            defaultSeatPrice: this.state.defaultPrice,
+            vipSeatPrice: event.target.value
         });
     }
 
@@ -98,12 +130,8 @@ export default class FormGeneralCinemaInfo extends Component{
     }
 
     render(){
-        console.log(this.validateDoubleNumber(this.state.vipPrice));
         return(
             <fieldset>
-                <h2>
-                    Input general cinema information
-                </h2>
                 <fieldset
                     className={this.state.displayedComponents.name ? '' : 'hidden'}
                 >
@@ -205,12 +233,14 @@ export default class FormGeneralCinemaInfo extends Component{
                     </p>
                 </fieldset>
                 <Button 
+                    className={this.state.displayedComponents.submit?'':'hidden'}
                     bsStyle="primary"
                     onClick={this.handleSubmitCinemaInfoClick} 
                 >
                     Submit
                 </Button>
                 <Button 
+                    className={this.state.displayedComponents.cancel?'':'hidden'}
                     onClick={this.handleCancelClick} 
                 >
                     Cancel

@@ -72,7 +72,7 @@ export default class Authentication extends Component {
 
     renderAuthenticationContent() {
         return(
-            <fieldset>
+            <fieldset className="login">
                 <Login 
                     callBackFromParent={this.handleLogin}
                 />

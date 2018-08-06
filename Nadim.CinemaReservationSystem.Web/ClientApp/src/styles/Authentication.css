@@ -1,11 +1,14 @@
 .authentication-container{
-    position: relative;
-    margin-left: calc(100% - 400px); 
+    text-align: center;
+}
+
+.login{
     padding: 5px;
+    border-left: groove 1px black;
+    margin-left: calc(100% - 400px); 
+    position: relative;
     height: 185px;
     width: 400px;
-    text-align: center;
-    border-left: groove 1px black;
 }
 
 .authentication-container button{

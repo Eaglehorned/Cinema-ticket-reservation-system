@@ -34,6 +34,7 @@ export default class FormCinema extends Component{
         this.renderComponentContent = this.renderComponentContent.bind(this);
         this.renderFormCinemaRoomCreateContent = this.renderFormCinemaRoomCreateContent.bind(this);
         this.renderFormCinemaRoomEditContent = this.renderFormCinemaRoomEditContent.bind(this);
+        this.handleCinemaInfoChange = this.handleCinemaInfoChange.bind(this);
     }
 
     getCinemaRoom(id){
@@ -65,12 +66,6 @@ export default class FormCinema extends Component{
                 tempChosenCinemaInfo.info.name = tempChosenCinemaInfo.name;
                 delete tempChosenCinemaInfo['name'];
                 tempChosenCinemaInfo.seats.sort((a, b) => {
-                    if (a.row > b.row){
-                        return 1;
-                    }
-                    if (a.row < b.row){
-                        return -1;
-                    }
                     if (a.row === b.row){
                         if (a.column > b.column){
                             return 1;
@@ -80,6 +75,10 @@ export default class FormCinema extends Component{
                         } 
                         return 0;
                     }
+                    if (a.row > b.row){
+                        return 1;
+                    }
+                    return -1;
                 });
 
                 let rows = tempChosenCinemaInfo.seats[tempChosenCinemaInfo.seats.length - 1].row + 1;
@@ -291,6 +290,14 @@ export default class FormCinema extends Component{
         });
     }
 
+    handleCinemaInfoChange(cinemaInfo){
+        let tempCinemaInfo = cinemaInfo;
+        tempCinemaInfo.cinemaId = this.state.cinemaInfo.cinemaId;
+        this.setState({
+            cinemaInfo: tempCinemaInfo
+        });
+    }
+
     handleChooseEditCinemaAction(){
         this.setState({
             chosenOperation: 'editCinemaRoomLoading'
@@ -395,6 +402,9 @@ export default class FormCinema extends Component{
         return(
             <React.Fragment>
                 <h1>Cinema</h1>
+                <h2>
+                    Input general cinema information
+                </h2>
                 <FormGeneralCinemaInfo 
                     callBackFromParent={this.handleCinemaCreateGeneralInfo}
                     callBackCancel={this.cancelCreateCinema}
@@ -407,7 +417,7 @@ export default class FormCinema extends Component{
         return(
             <React.Fragment>
                 <h1>Cinema</h1>
-                <FormGeneralCinemaInfo 
+                <FormGeneralCinemaInfo
                     callBackFromParent={this.editCinemaInfo}
                     callBackCancel={this.cancelCurrentOperation}
                     cinemaInfo={this.state.cinemaInfo}
@@ -422,7 +432,7 @@ export default class FormCinema extends Component{
                 <h1>Cinema</h1>
                 <div className="form-cinema-room-container cinema-room-information-container">
                 <h2>Cinema information</h2>
-                    <div className="font-x-large">
+                    {/* <div className="font-x-large">
                         <span className="font-bold"> Cinema name : </span>{this.state.cinemaInfo.name}
                     </div>
                     <div className="font-x-large">
@@ -433,7 +443,21 @@ export default class FormCinema extends Component{
                     </div>
                     <div className="font-x-large">
                         <span className="font-bold"> Vip seat price : </span>{this.state.cinemaInfo.vipSeatPrice}
-                    </div>
+                    </div> */}
+                    <FormGeneralCinemaInfo         
+                        callBackHandleInfoChange={this.handleCinemaInfoChange}
+                        callBackFromParent={this.editCinemaInfo}
+                        callBackCancel={this.cancelCurrentOperation}
+                        cinemaInfo={this.state.cinemaInfo}
+                        displayedComponents={{
+                            city: true,
+                            name: true,
+                            defaultSeatPrice: true,
+                            vipSeatPrice: true,
+                            submit: false,
+                            cancel: false
+                        }}
+                    />
                 </div>
                 <div className="form-cinema-room-container cinema-room-buttons-container">
                     {this.renderCinemaActionButtons()}
