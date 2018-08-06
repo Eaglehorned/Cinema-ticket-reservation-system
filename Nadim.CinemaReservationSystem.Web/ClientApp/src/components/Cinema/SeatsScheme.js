@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import SeatBoxForCreation from './SeatBoxForCreation';
+import SeatBox from './SeatBox';
 
 export default class SeatsScheme extends Component{
     displayName = SeatsScheme.displayName;
@@ -47,7 +47,7 @@ export default class SeatsScheme extends Component{
                             className="row"
                             key={item[0].row}>
                             {item.map((itemArray) => 
-                                <SeatBoxForCreation 
+                                <SeatBox 
                                     key={this.generateKey(itemArray.row, itemArray.column)}
                                     seatInfo={{row: itemArray.row, column: itemArray.column, type: itemArray.type}}
                                     callBackFromParent={this.handleSeatTypeChange}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-export default class SeatBoxForCreation extends Component{
-    displayName = SeatBoxForCreation.displayName;
+export default class SeatBox extends Component{
+    displayName = SeatBox.displayName;
 
     constructor(props){
         super(props);
