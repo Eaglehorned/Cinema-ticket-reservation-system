@@ -233,12 +233,6 @@ export default class FormCinema extends Component{
                     throw new Error('Cant find resourse. ');
             }
         }).then(parsedJson => {
-                this.setState({
-                    cinemaInfo: {
-                        ...receivedCinemaInfo,
-                        cinemaId: this.state.cinemaInfo.cinemaId
-                    }
-                })
                 this.props.callBackInformWithMessage('Cinema information edited.');
             })
             .catch(error => this.props.callBackInformWithMessage(
@@ -257,6 +251,7 @@ export default class FormCinema extends Component{
     }
 
     submitFormCinema(){
+        this.editCinemaInfo(this.state.cinemaInfo);
         this.props.callBackFormCinemaInfo({
             cinemaId: this.state.cinemaInfo.cinemaId,
             name: this.state.cinemaInfo.name,
@@ -309,14 +304,14 @@ export default class FormCinema extends Component{
         return(
             <React.Fragment>
                 <fieldset>
-                    <legend>
+                    {/* <legend>
                         Cinema
                     </legend>
                     <Button
                         onClick={this.handleChangeCinemaInfoClick}
                     >
                         Change general information
-                    </Button>
+                    </Button> */}
                 </fieldset>
                 <fieldset>
                     <legend>

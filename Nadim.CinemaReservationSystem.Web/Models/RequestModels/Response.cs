@@ -28,7 +28,7 @@ namespace Nadim.CinemaReservationSystem.Web
 
     public class GetCinemaListResult : Result
     {
-        public List<ResponseCinemaDisplayInfo> CinemaList { get; set; }
+        public IEnumerable<ResponseCinemaDisplayInfo> CinemaList { get; set; }
     }
 
     public class GetCinemaResult : Result

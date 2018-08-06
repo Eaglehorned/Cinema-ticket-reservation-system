@@ -23,6 +23,8 @@ export default class FormGeneralCinemaInfo extends Component{
                                         cancel: true
                                     }
         }
+        this.validatePrice = this.validatePrice.bind(this);
+        this.validateString = this.validateString.bind(this);
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleSubmitCinemaInfoClick = this.handleSubmitCinemaInfoClick.bind(this);
@@ -40,6 +42,26 @@ export default class FormGeneralCinemaInfo extends Component{
     validateDoubleNumber(number){
         const result = /^\d+([.,]\d+)?$/;
         return result.test(String(number));
+    }
+
+    validateString(str){
+        return !this.state.showHint || str
+        ?''
+        :'Data not entered';
+    }
+
+    validatePrice(price){
+        if (this.state.showHint){
+            return price
+            ?(this.validateDoubleNumber(price)
+                ? ''
+                :'Data not valid'
+            )
+            :'Data not entered';
+        }
+        else{
+            return '';
+        }
     }
 
     handleCityChange(event){
@@ -88,12 +110,14 @@ export default class FormGeneralCinemaInfo extends Component{
         this.setState({
             vipPrice: event.target.value
         });
-        this.props.callBackHandleInfoChange({
-            city: this.state.city,
-            name: this.state.name,
-            defaultSeatPrice: this.state.defaultPrice,
-            vipSeatPrice: event.target.value
-        });
+        if (this.props.callBackHandleInfoChange){
+            this.props.callBackHandleInfoChange({
+                city: this.state.city,
+                name: this.state.name,
+                defaultSeatPrice: this.state.defaultPrice,
+                vipSeatPrice: event.target.value
+            });
+        }
     }
 
     handleSubmitCinemaInfoClick(){
@@ -148,9 +172,7 @@ export default class FormGeneralCinemaInfo extends Component{
                     />
                     <p className="font-italic error-text">
                     {
-                        !this.state.showHint || this.state.name 
-                        ?''
-                        :'Data not entered'
+                        this.validateString(this.state.name)
                     }
                     </p>
                 </fieldset>
@@ -170,9 +192,7 @@ export default class FormGeneralCinemaInfo extends Component{
                     />
                     <p className="font-italic error-text">
                     {
-                        !this.state.showHint || this.state.city 
-                        ?''
-                        :'Data not entered'
+                        this.validateString(this.state.city)
                     }
                     </p>
                 </fieldset>
@@ -192,15 +212,7 @@ export default class FormGeneralCinemaInfo extends Component{
                     />
                     <p className="font-italic error-text">
                     {
-                        this.state.showHint
-                        ?(this.state.defaultPrice
-                            ?(this.validateDoubleNumber(this.state.defaultPrice)
-                                ?''
-                                :'Data not valid'
-                            )
-                            :'Data not entered'
-                        )
-                        :''
+                        this.validatePrice(this.state.defaultPrice)
                     }
                     </p>
                 </fieldset>
@@ -220,15 +232,7 @@ export default class FormGeneralCinemaInfo extends Component{
                     />
                     <p className="font-italic error-text">
                     {
-                        this.state.showHint
-                        ?(this.state.vipPrice
-                            ?(this.validateDoubleNumber(this.state.vipPrice)
-                                ?''
-                                :'Data not valid'
-                            )
-                            :'Data not entered'
-                        )
-                        :''
+                        this.validatePrice(this.state.vipPrice)
                     }
                     </p>
                 </fieldset>

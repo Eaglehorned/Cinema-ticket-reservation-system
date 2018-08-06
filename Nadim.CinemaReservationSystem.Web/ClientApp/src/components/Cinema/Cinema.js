@@ -369,7 +369,11 @@ export default class Cinema extends Component{
                 onDismiss={() => this.setState({show: false})}
             >
                 <div className="font-bold-x-large">
-                    Something happened
+                {
+                    this.state.alertStyle === 'danger'
+                    ? 'Error'
+                    : 'Notification'
+                }
                 </div>
                 <div className="font-large">
                     {this.state.infoMessage}

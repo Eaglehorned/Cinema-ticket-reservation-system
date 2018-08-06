@@ -106,16 +106,12 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                            Name = c.Name,
                            City = c.City,
                            CinemaId = c.CinemaId
-                       }).ToList()
+                       })
             };
         }
 
         public Result GetCinema(int id)
         {
-            var cinema = dbContext.Cinemas
-                .Include(c => c.CinemaRooms)
-                .FirstOrDefault(c => c.CinemaId == id);
-
             if (!CinemaExists(id))
             {
                 return new Result
@@ -142,7 +138,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                                              select new ResponseCinemaRoomDisplayInfo {
                                                  CinemaRoomId = r.CinemaRoomId,
                                                  Name = r.Name
-                                             }).ToList()
+                                             })
                           }).FirstOrDefault()
             };
         }
@@ -241,7 +237,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     ResultOk = false
                 };
             }
-            
+
             return new GetCinemaRoomResult
             {
                 ResultOk = true,
@@ -249,13 +245,13 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                               where r.CinemaRoomId == cinemaRoomId
                               select new ResponseCinemaRoomFullInfo
                               {
-                                  Name = r.Name, 
+                                  Name = r.Name,
                                   Seats = (from s in r.Seats
                                                 select new SeatInfo {
                                                 Type = s.Type,
                                                 Row = s.Row,
                                                 Column = s.Column
-                                           }).ToList()
+                                           })
                               }).FirstOrDefault()
             };
         }

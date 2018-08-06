@@ -16,9 +16,13 @@ export default class FormCinemaRoomInfo extends Component{
             {
                 name: true,
                 rows: true, 
-                columns: true
+                columns: true,
+                submit: true,
+                cancel: true
             }
         }
+        this.validateString = this.validateString.bind(this);
+        this.validateInt = this.validateInt.bind(this);
         this.handleSubmitClick = this.handleSubmitClick.bind(this);
         this.handleCancelClick = this.handleCancelClick.bind(this);
         this.handleRowsChange = this.handleRowsChange.bind(this);
@@ -51,22 +55,63 @@ export default class FormCinemaRoomInfo extends Component{
         return result.test(String(number));
     }
 
+    validateString(str){
+        !this.state.showHint || str
+        ?''
+        :'Data not entered'
+    }
+
+    validateInt(num){
+        if (this.state.showHint){
+            return num
+            ?(this.validateIntNumber(num)
+                ? ''
+                :'Data not valid'
+            )
+            :'Data not entered';
+        }
+        else{
+            return '';
+        }
+    }
+
     handleRowsChange(event){
         this.setState({
             rows: event.target.value
         });
+        if (this.props.callBackHandleChangeCinemaRoomInfo){
+            this.props.callBackHandleChangeCinemaRoomInfo({
+                rows : event.target.value,
+                columns: this.state.columns,
+                name: this.state.name
+            });
+        }
     }
     
     handleColumnsChange(event){
         this.setState({
             columns: event.target.value
         });
+        if (this.props.callBackHandleChangeCinemaRoomInfo){
+            this.props.callBackHandleChangeCinemaRoomInfo({
+                rows : this.state.rows,
+                columns: event.target.value,
+                name: this.state.name
+            });
+        }
     }
 
     handleNameChange(event){
         this.setState({
             name: event.target.value
         });
+        if (this.props.callBackHandleChangeCinemaRoomInfo){
+            this.props.callBackHandleChangeCinemaRoomInfo({
+                rows : this.state.rows,
+                columns: this.state.columns,
+                name: event.target.value
+            });
+        }
     }
 
     allowSubmitClick(){
@@ -85,9 +130,6 @@ export default class FormCinemaRoomInfo extends Component{
     render(){
         return(
             <fieldset>
-                <h2>
-                    Input cinema room information
-                </h2>
                 <fieldset
                     className={this.state.displayedComponents.name ? '' : 'hidden'}
                 >
@@ -104,9 +146,7 @@ export default class FormCinemaRoomInfo extends Component{
                     />
                     <p className="font-italic error-text">
                         {
-                            !this.state.showHint || this.state.name 
-                            ?''
-                            :'Data not entered'
+                            this.validateString(this.state.name)
                         }
                     </p>
                 </fieldset>
@@ -126,15 +166,7 @@ export default class FormCinemaRoomInfo extends Component{
                     />
                     <p className="font-italic error-text">
                     {
-                        this.state.showHint
-                        ?(this.state.rows
-                            ?(this.validateIntNumber(this.state.rows)
-                                ?''
-                                :'Data not valid'
-                            )
-                            :'Data not entered'
-                        )
-                        :''
+                        this.validateInt(this.state.rows)
                     }
                     </p>
                 </fieldset>
@@ -154,25 +186,19 @@ export default class FormCinemaRoomInfo extends Component{
                     />
                     <p className="font-italic error-text">
                     {
-                        this.state.showHint
-                        ?(this.state.columns
-                            ?(this.validateIntNumber(this.state.columns)
-                                ?''
-                                :'Data not valid'
-                            )
-                            :'Data not entered'
-                        )
-                        :''
+                        this.validateInt(this.state.columns)
                     }
                     </p>
                 </fieldset>
                 <Button 
+                    className={this.state.displayedComponents.submit ? '' : 'hidden'}
                     bsStyle="primary"
                     onClick={this.handleSubmitClick}
                 >
-                    Submit
+                    Create
                 </Button>
                 <Button 
+                    className={this.state.displayedComponents.cancel ? '' : 'hidden'}
                     bsStyle="default"
                     onClick={this.handleCancelClick}
                 >

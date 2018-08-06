@@ -27,6 +27,7 @@ export default class FormCinemaRoom extends Component{
         this.submitChangeName = this.submitChangeName.bind(this);
         this.cancelFormCinemaRoom = this.cancelFormCinemaRoom.bind(this);
         this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
+        this.handleChangeCinemaRoomNameInfo = this.handleChangeCinemaRoomNameInfo.bind(this);
         this.renderCinemaRoomChangeSeatTypesContent = this.renderCinemaRoomChangeSeatTypesContent.bind(this);
         this.renderFormCinemaRoomContent = this.renderFormCinemaRoomContent.bind(this);
         this.renderFormCinemaRoomInfoContent = this.renderFormCinemaRoomInfoContent.bind(this);
@@ -117,6 +118,14 @@ export default class FormCinemaRoom extends Component{
         });
     }
 
+    handleChangeCinemaRoomNameInfo(cinemaRoomInfo){
+        let tempCinemaRoomInfo = this.state.cinemaRoomInfo;
+        tempCinemaRoomInfo.name = cinemaRoomInfo.name;
+        this.setState({
+            cinemaRoomInfo: tempCinemaRoomInfo
+        });
+    }
+
     renderFormCinemaRoomInfoContent(){
         return(
             <React.Fragment>
@@ -145,7 +154,7 @@ export default class FormCinemaRoom extends Component{
     renderCinemaActionButtons(){
         return(
             <React.Fragment>
-                <fieldset>
+                {/* <fieldset>
                     <legend>
                         Cinema room information
                     </legend>
@@ -169,8 +178,13 @@ export default class FormCinemaRoom extends Component{
                     >
                         Change seats scheme
                     </Button>
-                </fieldset>
-                <fieldset className="concluding-buttons">
+                </fieldset> */}
+                <fieldset
+                    //className="concluding-buttons"
+                >
+                    <legend>
+                        Cinema room
+                    </legend>
                     <Button
                         onClick={this.returnCinemaRoom}
                     >
@@ -208,7 +222,7 @@ export default class FormCinemaRoom extends Component{
                 <h1>Cinema room</h1>
                 <div className="form-cinema-room-container cinema-room-information-container">
                     <h2>Cinema room information</h2>
-                    <div className="font-x-large">
+                    {/* <div className="font-x-large">
                         <span className="font-bold"> Name : </span>{this.state.cinemaRoomInfo.name}
                     </div>
                     <div className="font-x-large">
@@ -217,11 +231,44 @@ export default class FormCinemaRoom extends Component{
                     <div className="font-x-large">
                         <span className="font-bold"> Number of columns : </span>{this.state.cinemaRoomInfo.columns}
                     </div>
+                    <SeatsScheme
+                        seatsArray={this.state.cinemaRoomSeats}
+                        callBackFromParent={()=>{}}
+                        mode="display"
+                    /> */}
+                    <fieldset>
+                        <legend>
+                            Cinema room name
+                        </legend>
+                        <FormCinemaRoomInfo
+                            callBackHandleChangeCinemaRoomInfo={this.handleChangeCinemaRoomNameInfo}
+                            callBackReceiveCinemaRoomInfo={this.submitChangeName}
+                            cinemaRoomInfo={this.state.cinemaRoomInfo}
+                            callBackCancel={this.cancelCurrentOperation}
+                            displayedComponents={{name: true}}
+                        />
+                    </fieldset>
+                    <fieldset>
+                    <legend>
+                        Edit seats scheme name
+                    </legend>
+                        <FormCinemaRoomInfo
+                            callBackReceiveCinemaRoomInfo={this.createSeatsArray}
+                            callBackCancel={this.cancelCurrentOperation}
+                            displayedComponents={{
+                                rows: true, 
+                                columns: true,
+                                submit: true
+                            }}
+                            cinemaRoomInfo={this.state.cinemaRoomInfo}
+                        />
                         <SeatsScheme
                             seatsArray={this.state.cinemaRoomSeats}
-                            callBackFromParent={()=>{}}
+                            callBackFromParent={this.changeSeatType}
+                            callBackSubmit={this.submitCinemaRoomSeats}
                             mode="display"
                         />
+                    </fieldset>
                 </div>
                 <div className="form-cinema-room-container cinema-room-buttons-container">
                     {this.renderCinemaActionButtons()}

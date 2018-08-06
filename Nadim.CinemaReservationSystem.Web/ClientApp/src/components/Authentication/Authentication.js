@@ -97,7 +97,7 @@ export default class Authentication extends Component {
 
     renderLogoutContent() {
         return(
-            <div>
+            <div className="login">
                 <h3>{this.state.username}</h3>
                 <button 
                     type="button" 
