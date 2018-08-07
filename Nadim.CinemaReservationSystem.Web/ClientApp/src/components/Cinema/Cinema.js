@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Button, Alert } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import FormCinema from './FormCinema';
 import CinemaDisplayInfoBox from './CinemaDisplayInfoBox';
 import '../../styles/FontStyles.css';
