@@ -10,7 +10,7 @@ export default class FormCinemaRoomInfo extends Component{
             rows: this.props.cinemaRoomInfo ? this.props.cinemaRoomInfo.rows : '',
             columns: this.props.cinemaRoomInfo ? this.props.cinemaRoomInfo.columns : '',
             name: this.props.cinemaRoomInfo ? this.props.cinemaRoomInfo.name : '',
-            showHint: false,
+            showHint: this.props.needToShowHint ? this.props.needToShowHint: false,
             displayedComponents: this.props.displayedComponents ? 
             this.props.displayedComponents : 
             {
@@ -32,16 +32,18 @@ export default class FormCinemaRoomInfo extends Component{
     }
 
     handleSubmitClick(){
-        if (this.allowSubmitClick()){
+        this.setState({
+            showHint: true
+        });
+        if (this.allowSubmitClick(
+            this.state.rows,
+            this.state.columns,
+            this.state.name
+        )){
             this.props.callBackReceiveCinemaRoomInfo({
                 rows : this.state.rows,
                 columns: this.state.columns,
                 name: this.state.name
-            });
-        }
-        else {
-            this.setState({
-                showHint: true
             });
         }
     }
@@ -56,7 +58,7 @@ export default class FormCinemaRoomInfo extends Component{
     }
 
     validateString(str){
-        !this.state.showHint || str
+        return !this.state.showHint || str
         ?''
         :'Data not entered'
     }
@@ -81,9 +83,17 @@ export default class FormCinemaRoomInfo extends Component{
         });
         if (this.props.callBackHandleChangeCinemaRoomInfo){
             this.props.callBackHandleChangeCinemaRoomInfo({
-                rows : event.target.value,
-                columns: this.state.columns,
-                name: this.state.name
+                info: 
+                {
+                    rows : event.target.value,
+                    columns: this.state.columns,
+                    name: this.state.name
+                },
+                allowSubmit: this.allowSubmitClick(
+                    event.target.value,
+                    this.state.columns,
+                    this.state.name
+                ) 
             });
         }
     }
@@ -94,9 +104,17 @@ export default class FormCinemaRoomInfo extends Component{
         });
         if (this.props.callBackHandleChangeCinemaRoomInfo){
             this.props.callBackHandleChangeCinemaRoomInfo({
-                rows : this.state.rows,
-                columns: event.target.value,
-                name: this.state.name
+                info: 
+                {
+                    rows : this.state.rows,
+                    columns: event.target.value,
+                    name: this.state.name
+                },
+                allowSubmit: this.allowSubmitClick(
+                    this.state.rows,
+                    event.target.value,
+                    this.state.name
+                ) 
             });
         }
     }
@@ -107,21 +125,29 @@ export default class FormCinemaRoomInfo extends Component{
         });
         if (this.props.callBackHandleChangeCinemaRoomInfo){
             this.props.callBackHandleChangeCinemaRoomInfo({
-                rows : this.state.rows,
-                columns: this.state.columns,
-                name: event.target.value
+                info: 
+                {
+                    rows : this.state.rows,
+                    columns: this.state.columns,
+                    name: event.target.value
+                },
+                allowSubmit: this.allowSubmitClick(
+                    this.state.rows,
+                    this.state.columns,
+                    event.target.value
+                )
             });
         }
     }
 
-    allowSubmitClick(){
-        if (this.state.displayedComponents.rows && !this.validateIntNumber(this.state.rows)){
+    allowSubmitClick(rows, columns, name){
+        if (this.state.displayedComponents.rows && !this.validateIntNumber(rows)){
             return false;
         }
-        if (this.state.displayedComponents.columns && !this.validateIntNumber(this.state.columns)){
+        if (this.state.displayedComponents.columns && !this.validateIntNumber(columns)){
             return false;
         }
-        if (this.state.displayedComponents.name && !this.state.name){
+        if (this.state.displayedComponents.name && !name){
             return false;
         }
         return true;
@@ -192,7 +218,6 @@ export default class FormCinemaRoomInfo extends Component{
                 </fieldset>
                 <Button 
                     className={this.state.displayedComponents.submit ? '' : 'hidden'}
-                    bsStyle="primary"
                     onClick={this.handleSubmitClick}
                 >
                     Create

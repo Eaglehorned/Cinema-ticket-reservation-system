@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { FormControl, FormGroup, Button } from 'react-bootstrap'; 
+import { FormControl, FormGroup, Button } from 'react-bootstrap';
 
 export default class Login extends Component {
     displayName = Login.name;
@@ -10,12 +10,17 @@ export default class Login extends Component {
             email: '',
             password:'',
             username:'',
-            token:'',
             error:''
         }
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleLoginClick = this.handleLoginClick.bind(this);
+    }
+
+    parseJwt(token) {
+        let base64Url = token.split('.')[1];
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
     }
 
     validateEmail(email) {
@@ -55,11 +60,20 @@ export default class Login extends Component {
         }).then(response => response.json())
             .then(parsedJson => {
                 if (parsedJson.resultOk === true) {
+                    let role;
+                    for (let key in this.parseJwt(parsedJson.token)){
+                        if (key.indexOf('role') !== -1){
+                            role = this.parseJwt(parsedJson.token)[key];
+                            break;
+                        }
+                    }
                     localStorage.setItem('token', parsedJson.token);
                     localStorage.setItem('username', parsedJson.fullUserName);
+                    localStorage.setItem('role', role);
                     this.props.callBackFromParent({
                         username: parsedJson.fullUserName,
-                        token: parsedJson.token
+                        token: parsedJson.token,
+                        role: role
                     });
                 }
                 else{

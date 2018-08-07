@@ -10,6 +10,7 @@ export default class App extends Component {
         this.state={
             username: localStorage.getItem('username'),
             token: localStorage.getItem('token'),
+            role: localStorage.getItem('role')
         }
         this.setUserInfo = this.setUserInfo.bind(this);
     }
@@ -18,6 +19,7 @@ export default class App extends Component {
         this.setState({
             username: userInfo.username,
             token: userInfo.token,
+            role: userInfo.role
         })
     }
 
@@ -26,9 +28,11 @@ export default class App extends Component {
             <React.Fragment>
                 <Header
                     username={this.state.username}
+                    role={this.state.role}
                     callBackSetUserInfo={this.setUserInfo}
                 />
                 <Body
+                    role={this.state.role}
                     token={this.state.token}
                 />
             </React.Fragment>

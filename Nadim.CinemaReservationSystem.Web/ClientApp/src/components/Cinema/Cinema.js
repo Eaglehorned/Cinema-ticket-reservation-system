@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
-import { Button, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
-import '../../styles/EditCinemaInfo.css';
-import '../../styles/Cinema.css';
+import { Button, Alert } from 'react-bootstrap';
 import FormCinema from './FormCinema';
+import CinemaDisplayInfoBox from './CinemaDisplayInfoBox';
+import '../../styles/FontStyles.css';
+import '../../styles/Cinema.css';
+import '../../styles/ListStyles.css';
 
 export default class Cinema extends Component{
     displayName = Cinema.displayName;
@@ -14,7 +16,6 @@ export default class Cinema extends Component{
             infoMessage:'',
             chosenOperation: '',
             cinemaList: [],
-            chosenCinema: undefined,
             chosenCinemaInfo: undefined,
             alertStyle:'info'
         };
@@ -27,7 +28,6 @@ export default class Cinema extends Component{
         this.handleChooseCreateCinemaAction = this.handleChooseCreateCinemaAction.bind(this);
         this.handleChooseEditCinemaAction = this.handleChooseEditCinemaAction.bind(this);
         this.renderActionsContent = this.renderActionsContent.bind(this);
-        this.handleSelect = this.handleSelect.bind(this);
         this.renderAlertMessage = this.renderAlertMessage.bind(this);
 
         this.getCinemaList();
@@ -41,10 +41,9 @@ export default class Cinema extends Component{
 
     receiveFormCinemaInfo(receivedCinemaInfo){
         let tempCinemaList = this.state.cinemaList;
-        tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinema.cinemaId).name = receivedCinemaInfo.name;
-        tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinema.cinemaId).city = receivedCinemaInfo.city;
+        tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinemaInfo.info.cinemaId).name = receivedCinemaInfo.name;
+        tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinemaInfo.info.cinemaId).city = receivedCinemaInfo.city;
         this.setState({
-            chosenCinema: tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinema.cinemaId),
             cinemaList: tempCinemaList,
             chosenOperation: ''
         });
@@ -193,12 +192,7 @@ export default class Cinema extends Component{
                             cinemaId: tempCinemaInfo.info.cinemaId
                         }),
                         chosenCinemaInfo: tempCinemaInfo,
-                        chosenOperation: 'editCinema',
-                        chosenCinema: {
-                            name: tempCinemaInfo.info.name , 
-                            city: tempCinemaInfo.info.city, 
-                            cinemaId: tempCinemaInfo.info.cinemaId
-                        }
+                        chosenOperation: 'editCinema'
                     })
                 })
                 .catch(error => {
@@ -257,72 +251,36 @@ export default class Cinema extends Component{
         });
     }
 
-    handleChooseEditCinemaAction(){
+    handleChooseEditCinemaAction(cinemaId){
         this.setState({
             chosenOperation: 'editCinemaLoading'
         });
-        this.getCinema(this.state.chosenCinema.cinemaId);
-    }
-
-    handleSelect(eventKey){
-        this.setState({
-            chosenCinema: this.state.cinemaList[eventKey]
-        });
+        this.getCinema(cinemaId);
     }
 
     renderActionsContent(){
         return(
             <fieldset>
-                <fieldset>
+                <h1>Cinema list</h1>
+                <fieldset className="cinema-list-container">
+                {
+                    this.state.cinemaList.map((el)=>
+                        <CinemaDisplayInfoBox
+                            key={el.cinemaId}
+                            cinemaInfo={el}
+                            callBackEditCinema={this.handleChooseEditCinemaAction}
+                        />
+                    )
+                }
+                <div className="buttons-for-list"> 
                     <Button
                         bsStyle="primary"
                         onClick={this.handleChooseCreateCinemaAction}
                     >
                         Create cinema
                     </Button>
-                </fieldset>
-                <fieldset>
-                <legend>
-                    Choose cinema
-                </legend>
-                <div className="font-large">
-                {
-                    this.state.chosenCinema ? 
-                        `Chosen cinema : ${this.state.chosenCinema.name}, ${this.state.chosenCinema.city}` :
-                        ''
-                }
                 </div>
-                {
-                    this.state.cinemaList && this.state.cinemaList.length !== 0 ?
-                    <DropdownButton
-                        bsStyle="default"
-                        title="Choose cinema"
-                        id="choose-cinema-to-edit"
-                    >
-                    {
-                        this.state.cinemaList.map((el, i)=>
-                            <MenuItem 
-                                eventKey={i}
-                                onSelect={this.handleSelect}
-                                key={i}
-                            >
-                                {el.name}, {el.city}
-                            </MenuItem>
-                        )
-                    }
-                    </DropdownButton> :
-                    <div className="font-bold-large">
-                        Cinema list is empty
-                    </div>
-                }
-            </fieldset>
-                <Button
-                    bsStyle="primary"
-                    onClick={this.handleChooseEditCinemaAction}
-                    disabled={!this.state.chosenCinema}
-                >
-                    Edit chosen cinema
-                </Button>
+                </fieldset>
             </fieldset>
         );
     }

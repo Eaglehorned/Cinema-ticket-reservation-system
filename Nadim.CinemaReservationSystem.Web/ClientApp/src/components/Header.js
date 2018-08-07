@@ -20,6 +20,7 @@ export default class Header extends Component{
             <div className="header">
                 <Authentication
                     username={this.props.username}
+                    role={this.props.role}
                     callBackSetUserInfo={this.setUserInfo}
                 />
             </div>

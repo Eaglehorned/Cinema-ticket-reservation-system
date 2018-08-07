@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Button, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import FormGeneralCinemaInfo from './FormGeneralCinemaInfo';
 import FormCinemaRoom from './FormCinemaRoom';
+import CinemaRoomDisplayInfoBox from './CinemaRoomDisplayInfoBox';
 import '../../styles/FormCinema.css';
 
 export default class FormCinema extends Component{
@@ -11,9 +12,9 @@ export default class FormCinema extends Component{
         this.state={
             cinemaInfo: this.props.cinema ? this.props.cinema.info : undefined,
             cinemaRooms: this.props.cinema ? this.props.cinema.cinemaRooms : [],
-            chosenRoom: undefined,
             chosenOperation: '',
-            chosenCinemaRoomInfo: undefined
+            chosenCinemaRoomInfo: undefined,
+            allowSubmit: true
         };
         
         this.cancelCreateCinema = this.cancelCreateCinema.bind(this);
@@ -24,11 +25,8 @@ export default class FormCinema extends Component{
         this.createCinemaRoom = this.createCinemaRoom.bind(this);
         this.editCinemaRoom = this.editCinemaRoom.bind(this);
         this.handleCinemaCreateGeneralInfo = this.handleCinemaCreateGeneralInfo.bind(this);
-        this.handleMenuItemSelect = this.handleMenuItemSelect.bind(this);
-        this.handleChangeCinemaInfoClick = this.handleChangeCinemaInfoClick.bind(this);
         this.handleChooseEditCinemaAction = this.handleChooseEditCinemaAction.bind(this);
         this.renderFormCreateCinemaContent = this.renderFormCreateCinemaContent.bind(this);
-        this.renderFormEditCinemaContent = this.renderFormEditCinemaContent.bind(this);
         this.renderCinemaInfoAndActionsContent = this.renderCinemaInfoAndActionsContent.bind(this);
         this.renderCinemaActionButtons = this.renderCinemaActionButtons.bind(this);
         this.renderComponentContent = this.renderComponentContent.bind(this);
@@ -86,6 +84,7 @@ export default class FormCinema extends Component{
 
                 tempChosenCinemaInfo.info.rows = rows;
                 tempChosenCinemaInfo.info.columns = columns;
+                tempChosenCinemaInfo.info.cinemaRoomId = id;
 
                 let seatsArray = [];
                 for (let i = 0; i < rows; i++){
@@ -163,7 +162,7 @@ export default class FormCinema extends Component{
     }
     
     editCinemaRoom(cinemaRoomData){
-        fetch(`api/cinemas/${this.state.cinemaInfo.cinemaId}/cinemaRooms/${this.state.chosenRoom.cinemaRoomId}`, {
+        fetch(`api/cinemas/${this.state.cinemaInfo.cinemaId}/cinemaRooms/${this.state.chosenCinemaRoomInfo.info.cinemaRoomId}`, {
             method:'PUT',
             headers:{
                 'Accept': 'application/json',
@@ -191,7 +190,7 @@ export default class FormCinema extends Component{
                 }
             }).then(parsedJson => {
                 let tempCinemaRooms = this.state.cinemaRooms;
-                tempCinemaRooms.find((el) => el.cinemaRoomId === this.state.chosenRoom.cinemaRoomId).name = cinemaRoomData.name;
+                tempCinemaRooms.find((el) => el.cinemaRoomId === this.state.chosenCinemaRoomInfo.info.cinemaRoomId).name = cinemaRoomData.name;
                 this.setState({
                     cinemaRooms: tempCinemaRooms
                 });
@@ -251,12 +250,14 @@ export default class FormCinema extends Component{
     }
 
     submitFormCinema(){
-        this.editCinemaInfo(this.state.cinemaInfo);
-        this.props.callBackFormCinemaInfo({
-            cinemaId: this.state.cinemaInfo.cinemaId,
-            name: this.state.cinemaInfo.name,
-            city: this.state.cinemaInfo.city
-        });
+        if(this.state.allowSubmit){
+            this.editCinemaInfo(this.state.cinemaInfo);
+            this.props.callBackFormCinemaInfo({
+                cinemaId: this.state.cinemaInfo.cinemaId,
+                name: this.state.cinemaInfo.name,
+                city: this.state.cinemaInfo.city
+            });
+        }
     }
 
     cancelCurrentOperation(){
@@ -273,99 +274,50 @@ export default class FormCinema extends Component{
         });
     }
 
-    handleMenuItemSelect(eventKey){
-        this.setState({
-            chosenRoom: this.state.cinemaRooms[eventKey]
-        });
-    }
-
-    handleChangeCinemaInfoClick(){
-        this.setState({
-            chosenOperation: 'editCinemaInfo'
-        });
-    }
-
     handleCinemaInfoChange(cinemaInfo){
-        let tempCinemaInfo = cinemaInfo;
+        let tempCinemaInfo = cinemaInfo.info;
         tempCinemaInfo.cinemaId = this.state.cinemaInfo.cinemaId;
         this.setState({
-            cinemaInfo: tempCinemaInfo
+            cinemaInfo: tempCinemaInfo,
+            allowSubmit: cinemaInfo.allowSubmit
         });
     }
 
-    handleChooseEditCinemaAction(){
+    handleChooseEditCinemaAction(cinemaRoomId){
         this.setState({
             chosenOperation: 'editCinemaRoomLoading'
         });
-        this.getCinemaRoom(this.state.chosenRoom.cinemaRoomId);
+        this.getCinemaRoom(cinemaRoomId);
     }
 
     renderCinemaActionButtons(){
         return(
             <React.Fragment>
                 <fieldset>
-                    {/* <legend>
-                        Cinema
-                    </legend>
-                    <Button
-                        onClick={this.handleChangeCinemaInfoClick}
-                    >
-                        Change general information
-                    </Button> */}
-                </fieldset>
-                <fieldset>
                     <legend>
                         Cinema rooms
                     </legend>
-                    <div className="font-large">
                     {
-                        this.state.chosenRoom ? 
-                            `Chosen cinema : ${this.state.chosenRoom.name}` :
-                            ''
+                        this.state.cinemaRooms.map((el)=>
+                            <CinemaRoomDisplayInfoBox
+                                key={el.cinemaRoomId}
+                                cinemaRoomInfo={el}
+                                callBackEditCinemaRoom={this.handleChooseEditCinemaAction}
+                            />
+                        )
                     }
-                    </div>
-                    {
-                        this.state.cinemaRooms && this.state.cinemaRooms.length !== 0 ?
-                        <DropdownButton
-                            bsStyle="default"
-                            title="Cinema rooms"
-                            id="choose-cinema-to-edit"
-                        >
-                        {
-                            this.state.cinemaRooms.map((el, i)=>
-                                <MenuItem 
-                                    eventKey={i}
-                                    onSelect={this.handleMenuItemSelect}
-                                    key={i}
-                                >
-                                    {el.name}
-                                </MenuItem>
-                            )
-                        }
-                        </DropdownButton> :
-                        <div className="font-bold-large">
-                            Cinema rooms list is empty
-                        </div>
-                    }
-                    <div>
+                    <div className="buttons-for-list"> 
                         <Button
                             onClick={() => this.setState({ chosenOperation: 'createCinemaRoom'})}
                         >
                             Add cinema room
                         </Button>
                     </div>
-                    <div>
-                        <Button
-                            onClick={this.handleChooseEditCinemaAction}
-                            disabled={!this.state.chosenRoom}
-                        >
-                            Edit chosen cinema room
-                        </Button>
-                    </div>
                 </fieldset>
                 <fieldset className="concluding-buttons">
                     <Button
                         onClick={this.submitFormCinema}
+                        bsStyle="primary"
                     >
                         Submit
                     </Button>
@@ -408,41 +360,14 @@ export default class FormCinema extends Component{
         );
     }
 
-    renderFormEditCinemaContent(){
-        return(
-            <React.Fragment>
-                <h1>Cinema</h1>
-                <FormGeneralCinemaInfo
-                    callBackFromParent={this.editCinemaInfo}
-                    callBackCancel={this.cancelCurrentOperation}
-                    cinemaInfo={this.state.cinemaInfo}
-                />
-            </React.Fragment>
-        );
-    }
-
     renderCinemaInfoAndActionsContent(){
         return (
             <React.Fragment>
                 <h1>Cinema</h1>
                 <div className="form-cinema-room-container cinema-room-information-container">
                 <h2>Cinema information</h2>
-                    {/* <div className="font-x-large">
-                        <span className="font-bold"> Cinema name : </span>{this.state.cinemaInfo.name}
-                    </div>
-                    <div className="font-x-large">
-                        <span className="font-bold"> Cinema city : </span>{this.state.cinemaInfo.city}
-                    </div>
-                    <div className="font-x-large">
-                        <span className="font-bold"> Default seat price : </span>{this.state.cinemaInfo.defaultSeatPrice}
-                    </div>
-                    <div className="font-x-large">
-                        <span className="font-bold"> Vip seat price : </span>{this.state.cinemaInfo.vipSeatPrice}
-                    </div> */}
                     <FormGeneralCinemaInfo         
                         callBackHandleInfoChange={this.handleCinemaInfoChange}
-                        callBackFromParent={this.editCinemaInfo}
-                        callBackCancel={this.cancelCurrentOperation}
                         cinemaInfo={this.state.cinemaInfo}
                         displayedComponents={{
                             city: true,
@@ -452,6 +377,7 @@ export default class FormCinema extends Component{
                             submit: false,
                             cancel: false
                         }}
+                        needToShowHint={true}
                     />
                 </div>
                 <div className="form-cinema-room-container cinema-room-buttons-container">
@@ -466,8 +392,6 @@ export default class FormCinema extends Component{
             return this.renderFormCreateCinemaContent();
         }
         switch(this.state.chosenOperation){
-            case 'editCinemaInfo':
-                return this.renderFormEditCinemaContent();
             case 'createCinemaRoom':
                 return this.renderFormCinemaRoomCreateContent();
             case 'editCinemaRoomLoading':

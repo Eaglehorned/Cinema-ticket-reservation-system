@@ -134,11 +134,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                                   DefaultSeatPrice = c.DefaultSeatPrice,
                                   VipSeatPrice = c.VipSeatPrice
                               },
-                              CinemaRooms = (from r in c.CinemaRooms
-                                             select new ResponseCinemaRoomDisplayInfo {
-                                                 CinemaRoomId = r.CinemaRoomId,
-                                                 Name = r.Name
-                                             })
+                              CinemaRooms = c.CinemaRooms.Select(r => new ResponseCinemaRoomDisplayInfo
+                              {
+                                    CinemaRoomId = r.CinemaRoomId,
+                                    Name = r.Name
+                              })
                           }).FirstOrDefault()
             };
         }
@@ -157,12 +157,12 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             CinemaRoom cinemaRoom = new CinemaRoom
             {
                 Name = cinemaRoomInfo.Name,
-                Seats = (from s in cinemaRoomInfo.Seats
-                        select new Seat {
-                            Type = s.Type,
-                            Row = s.Row,
-                            Column = s.Column
-                        }).ToList()
+                Seats = cinemaRoomInfo.Seats.Select( s=> new Seat
+                {
+                    Type = s.Type,
+                    Row = s.Row,
+                    Column = s.Column
+                }).ToList()
             };
 
             Cinema cinema = dbContext.Cinemas
@@ -204,13 +204,13 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             cinemaRoom.Name = cinemaRoomInfo.Name;
 
-            cinemaRoom.Seats = (from s in cinemaRoomInfo.Seats
-                                select new Seat
-                                {
-                                    Type = s.Type,
-                                    Row = s.Row,
-                                    Column = s.Column
-                                }).ToList();
+            cinemaRoom.Seats = cinemaRoomInfo.Seats.Select(s => new Seat
+            {
+                Type = s.Type,
+                Row = s.Row,
+                Column = s.Column
+            }).ToList();
+
 
             dbContext.SaveChanges();
 
@@ -246,12 +246,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                               select new ResponseCinemaRoomFullInfo
                               {
                                   Name = r.Name,
-                                  Seats = (from s in r.Seats
-                                                select new SeatInfo {
-                                                Type = s.Type,
-                                                Row = s.Row,
-                                                Column = s.Column
-                                           })
+                                  Seats = r.Seats.Select( s => new SeatInfo {
+                                      Type = s.Type,
+                                      Row = s.Row,
+                                      Column = s.Column
+                                  })
                               }).FirstOrDefault()
             };
         }

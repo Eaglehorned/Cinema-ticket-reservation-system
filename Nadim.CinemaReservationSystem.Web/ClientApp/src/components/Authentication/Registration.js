@@ -81,9 +81,11 @@ export default class Registration extends Component {
                 if (parsedJson.resultOk === true) {
                     localStorage.setItem('token', parsedJson.token);
                     localStorage.setItem('username', this.state.userName);
+                    localStorage.setItem('role', 'user');
                     this.props.callBackFromParent({
                         username: this.state.userName,
-                        token: parsedJson.token
+                        token: parsedJson.token,
+                        role: 'user'
                     });
                     this.setState({
                         error:''

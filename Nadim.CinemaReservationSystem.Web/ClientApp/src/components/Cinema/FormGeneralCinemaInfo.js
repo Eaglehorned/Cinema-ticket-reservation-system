@@ -11,7 +11,7 @@ export default class FormGeneralCinemaInfo extends Component{
             name: this.props.cinemaInfo ? this.props.cinemaInfo.name : '',
             defaultPrice: this.props.cinemaInfo ? this.props.cinemaInfo.defaultSeatPrice : '',
             vipPrice: this.props.cinemaInfo ? this.props.cinemaInfo.vipSeatPrice : '',
-            showHint: false,
+            showHint: this.props.needToShowHint ? this.props.needToShowHint: false,
             displayedComponents: this.props.displayedComponents ? 
                                     this.props.displayedComponents : 
                                     {
@@ -70,10 +70,19 @@ export default class FormGeneralCinemaInfo extends Component{
         });
         if (this.props.callBackHandleInfoChange){
             this.props.callBackHandleInfoChange({
-                city: event.target.value,
-                name: this.state.name,
-                defaultSeatPrice: this.state.defaultPrice,
-                vipSeatPrice: this.state.vipPrice
+                info:
+                {
+                    city: event.target.value,
+                    name: this.state.name,
+                    defaultSeatPrice: this.state.defaultPrice,
+                    vipSeatPrice: this.state.vipPrice
+                },
+                allowSubmit: this.allowSubmitClick(
+                    event.target.value,
+                    this.state.name,
+                    this.state.defaultPrice,
+                    this.state.vipPrice           
+                )
             });
         }
     }
@@ -84,10 +93,19 @@ export default class FormGeneralCinemaInfo extends Component{
         });
         if (this.props.callBackHandleInfoChange){
             this.props.callBackHandleInfoChange({
-                city: this.state.city,
-                name: event.target.value,
-                defaultSeatPrice: this.state.defaultPrice,
-                vipSeatPrice: this.state.vipPrice
+                info:
+                {
+                    city: this.state.city,
+                    name: event.target.value,
+                    defaultSeatPrice: this.state.defaultPrice,
+                    vipSeatPrice: this.state.vipPrice
+                },
+                allowSubmit: this.allowSubmitClick(
+                    this.state.city,
+                    event.target.value,
+                    this.state.defaultPrice,
+                    this.state.vipPrice
+                )
             });
         }
     }
@@ -98,10 +116,19 @@ export default class FormGeneralCinemaInfo extends Component{
         });
         if (this.props.callBackHandleInfoChange){
             this.props.callBackHandleInfoChange({
-                city: this.state.city,
-                name: this.state.name,
-                defaultSeatPrice: event.target.value,
-                vipSeatPrice: this.state.vipPrice
+                info:
+                {
+                    city: this.state.city,
+                    name: this.state.name,
+                    defaultSeatPrice: event.target.value,
+                    vipSeatPrice: this.state.vipPrice
+                },
+                allowSubmit: this.allowSubmitClick(
+                    this.state.city,
+                    this.state.name,
+                    event.target.value,
+                    this.state.vipPrice 
+                )
             });
         }
     }
@@ -112,16 +139,30 @@ export default class FormGeneralCinemaInfo extends Component{
         });
         if (this.props.callBackHandleInfoChange){
             this.props.callBackHandleInfoChange({
-                city: this.state.city,
-                name: this.state.name,
-                defaultSeatPrice: this.state.defaultPrice,
-                vipSeatPrice: event.target.value
+                info:
+                {
+                    city: this.state.city,
+                    name: this.state.name,
+                    defaultSeatPrice: this.state.defaultPrice,
+                    vipSeatPrice: event.target.value
+                },
+                allowSubmit: this.allowSubmitClick(
+                    this.state.city,
+                    this.state.name,
+                    this.state.defaultPrice,
+                    event.target.value
+                )
             });
         }
     }
 
     handleSubmitCinemaInfoClick(){
-        this.allowSubmitClick()
+        this.allowSubmitClick(
+            this.state.name,
+            this.state.city,
+            this.state.defaultPrice,
+            this.state.vipPrice
+        )
         ?this.props.callBackFromParent({
             city: this.state.city,
             name: this.state.name,
@@ -137,17 +178,17 @@ export default class FormGeneralCinemaInfo extends Component{
         this.props.callBackCancel();
     }
 
-    allowSubmitClick(){
-        if (this.state.displayedComponents.defaultSeatPrice && !this.validateDoubleNumber(this.state.defaultPrice)){
+    allowSubmitClick(city, name, defaultPrice, vipPrice ){
+        if (this.state.displayedComponents.defaultSeatPrice && !this.validateDoubleNumber(defaultPrice)){
             return false;
         }
-        if (this.state.displayedComponents.vipSeatPrice && !this.validateDoubleNumber(this.state.vipPrice)){
+        if (this.state.displayedComponents.vipSeatPrice && !this.validateDoubleNumber(vipPrice)){
             return false;
         }
-        if (this.state.displayedComponents.city && !this.state.city){
+        if (this.state.displayedComponents.city && !city){
             return false;
         }
-        if (this.state.displayedComponents.name && !this.state.name){
+        if (this.state.displayedComponents.name && !name){
             return false;
         }
         return true;

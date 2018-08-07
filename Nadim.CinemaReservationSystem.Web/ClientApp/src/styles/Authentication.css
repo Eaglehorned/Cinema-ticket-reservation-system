@@ -6,8 +6,9 @@
     padding: 5px;
     border-left: groove 1px black;
     margin-left: calc(100% - 400px); 
+    background-color: rgb(235, 254, 255);
     position: relative;
-    height: 185px;
+    height: 183px;
     width: 400px;
 }
 
@@ -17,7 +18,7 @@
 
 .authentication-Modal{
     position: absolute;
-    top: 40%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 50px;

@@ -20,27 +20,33 @@ export default class Body extends Component{
 
     renderNav(){
         return(
-            <Tabs
-                justified
-                activeKey={this.state.chosenOperation}
-                onSelect={key => this.handleSelectNav(key)}
-                id="select_operation"
-            >
-                <Tab 
-                    eventKey={'cinema'}
-                    title="Cinema"
-                >
-                    <Cinema
-                        token={this.props.token}
-                    />
-                </Tab>
-                <Tab 
-                    eventKey={'new'}
-                    title="New"
-                >
-                    <React.Fragment></React.Fragment>
-                </Tab>
-            </Tabs>
+            <React.Fragment>
+                {
+                    this.props.role === 'admin'
+                    ?<Tabs
+                        justified
+                        activeKey={this.state.chosenOperation}
+                        onSelect={key => this.handleSelectNav(key)}
+                        id="select_operation"
+                    >
+                        <Tab 
+                            eventKey={'cinema'}
+                            title="Cinema"
+                        >
+                            <Cinema
+                                token={this.props.token}
+                            />
+                        </Tab>
+                        <Tab 
+                            eventKey={'new'}
+                            title="New"
+                        >
+                            <React.Fragment></React.Fragment>
+                        </Tab>
+                    </Tabs>
+                    :''
+                }
+            </React.Fragment>
         );
     }
 
