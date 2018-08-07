@@ -100,13 +100,13 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new GetCinemaListResult
             {
                 ResultOk = true,
-                CinemaList = (from c in dbContext.Cinemas
-                       select new ResponseCinemaDisplayInfo
-                       {
-                           Name = c.Name,
-                           City = c.City,
-                           CinemaId = c.CinemaId
-                       })
+                CinemaList = dbContext.Cinemas
+                    .Select( c => new ResponseCinemaDisplayInfo
+                    {
+                        Name = c.Name,
+                        City = c.City,
+                        CinemaId = c.CinemaId
+                    }).ToList()
             };
         }
 
@@ -123,23 +123,24 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new GetCinemaResult
             {
                 ResultOk = true,
-                Info = (from c in dbContext.Cinemas
-                          where c.CinemaId == id
-                          select new ResponseCinemaFullInfo
-                          {
-                              Info = new CinemaInfo
-                              {
-                                  Name = c.Name,
-                                  City = c.City,
-                                  DefaultSeatPrice = c.DefaultSeatPrice,
-                                  VipSeatPrice = c.VipSeatPrice
-                              },
-                              CinemaRooms = c.CinemaRooms.Select(r => new ResponseCinemaRoomDisplayInfo
-                              {
-                                    CinemaRoomId = r.CinemaRoomId,
-                                    Name = r.Name
-                              })
-                          }).FirstOrDefault()
+                Info = dbContext.Cinemas
+                    .Where(c => c.CinemaId == id)
+                    .Select( c => new ResponseCinemaFullInfo
+                    {
+                        Info = new CinemaInfo
+                        {
+                            Name = c.Name,
+                            City = c.City,
+                            DefaultSeatPrice = c.DefaultSeatPrice,
+                            VipSeatPrice = c.VipSeatPrice
+                        },
+                        CinemaRooms = c.CinemaRooms
+                        .Select(r => new ResponseCinemaRoomDisplayInfo
+                        {
+                            CinemaRoomId = r.CinemaRoomId,
+                            Name = r.Name
+                        }).ToList()
+                    }).FirstOrDefault()
             };
         }
 
@@ -241,17 +242,18 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new GetCinemaRoomResult
             {
                 ResultOk = true,
-                CinemaRoom = (from r in dbContext.CinemaRooms
-                              where r.CinemaRoomId == cinemaRoomId
-                              select new ResponseCinemaRoomFullInfo
-                              {
-                                  Name = r.Name,
-                                  Seats = r.Seats.Select( s => new SeatInfo {
-                                      Type = s.Type,
-                                      Row = s.Row,
-                                      Column = s.Column
-                                  })
-                              }).FirstOrDefault()
+                CinemaRoom = dbContext.CinemaRooms
+                    .Where(r => r.CinemaRoomId == cinemaRoomId)
+                    .Select( r => new ResponseCinemaRoomFullInfo
+                        {
+                            Name = r.Name,
+                            Seats = r.Seats.Select( s => new SeatInfo {
+                                Type = s.Type,
+                                Row = s.Row,
+                                Column = s.Column
+                            }).ToList()
+                        })
+                    .FirstOrDefault()
             };
         }
     }

@@ -7,6 +7,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
 {
     public class ResponseCinemaFullInfo {
         public CinemaInfo Info { get; set; }
-        public IEnumerable<ResponseCinemaRoomDisplayInfo> CinemaRooms { get; set; }
+        public List<ResponseCinemaRoomDisplayInfo> CinemaRooms { get; set; }
     }
 }

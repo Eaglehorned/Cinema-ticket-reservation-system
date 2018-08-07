@@ -10,6 +10,11 @@ export default class Body extends Component{
         }
         this.renderNav = this.renderNav.bind(this);
         this.handleSelectNav = this.handleSelectNav.bind(this);
+        this.informWithMessage = this.informWithMessage.bind(this);
+    }
+
+    informWithMessage(message){
+        this.props.callBackInformWithMessage(message);
     }
 
     handleSelectNav(eventKey){
@@ -35,6 +40,7 @@ export default class Body extends Component{
                         >
                             <Cinema
                                 token={this.props.token}
+                                callBackInformWithMessage={this.informWithMessage}
                             />
                         </Tab>
                         <Tab 

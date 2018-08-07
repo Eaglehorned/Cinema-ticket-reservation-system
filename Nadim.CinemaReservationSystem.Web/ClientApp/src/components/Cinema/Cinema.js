@@ -12,12 +12,9 @@ export default class Cinema extends Component{
     constructor(props){
         super(props);
         this.state={
-            show: false,
-            infoMessage:'',
             chosenOperation: '',
             cinemaList: [],
             chosenCinemaInfo: undefined,
-            alertStyle:'info'
         };
         this.informWithMessage = this.informWithMessage.bind(this);
         this.createCinema = this.createCinema.bind(this);
@@ -28,7 +25,6 @@ export default class Cinema extends Component{
         this.handleChooseCreateCinemaAction = this.handleChooseCreateCinemaAction.bind(this);
         this.handleChooseEditCinemaAction = this.handleChooseEditCinemaAction.bind(this);
         this.renderActionsContent = this.renderActionsContent.bind(this);
-        this.renderAlertMessage = this.renderAlertMessage.bind(this);
 
         this.getCinemaList();
     }
@@ -50,26 +46,7 @@ export default class Cinema extends Component{
     }
     
     informWithMessage(message){
-        if (message.isError){
-            this.setState({
-                show: true,
-                infoMessage: message.text,
-                alertStyle: 'danger'
-            });
-        }
-        else {
-            this.setState({
-                show: true,
-                infoMessage: message,
-                alertStyle: 'info'
-            });
-        }
-        const self = this;
-        setTimeout(() => 
-            self.setState({
-                show: false,
-                infoMessage:''
-            }),5000);
+        this.props.callBackInformWithMessage(message);
     }
 
     getCinemaList(){
@@ -153,7 +130,6 @@ export default class Cinema extends Component{
 
     createCinema(receivedCinemaInfo){
         this.setState({
-
             chosenOperation: 'editCinemaLoading'
         });
         fetch('api/cinemas', {
@@ -320,37 +296,10 @@ export default class Cinema extends Component{
         }
     }
 
-    renderAlertMessage(){
-        return(
-            <Alert
-                bsStyle={this.state.alertStyle}
-                onDismiss={() => this.setState({show: false})}
-            >
-                <div className="font-bold-x-large">
-                {
-                    this.state.alertStyle === 'danger'
-                    ? 'Error'
-                    : 'Notification'
-                }
-                </div>
-                <div className="font-large">
-                    {this.state.infoMessage}
-                </div>
-
-            </Alert>
-        )
-    }
-
     render(){
         const content = this.renderContent();
         return(
             <div className="add-cinema-container">
-                <div className="font-x-large">
-                    {this.state.show ? 
-                        this.renderAlertMessage() :
-                        ''
-                    }
-                </div>
                 <div className="well">
                     {content}
                 </div>
