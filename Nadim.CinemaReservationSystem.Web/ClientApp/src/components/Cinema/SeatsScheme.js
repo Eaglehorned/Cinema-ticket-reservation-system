@@ -35,12 +35,6 @@ export default class SeatsScheme extends Component{
     render(){
         return(
             <React.Fragment>
-
-                    {
-                        this.state.mode === 'display' 
-                        ? <h2>Cinema room seats scheme</h2>
-                        : <h3>Edit seat types</h3>
-                    }
                 <div className="scheme-container">
                     {this.props.seatsArray.map((item) =>
                         <div 

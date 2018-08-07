@@ -149,7 +149,7 @@ export default class FormCinemaRoom extends Component{
                 <h1>Cinema room</h1>
                 <div className="form-cinema-room-container cinema-room-information-container">
                     <h2>Cinema room information</h2>
-                    <fieldset>
+                    <fieldset className="form-group">
                         <legend>
                             Cinema room name
                         </legend>
@@ -160,7 +160,7 @@ export default class FormCinemaRoom extends Component{
                             needToShowHint={true}
                         />
                     </fieldset>
-                    <fieldset>
+                    <fieldset className="form-group">
                     <legend>
                         Edit seats scheme name
                     </legend>
@@ -174,6 +174,11 @@ export default class FormCinemaRoom extends Component{
                             cinemaRoomInfo={this.state.cinemaRoomInfo}
                             needToShowHint={true}
                         />
+                    </fieldset>
+                    <fieldset className="form-group">
+                    <legend>
+                        Change seat types
+                    </legend>
                         <SeatsScheme
                             seatsArray={this.state.cinemaRoomSeats}
                             callBackFromParent={this.changeSeatType}

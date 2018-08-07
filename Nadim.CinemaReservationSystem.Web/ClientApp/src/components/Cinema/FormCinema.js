@@ -319,7 +319,7 @@ export default class FormCinema extends Component{
                         onClick={this.submitFormCinema}
                         bsStyle="primary"
                     >
-                        Submit
+                        Back
                     </Button>
                 </fieldset>
             </React.Fragment>
