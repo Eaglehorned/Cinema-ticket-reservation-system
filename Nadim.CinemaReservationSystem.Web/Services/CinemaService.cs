@@ -135,11 +135,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                             VipSeatPrice = c.VipSeatPrice
                         },
                         CinemaRooms = c.CinemaRooms
-                        .Select(r => new ResponseCinemaRoomDisplayInfo
-                        {
-                            CinemaRoomId = r.CinemaRoomId,
-                            Name = r.Name
-                        }).ToList()
+                            .Select(r => new ResponseCinemaRoomDisplayInfo
+                            {
+                                CinemaRoomId = r.CinemaRoomId,
+                                Name = r.Name
+                            }).ToList()
                     }).FirstOrDefault()
             };
         }
@@ -205,12 +205,13 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             cinemaRoom.Name = cinemaRoomInfo.Name;
 
-            cinemaRoom.Seats = cinemaRoomInfo.Seats.Select(s => new Seat
-            {
-                Type = s.Type,
-                Row = s.Row,
-                Column = s.Column
-            }).ToList();
+            cinemaRoom.Seats = cinemaRoomInfo.Seats
+                .Select(s => new Seat
+                {
+                    Type = s.Type,
+                    Row = s.Row,
+                    Column = s.Column
+                }).ToList();
 
 
             dbContext.SaveChanges();
@@ -247,11 +248,12 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     .Select( r => new ResponseCinemaRoomFullInfo
                         {
                             Name = r.Name,
-                            Seats = r.Seats.Select( s => new SeatInfo {
-                                Type = s.Type,
-                                Row = s.Row,
-                                Column = s.Column
-                            }).ToList()
+                            Seats = r.Seats
+                                .Select( s => new SeatInfo {
+                                    Type = s.Type,
+                                    Row = s.Row,
+                                    Column = s.Column
+                                }).ToList()
                         })
                     .FirstOrDefault()
             };
