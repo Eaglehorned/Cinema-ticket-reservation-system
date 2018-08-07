@@ -1,0 +1,86 @@
+.add-cinema-container{
+    padding: 20px;
+    width: 100%;
+}
+
+.add-cinema-container .scheme-container{
+    overflow: auto;
+    text-align: center;
+    margin: 20px;
+}
+
+.add-cinema-container .seat-default, .seat-vip{
+    width: 30px;
+    height: 30px;
+    border: solid black;
+    margin: 5px;
+    display: inline-block;
+}
+
+.add-cinema-container .seat-vip{
+    background-color: aquamarine;
+}
+
+.add-cinema-container .button-container{
+    text-align: center;
+}
+
+.add-cinema-container .button-container Button{
+    margin: 10px;
+}
+
+.add-cinema-container Button{
+    margin-bottom: 5px;
+    margin-right: 10px;
+}
+
+.add-cinema-Modal{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 50px;
+    height: 350px;
+    width: 450px;
+    border:solid 2px #80b6e4;
+    border-radius: 5px; 
+    background-color: whitesmoke;
+}
+
+.add-cinema-Modal Button{
+    margin-bottom: 5px;
+    margin-right: 10px;
+}
+
+.add-cinema-Modal h2{
+    margin: 0;
+}
+
+.hidden{
+    display: none;
+}
+
+.error{
+    border-color: rgb(255, 133, 133);
+}
+
+.overflow{
+    overflow: scroll;
+    padding: 5px; 
+} 
+
+.row{
+    white-space: nowrap;
+    padding: 0;
+    margin: 0;
+}
+
+.concluding-buttons{
+    margin-top: 5px; 
+    padding: 15px 0;
+    border-top: solid 1px #e5e5e5; 
+}
+
+.buttons-for-list{
+    margin-top: 5px;
+}

@@ -1,0 +1,26 @@
+.form-cinema-room-container {
+    width: 100%;
+}
+
+.form-cinema-room-container .cinema-room-buttons-container, .form-cinema-room-container .cinema-room-information-container {
+    display: inline-block;
+    border: solid 1px black;
+    vertical-align: top;
+    padding: 20px 40px;
+    background-color: #ffffff;
+}
+
+.form-cinema-room-container .cinema-room-information-container {
+    width: calc(100% - 500px);
+    border-radius: 5px 0 0 5px;
+}
+
+.form-cinema-room-container .cinema-room-buttons-container {
+    width: 500px;
+    border-radius: 0 5px 5px 0;
+}
+
+.form-cinema-room-container legend{
+    margin-bottom: 10px;
+}
+

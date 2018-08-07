@@ -1,27 +1,34 @@
 .authentication-container{
-    padding: 20px;
-    width: 100%;
     text-align: center;
-    margin: auto;
+}
+
+.login{
+    padding: 5px;
+    border-left: groove 1px black;
+    margin-left: calc(100% - 400px); 
+    background-color: rgb(235, 254, 255);
+    position: relative;
+    height: 183px;
+    width: 400px;
 }
 
 .authentication-container button{
     margin-bottom: 5px;
 }
 
-.Modal{
+.authentication-Modal{
     position: absolute;
-    top: 100px;
-    right: 150px;
-    left: 150px;
-    bottom: 100px;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     padding: 50px;
-    height: 350px;
+    height: 450px;
+    min-width: 600px;
     border:solid 2px #80b6e4;
     border-radius: 5px; 
     background-color: whitesmoke;
 }
 
-.error-text{
-    color: #f80000;
+.input-container{
+    margin: 0;
 }

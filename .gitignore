@@ -43,6 +43,7 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
+*.dbmdl
 *.jfm
 *_i.c
 *_p.c

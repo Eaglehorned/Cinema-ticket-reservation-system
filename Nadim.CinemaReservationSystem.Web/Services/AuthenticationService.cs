@@ -35,7 +35,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         private bool InputRegistrationDataValid(UserRegistrationInfo user)
         {
-            return Utils.IsEmailValid(user.Email) && !string.IsNullOrEmpty(user.Password) && !string.IsNullOrEmpty(user.FirstName) && !string.IsNullOrEmpty(user.LastName);
+            return Utils.IsEmailValid(user.Email) &&
+                !string.IsNullOrEmpty(user.Password) &&
+                !string.IsNullOrEmpty(user.FirstName) &&
+                !string.IsNullOrEmpty(user.LastName) &&
+                !string.IsNullOrEmpty(user.UserName);
         }
 
         private bool IsUserDataCorrect(UserLoginInfo user)
@@ -43,15 +47,23 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return Utils.GetHash(user.Password) == dbContext.Users.First(u => u.Email == user.Email).Password;
         }
 
+        private bool UserNameUsed(string userName)
+        {
+            return dbContext.Users.Any(u => u.UserName == userName);
+        }
+
         private string GenerateToken(string userEmail)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[] {
-                new Claim(ClaimTypes.Name, userEmail)
-            };
+            Claim[] claims;
 
+            claims = new[] {
+                new Claim(ClaimTypes.Name, userEmail),
+                new Claim(ClaimTypes.Role, dbContext.Users.FirstOrDefault(u => u.Email == userEmail).Role)
+            };
+            
             var token = new JwtSecurityToken(
                 issuer: configuration["Tokens:Issuer"],
                 audience: configuration["Tokens:Issuer"],
@@ -95,8 +107,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return new LoginResult
             {
                 ResultOk = true,
-                FullUserName = dbContext.Users.First(u => u.Email == user.Email).FirstName +
-                    " " + dbContext.Users.First(u => u.Email == user.Email).LastName,
+                FullUserName = dbContext.Users.First(u => u.Email == user.Email).UserName,
                 Token = GenerateToken(user.Email)
             };
         }
@@ -117,7 +128,16 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 return new DataValidationResult
                 {
                     ResultOk = false,
-                    Details = "User already registed."
+                    Details = "User with such e-mail already registed."
+                };
+            }
+
+            if (UserNameUsed(user.UserName))
+            {
+                return new DataValidationResult
+                {
+                    ResultOk = false,
+                    Details = "User with such username already registed."
                 };
             }
 
@@ -127,7 +147,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 LastName = user.LastName,
                 Password = Utils.GetHash(user.Password),
                 Email = user.Email,
-                Role = "user"
+                Role = "user",
+                UserName = user.UserName
             });
 
             dbContext.SaveChanges();

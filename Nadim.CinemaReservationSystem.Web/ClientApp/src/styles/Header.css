@@ -1,0 +1,9 @@
+.header{
+    width: 100%;
+    height: 185px;
+    position: fixed;
+    top: 0;
+    border: groove 1px black;
+    z-index: 1;
+    background-color: rgb(235, 254, 255);
+}
