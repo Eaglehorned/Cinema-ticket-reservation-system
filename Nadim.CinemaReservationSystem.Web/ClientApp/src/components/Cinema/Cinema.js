@@ -239,23 +239,23 @@ export default class Cinema extends Component{
             <fieldset>
                 <h1>Cinema list</h1>
                 <fieldset className="cinema-list-container">
-                {
-                    this.state.cinemaList.map((el)=>
-                        <CinemaDisplayInfoBox
-                            key={el.cinemaId}
-                            cinemaInfo={el}
-                            callBackEditCinema={this.handleChooseEditCinemaAction}
-                        />
-                    )
-                }
-                <div className="buttons-for-list"> 
-                    <Button
-                        bsStyle="primary"
-                        onClick={this.handleChooseCreateCinemaAction}
-                    >
-                        Create cinema
-                    </Button>
-                </div>
+                    {
+                        this.state.cinemaList.map((el)=>
+                            <CinemaDisplayInfoBox
+                                key={el.cinemaId}
+                                cinemaInfo={el}
+                                callBackEditCinema={this.handleChooseEditCinemaAction}
+                            />
+                        )
+                    }
+                    <div className="buttons-for-list"> 
+                        <Button
+                            bsStyle="primary"
+                            onClick={this.handleChooseCreateCinemaAction}
+                        >
+                            Create cinema
+                        </Button>
+                    </div>
                 </fieldset>
             </fieldset>
         );

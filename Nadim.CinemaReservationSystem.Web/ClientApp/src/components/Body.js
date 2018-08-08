@@ -49,7 +49,10 @@ export default class Body extends Component{
                             eventKey={'film'}
                             title="Film"
                         >
-                            <Film/>
+                            <Film
+                                token={this.props.token}
+                                callBackInformWithMessage={this.informWithMessage}
+                            />
                         </Tab>
                     </Tabs>
                     //:''

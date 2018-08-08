@@ -45,4 +45,9 @@ namespace Nadim.CinemaReservationSystem.Web
     {
         public int Id { get; set; }
     }
+
+    public class GetFilmListResult : Result
+    {
+        public List<ResponseFilmDisplayInfo> FilmList { get; set; }
+    }
 }
