@@ -21,6 +21,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.Films.Any(f => f.Name == Name);
         }
 
+        private bool FilmExists(int filmId)
+        {
+            return dbContext.Films.Any(f => f.FilmId == filmId);
+        }
+
         public Result GetFilmList() {
             return new GetFilmListResult
             {
@@ -59,6 +64,32 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 ResultOk = true,
                 Id = dbContext.Films.Last().FilmId
+            };
+        }
+
+        public Result GetFilm(int filmId)
+        {
+            if (!FilmExists(filmId))
+            {
+                return new Result
+                {
+                    ResultOk = false
+                };
+            }
+
+            return new GetFilmResult
+            {
+                ResultOk = true,
+                FilmInfo = dbContext.Films
+                    .Where(f => f.FilmId == filmId)
+                    .Select(f => new FilmInfo
+                    {
+                        Name = f.Name,
+                        StartDate = f.StartDate,
+                        EndDate = f.EndDate,
+                        Duration = f.Duration,
+                        Description = f.Description
+                    }).FirstOrDefault()
             };
         }
     }

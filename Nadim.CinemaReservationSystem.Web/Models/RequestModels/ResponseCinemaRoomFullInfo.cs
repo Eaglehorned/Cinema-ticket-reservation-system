@@ -8,7 +8,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
     public class ResponseCinemaRoomFullInfo
     {
         public string Name { get; set; }
-
         public List<SeatInfo> Seats { get; set; }
     }
 }

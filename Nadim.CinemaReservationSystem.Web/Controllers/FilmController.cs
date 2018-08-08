@@ -10,7 +10,8 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
     {
         private readonly IFilmService filmService;
 
-        public FilmController(IFilmService filmService) {
+        public FilmController(IFilmService filmService)
+        {
             this.filmService = filmService;
         }
 
@@ -32,10 +33,24 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         {
             ResultCreated result = filmService.CreateFilm(filmInfo);
 
-            if (result.ResultOk) {
+            if (result.ResultOk)
+            {
                 return Created($"api/films/{result.Id}", typeof(Film));
             }
             return BadRequest(result);
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpGet("{filmId}")]
+        public ActionResult<Result> GetFilm(int filmId)
+        {
+            Result result = filmService.GetFilm(filmId);
+
+            if (result.ResultOk)
+            {
+                return result;
+            }
+            return NotFound();
         }
     }
 }
