@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import Cinema from './Cinema/Cinema';
+import Film from './Film/Film';
 
 export default class Body extends Component{
     constructor(props){
@@ -27,8 +28,9 @@ export default class Body extends Component{
         return(
             <React.Fragment>
                 {
-                    this.props.role === 'admin'
-                    ?<Tabs
+                    //this.props.role === 'admin'
+                    //?
+                    <Tabs
                         justified
                         activeKey={this.state.chosenOperation}
                         onSelect={key => this.handleSelectNav(key)}
@@ -44,13 +46,13 @@ export default class Body extends Component{
                             />
                         </Tab>
                         <Tab 
-                            eventKey={'new'}
-                            title="New"
+                            eventKey={'film'}
+                            title="Film"
                         >
-                            <React.Fragment></React.Fragment>
+                            <Film/>
                         </Tab>
                     </Tabs>
-                    :''
+                    //:''
                 }
             </React.Fragment>
         );
