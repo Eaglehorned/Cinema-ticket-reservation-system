@@ -10,9 +10,9 @@ export default class FormFilm extends Component{
         super(props);
         this.state={
             name: this.props.filmInfo ? this.props.filmInfo.name : '',
-            startDate: this.props.filmInfo ? new Date(this.props.filmInfo.startDate) : new Date(),
-            endDate: this.props.filmInfo ? new Date(this.props.filmInfo.endDate) : new Date(),
-            duration: this.props.filmInfo ? this.generateDurationDate(this.props.filmInfo.duration) : moment('00:00:00', 'HH:mm:ss').toDate(),
+            startDate: this.props.filmInfo ? moment(this.props.filmInfo.startDate) : moment(),
+            endDate: this.props.filmInfo ? moment(this.props.filmInfo.endDate) : moment(),
+            duration: this.props.filmInfo ? this.generateDurationDate(this.props.filmInfo.duration) : moment('00:00:00', 'HH:mm:ss'),
             description: this.props.filmInfo ? this.props.filmInfo.description : '',
             showHint: false
         }
@@ -29,10 +29,11 @@ export default class FormFilm extends Component{
     }
 
     generateDurationDate(duration){
-        let temp = new Date();
-        temp.setHours(Math.trunc(duration / 3600));
-        temp.setMinutes(Math.trunc((duration % 3600) / 60));
-        temp.setSeconds((duration % 3600) % 60);
+        let temp = moment({
+            hours: Math.trunc(duration / 3600),
+            minutes: Math.trunc((duration % 3600) / 60),
+            seconds: (duration % 3600) % 60
+        });
         return temp;
     }
 
@@ -44,19 +45,19 @@ export default class FormFilm extends Component{
 
     handleChangeStartDate(time){
         this.setState({
-            startDate: time.toDate()
+            startDate: time
         })
     }
 
     handleChangeEndDate(time){
         this.setState({
-            endDate: time.toDate()
+            endDate: time
         })
     }
 
     handleChangeDuration(time) {
         this.setState({
-            duration: time.toDate()
+            duration: time
         })
     }
 
@@ -72,21 +73,21 @@ export default class FormFilm extends Component{
                 name: this.state.name,
                 startDate: new Date( 
                     Date.UTC(
-                        this.state.startDate.getFullYear(), 
-                        this.state.startDate.getMonth(),
-                        this.state.startDate.getDate()
+                        this.state.startDate.year(), 
+                        this.state.startDate.month(),
+                        this.state.startDate.date()
                     )
                 ),
                 endDate: new Date(
                     Date.UTC(
-                        this.state.endDate.getFullYear(), 
-                        this.state.endDate.getMonth(),
-                        this.state.endDate.getDate()
+                        this.state.endDate.year(), 
+                        this.state.endDate.month(),
+                        this.state.endDate.date()
                     )
                 ),
-                duration: this.state.duration.getHours() * 3600 
-                    + this.state.duration.getMinutes() * 60
-                    + this.state.duration.getSeconds(),
+                duration: this.state.duration.hours() * 3600 
+                    + this.state.duration.minutes() * 60
+                    + this.state.duration.seconds(),
                 description: this.state.description
             });
         }
@@ -102,10 +103,10 @@ export default class FormFilm extends Component{
     allowSubmitClick(){
         if(this.state.name
         && this.state.description
-        && this.state.endDate.getTime() > this.state.startDate.getTime()
-        && (this.state.duration.getHours() !== 0
-        || this.state.duration.getMinutes() !== 0
-        || this.state.duration.getSeconds() !== 0)){
+        && this.state.endDate.isAfter(this.state.startDate)
+        && (this.state.duration.hours() !== 0
+        || this.state.duration.minutes() !== 0
+        || this.state.duration.seconds() !== 0)){
             return true;
         }
         return false;
@@ -113,9 +114,9 @@ export default class FormFilm extends Component{
 
     validateDuration(){
         return !this.state.showHint 
-        || this.state.duration.getHours() !== 0
-        || this.state.duration.getMinutes() !== 0
-        || this.state.duration.getSeconds() !== 0
+        || this.state.duration.hours() !== 0
+        || this.state.duration.minutes() !== 0
+        || this.state.duration.seconds() !== 0
     }
 
     validateString(str){
@@ -123,7 +124,7 @@ export default class FormFilm extends Component{
     }
 
     validateStartAndEndDates(){
-        return !this.state.showHint || this.state.endDate.getTime() > this.state.startDate.getTime();
+        return !this.state.showHint || this.state.endDate.isAfter(this.state.startDate);
     }
 
     render(){
@@ -168,7 +169,7 @@ export default class FormFilm extends Component{
                     </ControlLabel>
                     <br/>
                     <DatePicker
-                        defaultValue={moment(this.state.startDate)}
+                        defaultValue={this.state.startDate}
                         onChange={this.handleChangeStartDate}
                     />
                     {
@@ -192,7 +193,7 @@ export default class FormFilm extends Component{
                     </ControlLabel>
                     <br/>
                     <DatePicker
-                        defaultValue={moment(this.state.endDate)}
+                        defaultValue={this.state.endDate}
                         onChange={this.handleChangeEndDate}
                     />
                     {
@@ -216,7 +217,7 @@ export default class FormFilm extends Component{
                     </ControlLabel>
                     <br/>
                     <TimePicker
-                        defaultValue={moment(this.state.duration)}
+                        defaultValue={this.state.duration}
                         onChange={this.handleChangeDuration}
                     />
                     {
