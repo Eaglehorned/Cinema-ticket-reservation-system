@@ -26,7 +26,16 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.Films.Any(f => f.FilmId == filmId);
         }
 
-        public Result GetFilmList() {
+        private bool FilmInfoValid(FilmInfo filmInfo)
+        {
+            return !String.IsNullOrEmpty(filmInfo.Name)
+                && !String.IsNullOrEmpty(filmInfo.Description)
+                && filmInfo.StartDate < filmInfo.EndDate
+                && filmInfo.Duration != 0;
+        }
+
+        public Result GetFilmList()
+        {
             return new GetFilmListResult
             {
                 ResultOk = true,
@@ -41,7 +50,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         public ResultCreated CreateFilm(FilmInfo filmInfo)
         {
-            if (FilmExists(filmInfo.Name)) {
+            if (FilmExists(filmInfo.Name))
+            {
                 return new ResultCreated
                 {
                     ResultOk = false,
@@ -90,6 +100,40 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         Duration = f.Duration,
                         Description = f.Description
                     }).FirstOrDefault()
+            };
+        }
+
+        public Result EditFilm(int filmId, FilmInfo filmInfo)
+        {
+            if (!FilmExists(filmId))
+            {
+                return new Result
+                {
+                    ResultOk = false
+                };
+            }
+
+            if (!FilmInfoValid(filmInfo))
+            {
+                return new Result
+                {
+                    ResultOk = false
+                };
+            }
+
+            Film film = dbContext.Films.FirstOrDefault(f => f.FilmId == filmId);
+
+            film.Name = filmInfo.Name;
+            film.StartDate = filmInfo.StartDate;
+            film.EndDate = filmInfo.EndDate;
+            film.Duration = filmInfo.Duration;
+            film.Description = filmInfo.Description;
+
+            dbContext.SaveChanges();
+
+            return new Result
+            {
+                ResultOk = true
             };
         }
     }

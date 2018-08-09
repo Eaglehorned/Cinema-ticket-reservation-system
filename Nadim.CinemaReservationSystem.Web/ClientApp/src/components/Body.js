@@ -28,8 +28,8 @@ export default class Body extends Component{
         return(
             <React.Fragment>
                 {
-                    //this.props.role === 'admin'
-                    //?
+                    this.props.role === 'admin'
+                    ?
                     <Tabs
                         justified
                         activeKey={this.state.chosenOperation}
@@ -55,7 +55,7 @@ export default class Body extends Component{
                             />
                         </Tab>
                     </Tabs>
-                    //:''
+                    :''
                 }
             </React.Fragment>
         );

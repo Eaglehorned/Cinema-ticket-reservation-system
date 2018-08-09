@@ -15,18 +15,6 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             this.filmService = filmService;
         }
 
-        [HttpGet]
-        public ActionResult<Result> GetFilmList()
-        {
-            Result result = filmService.GetFilmList();
-
-            if (result.ResultOk)
-            {
-                return result;
-            }
-            return NotFound();
-        }
-
         [Authorize(Roles = "admin")]
         [HttpPost]
         public ActionResult<ResultCreated> CreateFilm([FromBody] FilmInfo filmInfo)
@@ -40,7 +28,18 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return BadRequest(result);
         }
 
-        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public ActionResult<Result> GetFilmList()
+        {
+            Result result = filmService.GetFilmList();
+
+            if (result.ResultOk)
+            {
+                return result;
+            }
+            return NotFound();
+        }
+
         [HttpGet("{filmId}")]
         public ActionResult<Result> GetFilm(int filmId)
         {
@@ -49,6 +48,19 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             if (result.ResultOk)
             {
                 return result;
+            }
+            return NotFound();
+        }
+
+        [Authorize(Roles = "admin")]
+        [HttpPut("{filmId}")]
+        public ActionResult<Result> EditFilm([FromBody] FilmInfo filmInfo, int filmId)
+        {
+            Result result = filmService.EditFilm(filmId, filmInfo);
+
+            if (result.ResultOk)
+            {
+                return Ok();
             }
             return NotFound();
         }
