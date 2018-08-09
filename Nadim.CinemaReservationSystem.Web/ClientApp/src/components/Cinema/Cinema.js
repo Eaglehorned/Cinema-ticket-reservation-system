@@ -20,7 +20,6 @@ export default class Cinema extends Component{
         this.createCinema = this.createCinema.bind(this);
         this.cancelCurrentAction = this.cancelCurrentAction.bind(this);
         this.receiveFormCinemaInfo = this.receiveFormCinemaInfo.bind(this);
-        this.editCinemaInfo = this.editCinemaInfo.bind(this);
         this.renderContent = this.renderContent.bind(this);
         this.handleChooseCreateCinemaAction = this.handleChooseCreateCinemaAction.bind(this);
         this.handleChooseEditCinemaAction = this.handleChooseEditCinemaAction.bind(this);
@@ -170,8 +169,7 @@ export default class Cinema extends Component{
                         chosenCinemaInfo: tempCinemaInfo,
                         chosenOperation: 'editCinema'
                     })
-                })
-                .catch(error => {
+                }).catch(error => {
                     this.setState({
                         chosenOperation: ''
                     });
@@ -181,44 +179,6 @@ export default class Cinema extends Component{
                         isError: true
                     });
                 });
-    }
-
-    editCinemaInfo(receivedCinemaInfo){
-        fetch(`api/cinemas/${receivedCinemaInfo.cinemaId}`, {
-            method: 'PUT',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            },
-            body: JSON.stringify(receivedCinemaInfo.cinemaInfoToSend)
-        }).then(response => {
-                if (response.ok){
-                    return response.json();
-                }
-                if (response.status === 400){
-                    return response.json().then((err) => {
-                        throw new Error(`Bad request. ${err.details}`);
-                    });
-                }
-                if (response.status === 401){
-                    throw new Error('You need to authorize to do that action.');
-                }
-                if (response.status === 404){
-                        throw new Error('Cant find resourse. ');
-                }
-            }).then(parsedJson => {
-                this.informWithMessage('Cinema information edited.');
-            })
-            .catch(error => this.informWithMessage(
-                { 
-                    text: error.message,
-                    isError: true
-                })
-            );
-            this.setState({
-                chosenOperation: ''
-            });
     }
 
     handleChooseCreateCinemaAction(){
@@ -238,7 +198,7 @@ export default class Cinema extends Component{
         return(
             <fieldset>
                 <h1>Cinema list</h1>
-                <fieldset className="cinema-list-container">
+                <fieldset className="list-container">
                     {
                         this.state.cinemaList.map((el)=>
                             <CinemaDisplayInfoBox
@@ -299,7 +259,7 @@ export default class Cinema extends Component{
     render(){
         const content = this.renderContent();
         return(
-            <div className="add-cinema-container">
+            <div className="content-container">
                 <div className="well">
                     {content}
                 </div>

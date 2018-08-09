@@ -1,9 +1,10 @@
 .list-box-container{
     padding: 5px;
-    border: solid 1px #e5e5e5; 
+    border: solid 1px #a8a8a8; 
+    margin-bottom: 10px;
 }
 
-.cinema-list-container{
+.list-container{
     margin: 30px;
     max-width: 600px;
 }
