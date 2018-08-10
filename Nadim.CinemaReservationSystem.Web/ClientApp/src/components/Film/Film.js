@@ -48,11 +48,18 @@ export default class Film extends Component{
                 if (response.ok){
                     return response.json();
                 }
+                if (response.status === 400){
+                    return response.json().then((err) => {
+                        throw new Error(`Bad request. ${err.details}`);
+                    });
+                }
                 if (response.status === 401){
                     throw new Error('You need to authorize to do that action.');
                 }
                 if (response.status === 404){
-                        throw new Error('Cant find resourse.');
+                    return response.json().then((err) => {
+                        throw new Error(`Not found. ${err.details}`);
+                    });
                 }
             }).then(parsedJson => {
                     this.setState({
@@ -80,12 +87,19 @@ export default class Film extends Component{
             if (response.ok){
                 return response.json();
             }
+            if (response.status === 400){
+                return response.json().then((err) => {
+                    throw new Error(`Bad request. ${err.details}`);
+                });
+            }
             if (response.status === 401){
                 throw new Error('You need to authorize to do that action.');
             }
             if (response.status === 404){
-                    throw new Error('Cant find resourse.');
-            }         
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
+            }  
         })
         .then(parsedJson => {
             let tempParsedJson = parsedJson.requestedData;
@@ -129,10 +143,12 @@ export default class Film extends Component{
                 });
             }
             if (response.status === 401){
-                throw new Error('You need to authorize to do that action. ');
+                throw new Error('You need to authorize to do that action.');
             }
             if (response.status === 404){
-                    throw new Error('Cant find resourse. ');
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
             }
         })
         .then(response => {
@@ -179,7 +195,9 @@ export default class Film extends Component{
                 throw new Error('You need to authorize to do that action.');
             }
             if (response.status === 404){
-                    throw new Error('Cant find resourse. ');
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
             }
         })
         .then(parsedJson => {

@@ -18,7 +18,7 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
 
         GetResult<ResponseCinemaFullInfo> GetCinema(int id);
 
-        ResultCreated EditCinemaRoom(int cinemaId, int cinemaRoomId, CinemaRoomInfo cinemaRoomInfo);
+        Result EditCinemaRoom(int cinemaId, int cinemaRoomId, CinemaRoomInfo cinemaRoomInfo);
 
         GetResult<ResponseCinemaRoomFullInfo> GetCinemaRoom(int cinemaId, int cinemaRoomId);
     }

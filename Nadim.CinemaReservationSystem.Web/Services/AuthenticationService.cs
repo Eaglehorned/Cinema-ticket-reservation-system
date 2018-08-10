@@ -79,7 +79,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         {
             if (!InputLoginDataValid(user))
             {
-                return new DataValidationResult
+                return new Result
                 {
                     ResultOk = false,
                     Details = "Incorrect data."
@@ -88,7 +88,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             if (!UserExists(user.Email))
             {
-                return new DataValidationResult
+                return new Result
                 {
                     ResultOk = false,
                     Details = "User doesnt exist."
@@ -97,7 +97,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             if (!IsUserDataCorrect(user))
             {
-                return new DataValidationResult
+                return new Result
                 {
                     ResultOk = false,
                     Details = "Incorrect password."
@@ -116,7 +116,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         {
             if (!InputRegistrationDataValid(user))
             {
-                return new DataValidationResult
+                return new Result
                 {
                     ResultOk = false,
                     Details = "Incorrect data."
@@ -125,7 +125,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             if (UserExists(user.Email))
             {
-                return new DataValidationResult
+                return new Result
                 {
                     ResultOk = false,
                     Details = "User with such e-mail already registed."
@@ -134,7 +134,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             if (UserNameUsed(user.UserName))
             {
-                return new DataValidationResult
+                return new Result
                 {
                     ResultOk = false,
                     Details = "User with such username already registed."

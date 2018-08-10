@@ -69,7 +69,9 @@ export default class Cinema extends Component{
                 throw new Error('You need to authorize to do that action.');
             }
             if (response.status === 404){
-                    throw new Error('Cant find resourse.');
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
             }
         }).then(parsedJson => {
                 this.setState({
@@ -92,7 +94,8 @@ export default class Cinema extends Component{
                 'Content-Type': 'application/json',
                 'Authorization': `bearer ${this.props.token}`
             }
-        }).then(response => {
+        })
+        .then(response => {
             if (response.ok){
                 return response.json();
             }
@@ -105,9 +108,12 @@ export default class Cinema extends Component{
                 throw new Error('You need to authorize to do that action.');
             }
             if (response.status === 404){
-                    throw new Error('Cant find resourse.');
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
             }
-        }).then(parsedJson => {
+        })
+        .then(parsedJson => {
                 let tempParsedJson = parsedJson.requestedData;
                 tempParsedJson.info.cinemaId = id;
                 this.setState({
@@ -149,10 +155,12 @@ export default class Cinema extends Component{
                     });
                 }
                 if (response.status === 401){
-                    throw new Error('You need to authorize to do that action. ');
+                    throw new Error('You need to authorize to do that action.');
                 }
                 if (response.status === 404){
-                        throw new Error('Cant find resourse. ');
+                    return response.json().then((err) => {
+                        throw new Error(`Not found. ${err.details}`);
+                    });
                 }
             }).then(response => {
                     let tempCinemaInfo = {};

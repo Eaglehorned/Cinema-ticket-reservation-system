@@ -9,10 +9,6 @@ namespace Nadim.CinemaReservationSystem.Web
     public class Result
     {
         public bool ResultOk { get; set; }
-    }
-
-    public class DataValidationResult : Result
-    {
         public string Details { get; set; }
     }
 
@@ -26,7 +22,7 @@ namespace Nadim.CinemaReservationSystem.Web
         public string FullUserName { get; set; }
     }
 
-    public class ResultCreated : DataValidationResult
+    public class ResultCreated : Result
     {
         public int Id { get; set; }
     }

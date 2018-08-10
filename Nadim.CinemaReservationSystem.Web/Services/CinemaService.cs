@@ -46,14 +46,37 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.CinemaRooms.Any(c => c.CinemaRoomId == cinemaRoomId);
         }
 
+        private bool CinemaInfoValid(CinemaInfo cinemaInfo)
+        {
+            return !String.IsNullOrEmpty(cinemaInfo.Name)
+                && !String.IsNullOrEmpty(cinemaInfo.City)
+                && cinemaInfo.DefaultSeatPrice > 0
+                && cinemaInfo.VipSeatPrice > 0;
+        }
+
+        private bool CinemaRoomInfoValid(CinemaRoomInfo cinemaRoomInfo)
+        {
+            return !String.IsNullOrEmpty(cinemaRoomInfo.Name)
+                && cinemaRoomInfo.Seats != null;
+        }
+
         public Result EditCinema(int cinemaId, CinemaInfo cinemaInfo)
         {
             if (!CinemaExists(cinemaId))
             {
-                return new DataValidationResult
+                return new Result
                 {
                     ResultOk = false,
                     Details = "Edited cinema does not exist.",
+                };
+            }
+
+            if (!CinemaInfoValid(cinemaInfo))
+            {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Invalid cinema data."
                 };
             }
 
@@ -80,6 +103,14 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 {
                     ResultOk = false,
                     Details = "Such cinema already exists."
+                };
+            }
+
+            if (!CinemaInfoValid(cinemaInfo)) {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Invalid cinema data."
                 };
             }
 
@@ -117,6 +148,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 return new GetResult<ResponseCinemaFullInfo>
                 {
                     ResultOk = false,
+                    Details = "Cant find such cinema."
                 };
             }
 
@@ -155,6 +187,14 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
+            if (!CinemaRoomInfoValid(cinemaRoomInfo)) {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Invalid cinema room data."
+                };
+            }
+
             CinemaRoom cinemaRoom = new CinemaRoom
             {
                 Name = cinemaRoomInfo.Name,
@@ -181,21 +221,32 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public ResultCreated EditCinemaRoom(int cinemaId, int cinemaRoomId, CinemaRoomInfo cinemaRoomInfo)
+        public Result EditCinemaRoom(int cinemaId, int cinemaRoomId, CinemaRoomInfo cinemaRoomInfo)
         {
             if (!CinemaExists(cinemaId))
             {
-                return new ResultCreated
+                return new Result
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Such cinema does not exist."
                 };
             }
 
             if (!CinemaRoomExists(cinemaRoomId))
             {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "Such cinema room does not exist."
+                };
+            }
+
+            if (!CinemaRoomInfoValid(cinemaRoomInfo))
+            {
                 return new ResultCreated
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Invalid cinema room info."
                 };
             }
 
@@ -216,7 +267,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             dbContext.SaveChanges();
 
-            return new ResultCreated
+            return new Result
             {
                 ResultOk = true
             };
@@ -228,7 +279,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 return new GetResult<ResponseCinemaRoomFullInfo>
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Such cinema does not exist."
                 };
             }
 
@@ -236,7 +288,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 return new GetResult<ResponseCinemaRoomFullInfo>
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Such cinema room does no exist."
                 };
             }
 

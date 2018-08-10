@@ -59,6 +59,15 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
+            if (!FilmInfoValid(filmInfo))
+            {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Invalid film data."
+                };
+            }
+
             dbContext.Films.Add(new Film
             {
                 Name = filmInfo.Name,
@@ -83,7 +92,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 return new GetResult<FilmInfo>
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Such film does not exist."
                 };
             }
 
@@ -101,22 +111,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         Description = f.Description
                     }).FirstOrDefault()
             };
-            /*
-            return new GetFilmResult
-            {
-                ResultOk = true,
-                FilmInfo = dbContext.Films
-                    .Where(f => f.FilmId == filmId)
-                    .Select(f => new FilmInfo
-                    {
-                        Name = f.Name,
-                        StartDate = f.StartDate,
-                        EndDate = f.EndDate,
-                        Duration = f.Duration,
-                        Description = f.Description
-                    }).FirstOrDefault()
-            };
-            */
         }
 
         public Result EditFilm(int filmId, FilmInfo filmInfo)
@@ -125,7 +119,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 return new Result
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Such film does not exist."
                 };
             }
 
@@ -133,7 +128,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 return new Result
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Invalid film data."
                 };
             }
 

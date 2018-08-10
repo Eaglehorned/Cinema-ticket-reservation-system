@@ -38,7 +38,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             {
                 return result;
             }
-            return NotFound();
+            return NotFound(result);
         }
 
         [HttpGet("{filmId}")]
@@ -50,7 +50,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             {
                 return result;
             }
-            return NotFound();
+            return NotFound(result);
         }
 
         [Authorize(Roles = "admin")]
@@ -63,7 +63,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             {
                 return Ok();
             }
-            return NotFound();
+            return NotFound(result);
         }
     }
 }
