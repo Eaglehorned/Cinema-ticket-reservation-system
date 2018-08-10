@@ -36,7 +36,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
             if (result.ResultOk)
             {
-                return result;
+                return Ok(result);
             }
             return NotFound(result);
         }
@@ -48,7 +48,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
             if (result.ResultOk)
             {
-                return result;
+                return Ok(result);
             }
             return NotFound(result);
         }
