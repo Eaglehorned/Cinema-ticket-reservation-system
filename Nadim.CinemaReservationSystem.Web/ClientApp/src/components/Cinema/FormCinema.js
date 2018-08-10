@@ -56,10 +56,12 @@ export default class FormCinema extends Component{
                 throw new Error('You need to authorize to do that action.');
             }
             if (response.status === 404){
-                    throw new Error('Cant find resourse.');
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
             }
         }).then(parsedJson => {
-                let tempChosenCinemaInfo = parsedJson.cinemaRoom;
+                let tempChosenCinemaInfo = parsedJson.requestedData;
                 tempChosenCinemaInfo.info = {};
                 tempChosenCinemaInfo.info.name = tempChosenCinemaInfo.name;
                 delete tempChosenCinemaInfo['name'];
@@ -138,10 +140,12 @@ export default class FormCinema extends Component{
                     });
                 }
                 if (response.status === 401){
-                    throw new Error('You need to authorize to do that action. ');
+                    throw new Error('You need to authorize to do that action.');
                 }
                 if (response.status === 404){
-                        throw new Error('Cant find resourse. ');
+                    return response.json().then((err) => {
+                        throw new Error(`Not found. ${err.details}`);
+                    });
                 }
             }).then(response => {
                 this.setState({
@@ -186,7 +190,9 @@ export default class FormCinema extends Component{
                     throw new Error('You need to authorize to do that action.');
                 }
                 if (response.status === 404){
-                        throw new Error('Cant find resourse.');
+                    return response.json().then((err) => {
+                        throw new Error(`Not found. ${err.details}`);
+                    });
                 }
             }).then(parsedJson => {
                 let tempCinemaRooms = this.state.cinemaRooms;
@@ -229,7 +235,9 @@ export default class FormCinema extends Component{
                 throw new Error('You need to authorize to do that action.');
             }
             if (response.status === 404){
-                    throw new Error('Cant find resourse. ');
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
             }
         }).then(parsedJson => {
                 this.props.callBackInformWithMessage('Cinema information edited.');

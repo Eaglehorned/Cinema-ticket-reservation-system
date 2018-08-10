@@ -27,5 +27,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public DbSet<Cinema> Cinemas { get; set; }
         public DbSet<CinemaRoom> CinemaRooms { get; set; }
         public DbSet<Seat> Seats { get; set; }
+        public DbSet<Film> Films { get; set; }
     }
 }

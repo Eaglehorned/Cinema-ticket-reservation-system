@@ -1,15 +1,15 @@
-.add-cinema-container{
+.content-container{
     padding: 20px;
     width: 100%;
 }
 
-.add-cinema-container .scheme-container{
+.content-container .scheme-container{
     overflow: auto;
     text-align: center;
     margin: 20px;
 }
 
-.add-cinema-container .seat-default, .seat-vip{
+.content-container .seat-default, .seat-vip{
     width: 30px;
     height: 30px;
     border: solid black;
@@ -17,19 +17,19 @@
     display: inline-block;
 }
 
-.add-cinema-container .seat-vip{
+.content-container .seat-vip{
     background-color: aquamarine;
 }
 
-.add-cinema-container .button-container{
+.content-container .button-container{
     text-align: center;
 }
 
-.add-cinema-container .button-container Button{
+.content-container .button-container Button{
     margin: 10px;
 }
 
-.add-cinema-container Button{
+.content-container Button{
     margin-bottom: 5px;
     margin-right: 10px;
 }

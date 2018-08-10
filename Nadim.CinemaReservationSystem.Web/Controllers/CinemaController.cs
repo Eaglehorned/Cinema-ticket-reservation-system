@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nadim.CinemaReservationSystem.Web.Contracts;
 using Nadim.CinemaReservationSystem.Web.Models;
@@ -38,45 +39,44 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             {
                 return Ok();
             }
-            return NotFound();
+            return NotFound(result);
         }
 
         [HttpGet]
-        public ActionResult<Result> GetCinemaList()
+        public ActionResult<GetResult<List<ResponseCinemaDisplayInfo>>> GetCinemaList()
         {
-            Result result = сinemaService.GetCinemaList();
+            GetResult<List<ResponseCinemaDisplayInfo>> result = сinemaService.GetCinemaList();
 
             if (result.ResultOk)
             {
-                return result;
-
+                return Ok(result);
             }
-            return NotFound();
+            return NotFound(result);
         }
 
         [Authorize]
         [HttpGet("{cinemaId}")]
-        public ActionResult<Result> GetCinema(int cinemaId)
+        public ActionResult<GetResult<ResponseCinemaFullInfo>> GetCinema(int cinemaId)
         {
-            Result result = сinemaService.GetCinema(cinemaId);
+            GetResult<ResponseCinemaFullInfo> result = сinemaService.GetCinema(cinemaId);
 
             if (result.ResultOk)
             {
-                return result;
+                return Ok(result);
             }
-            return NotFound();
+            return NotFound(result);
         }
 
         [Authorize]
         [HttpGet("{cinemaId}/cinemaRooms/{cinemaRoomId}")]
-        public ActionResult<Result> GetCinemaRoom(int cinemaId, int cinemaRoomId)
+        public ActionResult<GetResult<ResponseCinemaRoomFullInfo>> GetCinemaRoom(int cinemaId, int cinemaRoomId)
         {
-            Result result = сinemaService.GetCinemaRoom(cinemaId, cinemaRoomId);
+            GetResult<ResponseCinemaRoomFullInfo> result = сinemaService.GetCinemaRoom(cinemaId, cinemaRoomId);
 
             if (result.ResultOk) {
                 return Ok(result);
             }
-            return NotFound();
+            return NotFound(result);
         }
 
         [Authorize(Roles = "admin")]
@@ -103,7 +103,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
                 return Ok();
             }
             else
-                return NotFound();
+                return NotFound(result);
         }
     }
 }

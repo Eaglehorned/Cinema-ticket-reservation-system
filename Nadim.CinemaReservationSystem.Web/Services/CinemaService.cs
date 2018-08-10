@@ -46,14 +46,37 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.CinemaRooms.Any(c => c.CinemaRoomId == cinemaRoomId);
         }
 
+        private bool CinemaInfoValid(CinemaInfo cinemaInfo)
+        {
+            return !String.IsNullOrEmpty(cinemaInfo.Name)
+                && !String.IsNullOrEmpty(cinemaInfo.City)
+                && cinemaInfo.DefaultSeatPrice > 0
+                && cinemaInfo.VipSeatPrice > 0;
+        }
+
+        private bool CinemaRoomInfoValid(CinemaRoomInfo cinemaRoomInfo)
+        {
+            return !String.IsNullOrEmpty(cinemaRoomInfo.Name)
+                && cinemaRoomInfo.Seats != null;
+        }
+
         public Result EditCinema(int cinemaId, CinemaInfo cinemaInfo)
         {
             if (!CinemaExists(cinemaId))
             {
-                return new DataValidationResult
+                return new Result
                 {
                     ResultOk = false,
                     Details = "Edited cinema does not exist.",
+                };
+            }
+
+            if (!CinemaInfoValid(cinemaInfo))
+            {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Invalid cinema data."
                 };
             }
 
@@ -83,6 +106,14 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
+            if (!CinemaInfoValid(cinemaInfo)) {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Invalid cinema data."
+                };
+            }
+
             var generatedCinema = GenerateCinema(cinemaInfo);
 
             dbContext.Cinemas.Add(generatedCinema);
@@ -95,12 +126,12 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public Result GetCinemaList()
+        public GetResult<List<ResponseCinemaDisplayInfo>> GetCinemaList()
         {
-            return new GetCinemaListResult
+            return new GetResult<List<ResponseCinemaDisplayInfo>>
             {
                 ResultOk = true,
-                CinemaList = dbContext.Cinemas
+                RequestedData = dbContext.Cinemas
                     .Select( c => new ResponseCinemaDisplayInfo
                     {
                         Name = c.Name,
@@ -110,20 +141,21 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public Result GetCinema(int id)
+        public GetResult<ResponseCinemaFullInfo> GetCinema(int id)
         {
             if (!CinemaExists(id))
             {
-                return new Result
+                return new GetResult<ResponseCinemaFullInfo>
                 {
                     ResultOk = false,
+                    Details = "Cant find such cinema."
                 };
             }
 
-            return new GetCinemaResult
+            return new GetResult<ResponseCinemaFullInfo>
             {
                 ResultOk = true,
-                Info = dbContext.Cinemas
+                RequestedData = dbContext.Cinemas
                     .Where(c => c.CinemaId == id)
                     .Select( c => new ResponseCinemaFullInfo
                     {
@@ -155,6 +187,14 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 };
             }
 
+            if (!CinemaRoomInfoValid(cinemaRoomInfo)) {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Invalid cinema room data."
+                };
+            }
+
             CinemaRoom cinemaRoom = new CinemaRoom
             {
                 Name = cinemaRoomInfo.Name,
@@ -181,21 +221,32 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public ResultCreated EditCinemaRoom(int cinemaId, int cinemaRoomId, CinemaRoomInfo cinemaRoomInfo)
+        public Result EditCinemaRoom(int cinemaId, int cinemaRoomId, CinemaRoomInfo cinemaRoomInfo)
         {
             if (!CinemaExists(cinemaId))
             {
-                return new ResultCreated
+                return new Result
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Such cinema does not exist."
                 };
             }
 
             if (!CinemaRoomExists(cinemaRoomId))
             {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "Such cinema room does not exist."
+                };
+            }
+
+            if (!CinemaRoomInfoValid(cinemaRoomInfo))
+            {
                 return new ResultCreated
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Invalid cinema room info."
                 };
             }
 
@@ -216,34 +267,36 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             dbContext.SaveChanges();
 
-            return new ResultCreated
+            return new Result
             {
                 ResultOk = true
             };
         }
 
-        public Result GetCinemaRoom(int cinemaId, int cinemaRoomId)
+        public GetResult<ResponseCinemaRoomFullInfo> GetCinemaRoom(int cinemaId, int cinemaRoomId)
         {
             if (!CinemaExists(cinemaId))
             {
-                return new Result
+                return new GetResult<ResponseCinemaRoomFullInfo>
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Such cinema does not exist."
                 };
             }
 
             if (!CinemaRoomExists(cinemaRoomId))
             {
-                return new Result
+                return new GetResult<ResponseCinemaRoomFullInfo>
                 {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details = "Such cinema room does no exist."
                 };
             }
 
-            return new GetCinemaRoomResult
+            return new GetResult<ResponseCinemaRoomFullInfo>
             {
                 ResultOk = true,
-                CinemaRoom = dbContext.CinemaRooms
+                RequestedData = dbContext.CinemaRooms
                     .Where(r => r.CinemaRoomId == cinemaRoomId)
                     .Select( r => new ResponseCinemaRoomFullInfo
                         {
