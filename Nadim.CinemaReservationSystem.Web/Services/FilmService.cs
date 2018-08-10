@@ -34,12 +34,12 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 && filmInfo.Duration != 0;
         }
 
-        public Result GetFilmList()
+        public GetResult<List<ResponseFilmDisplayInfo>> GetFilmList()
         {
-            return new GetFilmListResult
+            return new GetResult<List<ResponseFilmDisplayInfo>>
             {
                 ResultOk = true,
-                FilmList = dbContext.Films
+                RequestedData = dbContext.Films
                     .Select(f => new ResponseFilmDisplayInfo
                     {
                         Name = f.Name,
@@ -77,16 +77,31 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public Result GetFilm(int filmId)
+        public GetResult<FilmInfo> GetFilm(int filmId)
         {
             if (!FilmExists(filmId))
             {
-                return new Result
+                return new GetResult<FilmInfo>
                 {
                     ResultOk = false
                 };
             }
 
+            return new GetResult<FilmInfo>
+            {
+                ResultOk = true,
+                RequestedData = dbContext.Films
+                    .Where(f => f.FilmId == filmId)
+                    .Select(f => new FilmInfo
+                    {
+                        Name = f.Name,
+                        StartDate = f.StartDate,
+                        EndDate = f.EndDate,
+                        Duration = f.Duration,
+                        Description = f.Description
+                    }).FirstOrDefault()
+            };
+            /*
             return new GetFilmResult
             {
                 ResultOk = true,
@@ -101,6 +116,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         Description = f.Description
                     }).FirstOrDefault()
             };
+            */
         }
 
         public Result EditFilm(int filmId, FilmInfo filmInfo)

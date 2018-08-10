@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nadim.CinemaReservationSystem.Web.Contracts;
 using Nadim.CinemaReservationSystem.Web.Models;
@@ -29,9 +30,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult<Result> GetFilmList()
+        public ActionResult<GetResult<List<ResponseFilmDisplayInfo>>> GetFilmList()
         {
-            Result result = filmService.GetFilmList();
+            GetResult<List<ResponseFilmDisplayInfo>> result = filmService.GetFilmList();
 
             if (result.ResultOk)
             {
@@ -41,9 +42,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [HttpGet("{filmId}")]
-        public ActionResult<Result> GetFilm(int filmId)
+        public ActionResult<GetResult<FilmInfo>> GetFilm(int filmId)
         {
-            Result result = filmService.GetFilm(filmId);
+            GetResult<FilmInfo> result = filmService.GetFilm(filmId);
 
             if (result.ResultOk)
             {

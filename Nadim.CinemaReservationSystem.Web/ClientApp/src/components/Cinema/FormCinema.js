@@ -59,7 +59,7 @@ export default class FormCinema extends Component{
                     throw new Error('Cant find resourse.');
             }
         }).then(parsedJson => {
-                let tempChosenCinemaInfo = parsedJson.cinemaRoom;
+                let tempChosenCinemaInfo = parsedJson.requestedData;
                 tempChosenCinemaInfo.info = {};
                 tempChosenCinemaInfo.info.name = tempChosenCinemaInfo.name;
                 delete tempChosenCinemaInfo['name'];

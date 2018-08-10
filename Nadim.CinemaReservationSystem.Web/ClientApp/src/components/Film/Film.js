@@ -56,7 +56,7 @@ export default class Film extends Component{
                 }
             }).then(parsedJson => {
                     this.setState({
-                        filmList: parsedJson.filmList,
+                        filmList: parsedJson.requestedData,
                     });
                 })
                 .catch(error => this.informWithMessage(
@@ -88,7 +88,7 @@ export default class Film extends Component{
             }         
         })
         .then(parsedJson => {
-            let tempParsedJson = parsedJson.filmInfo;
+            let tempParsedJson = parsedJson.requestedData;
             tempParsedJson.filmId = filmId;
             this.setState({
                 chosenFilmInfo: tempParsedJson,
