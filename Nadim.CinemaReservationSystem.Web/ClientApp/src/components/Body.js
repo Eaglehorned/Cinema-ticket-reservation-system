@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import Cinema from './Cinema/Cinema';
 import Film from './Film/Film';
+import Session from './Session/Session';
 
 export default class Body extends Component{
     constructor(props){
@@ -50,6 +51,15 @@ export default class Body extends Component{
                             title="Film"
                         >
                             <Film
+                                token={this.props.token}
+                                callBackInformWithMessage={this.informWithMessage}
+                            />
+                        </Tab>
+                        <Tab 
+                            eventKey={'session'}
+                            title="Session"
+                        >
+                            <Session
                                 token={this.props.token}
                                 callBackInformWithMessage={this.informWithMessage}
                             />
