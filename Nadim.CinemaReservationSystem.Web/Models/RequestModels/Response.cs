@@ -26,33 +26,12 @@ namespace Nadim.CinemaReservationSystem.Web
         public string FullUserName { get; set; }
     }
 
-    public class GetCinemaListResult : Result
-    {
-        public List<ResponseCinemaDisplayInfo> CinemaList { get; set; }
-    }
-
-    public class GetCinemaResult : Result
-    {
-        public ResponseCinemaFullInfo Info { get; set; }
-    }
-
-    public class GetCinemaRoomResult : Result
-    {
-        public ResponseCinemaRoomFullInfo CinemaRoom { get; set; }
-    }
-
     public class ResultCreated : DataValidationResult
     {
         public int Id { get; set; }
     }
 
-    public class GetFilmListResult : Result
-    {
-        public List<ResponseFilmDisplayInfo> FilmList { get; set; }
-    }
-
-    public class GetFilmResult : Result
-    {
-        public FilmInfo FilmInfo { get; set; }
+    public class GetResult<T> : Result {
+        public T RequestedData { get; set; }
     }
 }

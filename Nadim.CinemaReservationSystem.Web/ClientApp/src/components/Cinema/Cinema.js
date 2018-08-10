@@ -73,7 +73,7 @@ export default class Cinema extends Component{
             }
         }).then(parsedJson => {
                 this.setState({
-                    cinemaList: parsedJson.cinemaList,
+                    cinemaList: parsedJson.requestedData,
                 });
             })
             .catch(error => this.informWithMessage(
@@ -108,7 +108,7 @@ export default class Cinema extends Component{
                     throw new Error('Cant find resourse.');
             }
         }).then(parsedJson => {
-                let tempParsedJson = parsedJson.info;
+                let tempParsedJson = parsedJson.requestedData;
                 tempParsedJson.info.cinemaId = id;
                 this.setState({
                     chosenCinemaInfo: tempParsedJson,
