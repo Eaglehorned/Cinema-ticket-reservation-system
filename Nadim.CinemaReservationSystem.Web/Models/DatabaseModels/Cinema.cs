@@ -12,8 +12,8 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public int CinemaId { get; set; }
         public string City { get; set; }
         public string Name { get; set; }
-        public decimal VipSeatPrice {get; set;}
-        public decimal DefaultSeatPrice { get; set; }
+        //public decimal VipSeatPrice {get; set;}
+        //public decimal DefaultSeatPrice { get; set; }
 
         public virtual List<CinemaRoom> CinemaRooms { get; set; }
     }

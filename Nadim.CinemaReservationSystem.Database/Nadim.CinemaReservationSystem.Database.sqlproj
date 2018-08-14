@@ -76,4 +76,7 @@
   <ItemGroup>
     <RefactorLog Include="Nadim.CinemaReservationSystem.Database.refactorlog" />
   </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
+  </ItemGroup>
 </Project>

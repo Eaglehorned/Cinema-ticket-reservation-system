@@ -33,8 +33,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 City = cinemaInfo.City,
                 Name = cinemaInfo.Name,
-                DefaultSeatPrice = cinemaInfo.DefaultSeatPrice,
-                VipSeatPrice = cinemaInfo.VipSeatPrice,
+                //DefaultSeatPrice = cinemaInfo.DefaultSeatPrice,
+                //VipSeatPrice = cinemaInfo.VipSeatPrice,
                 CinemaRooms = new List<CinemaRoom>()
             };
 
@@ -49,9 +49,9 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         private bool CinemaInfoValid(CinemaInfo cinemaInfo)
         {
             return !String.IsNullOrEmpty(cinemaInfo.Name)
-                && !String.IsNullOrEmpty(cinemaInfo.City)
-                && cinemaInfo.DefaultSeatPrice > 0
-                && cinemaInfo.VipSeatPrice > 0;
+                && !String.IsNullOrEmpty(cinemaInfo.City);
+                //&& cinemaInfo.DefaultSeatPrice > 0
+                //&& cinemaInfo.VipSeatPrice > 0;
         }
 
         private bool CinemaRoomInfoValid(CinemaRoomInfo cinemaRoomInfo)
@@ -84,8 +84,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             cinema.Name = cinemaInfo.Name;
             cinema.City = cinemaInfo.City;
-            cinema.DefaultSeatPrice = cinemaInfo.DefaultSeatPrice;
-            cinema.VipSeatPrice = cinemaInfo.VipSeatPrice;
+            //cinema.DefaultSeatPrice = cinemaInfo.DefaultSeatPrice;
+            //cinema.VipSeatPrice = cinemaInfo.VipSeatPrice;
 
             dbContext.SaveChanges();
 
@@ -163,8 +163,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         {
                             Name = c.Name,
                             City = c.City,
-                            DefaultSeatPrice = c.DefaultSeatPrice,
-                            VipSeatPrice = c.VipSeatPrice
+                            //DefaultSeatPrice = c.DefaultSeatPrice,
+                            //VipSeatPrice = c.VipSeatPrice
                         },
                         CinemaRooms = c.CinemaRooms
                             .Select(r => new ResponseCinemaRoomDisplayInfo
@@ -198,9 +198,9 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             CinemaRoom cinemaRoom = new CinemaRoom
             {
                 Name = cinemaRoomInfo.Name,
-                Seats = cinemaRoomInfo.Seats.Select( s=> new Seat
+                Seats = cinemaRoomInfo.Seats.Select( s => new Seat
                 {
-                    Type = s.Type,
+                    Type = dbContext.SeatTypes.FirstOrDefault( seat => seat.TypeName == s.Type),
                     Row = s.Row,
                     Column = s.Column
                 }).ToList()
@@ -259,7 +259,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             cinemaRoom.Seats = cinemaRoomInfo.Seats
                 .Select(s => new Seat
                 {
-                    Type = s.Type,
+                    Type = dbContext.SeatTypes.FirstOrDefault( st => st.TypeName == s.Type),
                     Row = s.Row,
                     Column = s.Column
                 }).ToList();
@@ -303,7 +303,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                             Name = r.Name,
                             Seats = r.Seats
                                 .Select( s => new SeatInfo {
-                                    Type = s.Type,
+                                    Type = s.Type.TypeName,
                                     Row = s.Row,
                                     Column = s.Column
                                 }).ToList()

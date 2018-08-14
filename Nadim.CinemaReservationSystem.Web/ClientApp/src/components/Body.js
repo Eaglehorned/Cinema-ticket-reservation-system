@@ -25,12 +25,51 @@ export default class Body extends Component{
         });
     }
 
+    renderCinemaContent = () => {
+        return(
+            <Cinema
+                token={this.props.token}
+                callBackInformWithMessage={this.informWithMessage}
+            />
+        );
+    }
+
+    renderFilmContent = () => {
+        return(
+            <Film
+                token={this.props.token}
+                callBackInformWithMessage={this.informWithMessage}
+            />
+        );
+    }
+
+    renderSessionContent = () => {
+        return(
+            <Session
+                token={this.props.token}
+                callBackInformWithMessage={this.informWithMessage}
+            />
+        );
+    }
+
+    renderContent = () => {
+        switch(this.state.chosenOperation){
+            case 'cinema': 
+                return this.renderCinemaContent();
+            case 'film':
+                return this.renderFilmContent();
+            case 'session': 
+                return this.renderSessionContent();
+        }
+    }
+
     renderNav(){
+        let content = this.renderContent();
         return(
             <React.Fragment>
                 {
-                    this.props.role === 'admin'
-                    ?
+                    //this.props.role === 'admin'
+                    //?
                     <Tabs
                         justified
                         activeKey={this.state.chosenOperation}
@@ -40,33 +79,19 @@ export default class Body extends Component{
                         <Tab 
                             eventKey={'cinema'}
                             title="Cinema"
-                        >
-                            <Cinema
-                                token={this.props.token}
-                                callBackInformWithMessage={this.informWithMessage}
-                            />
-                        </Tab>
+                        />
                         <Tab 
                             eventKey={'film'}
                             title="Film"
-                        >
-                            <Film
-                                token={this.props.token}
-                                callBackInformWithMessage={this.informWithMessage}
-                            />
-                        </Tab>
+                        />
                         <Tab 
                             eventKey={'session'}
                             title="Session"
-                        >
-                            <Session
-                                token={this.props.token}
-                                callBackInformWithMessage={this.informWithMessage}
-                            />
-                        </Tab>
+                        />
                     </Tabs>
-                    :''
+                    //:''
                 }
+                {content}
             </React.Fragment>
         );
     }
