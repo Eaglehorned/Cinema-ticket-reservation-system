@@ -50,29 +50,26 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             Session session = new Session
             {
-                FilmId = sessionInfo.FilmId,
-                CinemaRoomId = sessionInfo.CinemaRoomId,
+                Film = dbContext.Films.FirstOrDefault( f => f.FilmId == sessionInfo.FilmId),
+                CinemaRoom = dbContext.CinemaRooms.FirstOrDefault( r => r.CinemaRoomId == sessionInfo.CinemaRoomId),
                 BeginTime = sessionInfo.BeginTime,
                 SessionSeatTypePrices = new List<SessionSeatTypePrice>()
             };
 
-            dbContext.SaveChanges();
-            /*
-            var SessionSeatTypePrices = (from seatTypePrice in sessionInfo.SessionSeatTypePrices
+
+
+            session.SessionSeatTypePrices = (from seatTypePrice in sessionInfo.SessionSeatTypePrices
                                              select new SessionSeatTypePrice
                                              {
                                                  Price = seatTypePrice.Price,
-                                                 SessionId = session.SessionId,
-                                                 SeatTypeId = dbContext.SeatTypes.FirstOrDefault(seatType => seatType.TypeName == seatTypePrice.TypeName).SeatTypeId
+                                                 SeatType = dbContext.SeatTypes.FirstOrDefault(seatType => seatType.TypeName == seatTypePrice.TypeName)
                                              })
                                              .ToList();
 
-            foreach (var seatTypePrice in SessionSeatTypePrices) {
-                dbContext.SessionSeatTypePrices.Add(seatTypePrice);
-            }
+            dbContext.Sessions.Add(session);
 
             dbContext.SaveChanges();
-                        */
+
             return new ResultCreated
             {
                 ResultOk = true,

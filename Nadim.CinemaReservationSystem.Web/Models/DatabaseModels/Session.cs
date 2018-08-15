@@ -12,7 +12,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public int SessionId { get; set; }
 
         public int CinemaRoomId { get; set; }
-        public CinemaRoom Cinema { get; set; }
+        public CinemaRoom CinemaRoom { get; set; }
 
         public int FilmId { get; set; }
         public Film Film { get; set; }

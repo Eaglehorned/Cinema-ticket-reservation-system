@@ -43,5 +43,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public DbSet<Film> Films { get; set; }
         public DbSet<SeatType> SeatTypes { get; set; }
         public DbSet<Session> Sessions { get; set; }
+        public DbSet<SessionSeatTypePrice> SessionSeatTypePrices { get; set; }
     }
 }
