@@ -1,11 +1,10 @@
 .list-box-container{
-    padding: 5px;
+    padding: 10px;
     border: solid 1px #a8a8a8; 
     margin-bottom: 10px;
 }
 
 .list-container{
-    margin: 30px;
+    margin: 30px 5px;
     max-width: 600px;
 }
-

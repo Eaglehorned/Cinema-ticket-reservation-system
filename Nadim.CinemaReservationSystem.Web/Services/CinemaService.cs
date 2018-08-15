@@ -33,8 +33,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 City = cinemaInfo.City,
                 Name = cinemaInfo.Name,
-                //DefaultSeatPrice = cinemaInfo.DefaultSeatPrice,
-                //VipSeatPrice = cinemaInfo.VipSeatPrice,
                 CinemaRooms = new List<CinemaRoom>()
             };
 
@@ -50,8 +48,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         {
             return !String.IsNullOrEmpty(cinemaInfo.Name)
                 && !String.IsNullOrEmpty(cinemaInfo.City);
-                //&& cinemaInfo.DefaultSeatPrice > 0
-                //&& cinemaInfo.VipSeatPrice > 0;
         }
 
         private bool CinemaRoomInfoValid(CinemaRoomInfo cinemaRoomInfo)
@@ -84,8 +80,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             cinema.Name = cinemaInfo.Name;
             cinema.City = cinemaInfo.City;
-            //cinema.DefaultSeatPrice = cinemaInfo.DefaultSeatPrice;
-            //cinema.VipSeatPrice = cinemaInfo.VipSeatPrice;
 
             dbContext.SaveChanges();
 
@@ -141,6 +135,30 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
+        public GetResult<List<ResponseCinemaRoomDisplayInfo>> GetCinemaRoomList(int cinemaId)
+        {
+            if (!CinemaExists(cinemaId))
+            {
+                return new GetResult<List<ResponseCinemaRoomDisplayInfo>>
+                {
+                    ResultOk = false,
+                    Details = "Cant find such cinema"
+                };
+            }
+
+            return new GetResult<List<ResponseCinemaRoomDisplayInfo>>
+            {
+                ResultOk = true,
+                RequestedData = dbContext.CinemaRooms
+                    .Where(r => r.CinemaId == cinemaId)
+                    .Select(r => new ResponseCinemaRoomDisplayInfo
+                    {
+                        Name = r.Name,
+                        CinemaRoomId = r.CinemaRoomId
+                    }).ToList()
+            };
+        }
+
         public GetResult<ResponseCinemaFullInfo> GetCinema(int id)
         {
             if (!CinemaExists(id))
@@ -163,8 +181,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         {
                             Name = c.Name,
                             City = c.City,
-                            //DefaultSeatPrice = c.DefaultSeatPrice,
-                            //VipSeatPrice = c.VipSeatPrice
                         },
                         CinemaRooms = c.CinemaRooms
                             .Select(r => new ResponseCinemaRoomDisplayInfo
@@ -309,6 +325,38 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                                 }).ToList()
                         })
                     .FirstOrDefault()
+            };
+        }
+        public GetResult<List<ResponseSeatTypesInCinemaRoomInfo>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId)
+        {
+            if (!CinemaExists(cinemaId)) {
+                return new GetResult<List<ResponseSeatTypesInCinemaRoomInfo>>
+                {
+                    ResultOk = false,
+                    Details = "Cant find such cinema."
+                };
+            }
+
+            if (!CinemaRoomExists(cinemaRoomId)){
+                return new GetResult<List<ResponseSeatTypesInCinemaRoomInfo>>
+                {
+                    ResultOk = false,
+                    Details = "Cant find such cinema room."
+                };
+            }
+
+            return new GetResult<List<ResponseSeatTypesInCinemaRoomInfo>> {
+                ResultOk = true,
+                RequestedData = dbContext.Seats
+                    .Where(s => s.CinemaRoomId == cinemaRoomId)
+                    .Select(s => new ResponseSeatTypesInCinemaRoomInfo {
+                        SeatTypeId = s.SeatTypeId,
+                        TypeName = dbContext.SeatTypes
+                            .FirstOrDefault(st => st.SeatTypeId == s.SeatTypeId)
+                            .TypeName
+                    })
+                    .Distinct()
+                    .ToList()
             };
         }
     }

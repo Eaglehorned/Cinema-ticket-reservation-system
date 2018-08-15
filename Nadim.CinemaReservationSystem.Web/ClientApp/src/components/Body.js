@@ -60,6 +60,8 @@ export default class Body extends Component{
                 return this.renderFilmContent();
             case 'session': 
                 return this.renderSessionContent();
+            default: 
+                return '';
         }
     }
 

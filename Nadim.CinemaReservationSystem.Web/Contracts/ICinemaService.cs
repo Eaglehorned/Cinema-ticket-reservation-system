@@ -21,5 +21,9 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
         Result EditCinemaRoom(int cinemaId, int cinemaRoomId, CinemaRoomInfo cinemaRoomInfo);
 
         GetResult<ResponseCinemaRoomFullInfo> GetCinemaRoom(int cinemaId, int cinemaRoomId);
+
+        GetResult<List<ResponseCinemaRoomDisplayInfo>> GetCinemaRoomList(int cinemaId);
+
+        GetResult<List<ResponseSeatTypesInCinemaRoomInfo>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId);
     }
 }
