@@ -31,8 +31,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             }
             return BadRequest(result);
         }
-
-        [Authorize]
+        
         [HttpGet]
         public ActionResult<GetResult<List<ResponseSessionDisplayInfo>>> GetSessionList()
         {
@@ -58,7 +57,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return NotFound(result);
         }
 
-        [Authorize]
+        [Authorize(Roles = "admin")]
         [HttpPut("{sessionId}")]
         public ActionResult<Result> EditSession([FromBody] SessionInfo sessionInfo, int sessionId)
         {

@@ -41,6 +41,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return NotFound(result);
         }
 
+        [Authorize]
         [HttpGet("{filmId}")]
         public ActionResult<GetResult<FilmInfo>> GetFilm(int filmId)
         {

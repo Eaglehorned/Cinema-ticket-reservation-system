@@ -51,7 +51,7 @@ export default class SeatsScheme extends Component{
                     )}
                 </div>
                 <div 
-                    className={this.state.mode ==='display' ? 'hidden' : 'button-container'}
+                    className={this.state.mode ==='display' ? 'hidden' : null}
                 >
                     <Button
                         bsStyle="primary" onClick={this.handleSubmitClick}

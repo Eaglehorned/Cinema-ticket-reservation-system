@@ -196,25 +196,29 @@ export default class FormSession extends Component{
     }
 
     handleSelectCinema = (eventKey) =>{
-        this.setState({
-            chosenCinema: this.state.cinemaList[eventKey],
-            chosenCinemaRoom: undefined,
-            seatTypes: []
-        })
-        this.getCinemaRoomList(this.state.cinemaList[eventKey].cinemaId);
+        if (this.state.chosenCinema.cinemaId !== this.state.cinemaList[eventKey].cinemaId){
+            this.setState({
+                chosenCinema: this.state.cinemaList[eventKey],
+                chosenCinemaRoom: undefined,
+                seatTypes: []
+            });
+            this.getCinemaRoomList(this.state.cinemaList[eventKey].cinemaId);
+        }
     }
 
     handleSelectCinemaRoom = (eventKey) =>{
-        this.setState({
-            chosenCinemaRoom: this.state.chosenCinemaRoomsList[eventKey]
-        });
-        this.getSeatTypes(this.state.chosenCinemaRoomsList[eventKey].cinemaRoomId);
+        if (this.state.chosenCinemaRoom.cinemaRoomId !== this.state.chosenCinemaRoomsList[eventKey].cinemaRoomId){
+            this.setState({
+                chosenCinemaRoom: this.state.chosenCinemaRoomsList[eventKey]
+            });
+            this.getSeatTypes(this.state.chosenCinemaRoomsList[eventKey].cinemaRoomId);
+        }
     }
 
     handleSelectFilm = (eventKey) =>{
         this.setState({
             chosenFilm: this.state.filmList[eventKey]
-        })
+        });
     }
 
     handleChangeBeginTime = (time) =>{
@@ -397,17 +401,6 @@ export default class FormSession extends Component{
                         onChange={this.handleChangeBeginTime}
                     />
                 </FormGroup>
-                <Button
-                    onClick={this.handleSubmitClick}
-                    bsStyle="primary"
-                >
-                    Submit
-                </Button>
-                <Button
-                    // onclick cancel
-                >
-                    Cancel
-                </Button>
             </fieldset>
         );
     }
@@ -420,6 +413,7 @@ export default class FormSession extends Component{
                         this.state.seatTypes.map((el)=>
                             <SeatTypePrice
                                 key={el.seatTypeId}
+                                showHint={this.state.showHint}
                                 seatType={el}
                                 callBackChangePrice={this.handleChangePrice}
                             />
@@ -443,6 +437,19 @@ export default class FormSession extends Component{
                     <div className="session-seat-type-prices-container"> 
                         {this.renderSetSeatTypePrices()}
                     </div>
+                </div>
+                <div className="button-container">
+                    <Button
+                        onClick={this.handleSubmitClick}
+                        bsStyle="primary"
+                    >
+                        Submit
+                    </Button>
+                    <Button
+                        // onclick cancel
+                    >
+                        Cancel
+                    </Button>
                 </div>
             </React.Fragment>
         );
