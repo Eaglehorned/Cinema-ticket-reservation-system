@@ -7,7 +7,12 @@ namespace Nadim.CinemaReservationSystem.Web.Models
 {
     public class SessionSeatTypePriceInfo
     {
-        public string TypeName { get; set; }
+        public int SeatTypeId { get; set; }
         public decimal Price { get; set; }
+    }
+
+    public class SessionSeatTypePriceFullInfo : SessionSeatTypePriceInfo
+    {
+        public string Name { get; set; }
     }
 }

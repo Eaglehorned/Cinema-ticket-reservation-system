@@ -9,5 +9,9 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
     public interface ISessionService
     {
         ResultCreated CreateSession(SessionInfo session);
+
+        GetResult<List<ResponseSessionDisplayInfo>> GetSessionList();
+
+        GetResult<ResponseSessionFullInfo> GetSession(int sessionId);
     }
 }

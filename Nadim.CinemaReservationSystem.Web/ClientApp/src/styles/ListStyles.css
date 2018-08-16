@@ -8,3 +8,9 @@
     margin: 30px 5px;
     max-width: 600px;
 }
+
+.list-box-inline-item{
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 3px; 
+}

@@ -1,22 +1,65 @@
 import React, { Component } from 'react';
 import FormSession from './FormSession';
 import { Button } from 'react-bootstrap';
+import SessionDisplayInfoBox from './SessionDisplayInfoBox';
 
 export default class Session extends Component{
     displayName = Session.displayName;
     constructor(props){
         super(props);
         this.state={
-            chosenAction:''
+            chosenAction:'',
+            sessionList: [],
         }
+
+        this.getSessionList();
     }
 
     informWithMessage = (message) => {
         this.props.callBackInformWithMessage(message);
     }
 
+    getSessionList = () =>{
+        fetch('api/sessions', {
+            method: 'GET',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${this.props.token}`
+            }
+        })
+        .then(response => {
+            if (response.ok){
+                return response.json();
+            }
+            if (response.status === 400){
+                return response.json().then((err) => {
+                    throw new Error(`Bad request. ${err.details}`);
+                });
+            }
+            if (response.status === 401){
+                throw new Error('You need to authorize to do that action.');
+            }
+            if (response.status === 404){
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
+            }
+        })
+        .then(parsedJson => {
+            this.setState({
+                sessionList: parsedJson.requestedData,
+            });
+        })
+        .catch(error => this.informWithMessage(
+            { 
+                text: error.message,
+                isError: true
+            })
+        );
+    }
+
     createSession = (receivedSessionInfo) =>{
-        console.log(receivedSessionInfo);
         fetch('api/sessions', {
             method: 'POST',
             headers:{
@@ -67,23 +110,23 @@ export default class Session extends Component{
         return(
             <React.Fragment>
                 <h1>Session list</h1>
-                {/* <div className="list-container">
+                <div className="list-container">
                     {
-                        this.state.filmList.map((el)=>
-                            <FilmDisplayInfoBox
+                        this.state.sessionList.map((el)=>
+                            <SessionDisplayInfoBox
                                 key={el.filmId}
-                                filmInfo={el}
-                                callBackEditFilm={this.getFilm}
+                                sessionInfo={el}
+                                // callBackEditFilm={this.getFilm}
                             />
                         )
-                    } */}
+                    }
                 <Button
                     bsStyle="primary"
                     onClick={ () => this.setState({ chosenOperation: 'createSession' })}
                 >
                     Create session
                 </Button>
-                {/* </div> */}
+                </div>
             </React.Fragment>
         );
     }

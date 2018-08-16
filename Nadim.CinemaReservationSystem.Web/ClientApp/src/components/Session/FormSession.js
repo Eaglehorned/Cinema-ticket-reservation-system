@@ -10,8 +10,8 @@ export default class FormSession extends Component{
     constructor(props){
         super(props);
         this.state={
-            beginDateTime: this.props.sessionInfo 
-                ? moment(this.props.sessionInfo.beginDateTime)
+            beginTime: this.props.sessionInfo 
+                ? moment(this.props.sessionInfo.beginTime)
                 : moment(),
             cinemaList: [],
             chosenCinema: undefined,
@@ -211,9 +211,9 @@ export default class FormSession extends Component{
         })
     }
 
-    handleChangeBeginDateTime = (time) =>{
+    handleChangeBeginTime = (time) =>{
         this.setState({
-            beginDateTime: time
+            beginTime: time
         });
     }
 
@@ -226,6 +226,7 @@ export default class FormSession extends Component{
     }
 
     handleSubmitClick = () =>{
+        console.log(this.state.seatTypes);
         if (!this.state.generalInfoInputted){
             this.getSeatTypes();
             this.setState({
@@ -236,8 +237,8 @@ export default class FormSession extends Component{
             this.props.callBackReceiveSessionInfo({
                 cinemaRoomId: this.state.chosenCinemaRoom.cinemaRoomId,
                 filmId: this.state.chosenFilm.filmId,
-                beginTime: this.state.beginDateTime,
-                SessionSeatTypePrices: this.state.seatTypes
+                beginTime: this.state.beginTime.format(),
+                sessionSeatTypePrices: this.state.seatTypes
             })
         }
     }
@@ -383,8 +384,8 @@ export default class FormSession extends Component{
                     </ControlLabel>
                     <br/>
                     <DatePicker
-                        defaultValue={this.state.beginDateTime}
-                        onChange={this.handleChangeBeginDateTime}
+                        defaultValue={this.state.beginTime}
+                        onChange={this.handleChangeBeginTime}
                     />
                 </FormGroup>
                 <FormGroup
@@ -397,8 +398,8 @@ export default class FormSession extends Component{
                     </ControlLabel>
                     <br/>
                     <TimePicker
-                        defaultValue={this.state.beginDateTime}
-                        onChange={this.handleChangeBeginDateTime}
+                        defaultValue={this.state.beginTime}
+                        onChange={this.handleChangeBeginTime}
                     />
                 </FormGroup>
             </fieldset>

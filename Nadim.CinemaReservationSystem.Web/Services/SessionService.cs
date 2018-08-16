@@ -16,11 +16,13 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             this.dbContext = dbContext;
         }
 
-        private bool CinemaRoomExists(int cinemaRoomId) {
+        private bool CinemaRoomExists(int cinemaRoomId)
+        {
             return dbContext.CinemaRooms.Any(r => r.CinemaRoomId == cinemaRoomId);
         }
 
-        private bool SessionExist(SessionInfo session) {
+        private bool SessionExist(SessionInfo session)
+        {
             return dbContext.Sessions.Any(s =>
                 s.CinemaRoomId == session.CinemaRoomId
                 && s.BeginTime == session.BeginTime
@@ -50,19 +52,17 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             Session session = new Session
             {
-                Film = dbContext.Films.FirstOrDefault( f => f.FilmId == sessionInfo.FilmId),
-                CinemaRoom = dbContext.CinemaRooms.FirstOrDefault( r => r.CinemaRoomId == sessionInfo.CinemaRoomId),
+                Film = dbContext.Films.FirstOrDefault(f => f.FilmId == sessionInfo.FilmId),
+                CinemaRoom = dbContext.CinemaRooms.FirstOrDefault(r => r.CinemaRoomId == sessionInfo.CinemaRoomId),
                 BeginTime = sessionInfo.BeginTime,
                 SessionSeatTypePrices = new List<SessionSeatTypePrice>()
             };
-
-
 
             session.SessionSeatTypePrices = (from seatTypePrice in sessionInfo.SessionSeatTypePrices
                                              select new SessionSeatTypePrice
                                              {
                                                  Price = seatTypePrice.Price,
-                                                 SeatType = dbContext.SeatTypes.FirstOrDefault(seatType => seatType.TypeName == seatTypePrice.TypeName)
+                                                 SeatTypeId = seatTypePrice.SeatTypeId
                                              })
                                              .ToList();
 
@@ -75,6 +75,29 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 ResultOk = true,
                 Id = session.SessionId
             };
+        }
+
+        public GetResult<List<ResponseSessionDisplayInfo>> GetSessionList()
+        {
+            return new GetResult<List<ResponseSessionDisplayInfo>>
+            {
+                ResultOk = true,
+                RequestedData = dbContext.Sessions
+                    .Select(s => new ResponseSessionDisplayInfo
+                    {
+                        SessionId = s.SessionId,
+                        FilmName = s.Film.Name,
+                        CinemaRoomName = s.CinemaRoom.Name,
+                        CinemaName = s.CinemaRoom.Cinema.Name,
+                        CinemaCity = s.CinemaRoom.Cinema.City,
+                        BeginTime = s.BeginTime
+                    }).ToList()
+            };
+        }
+
+        public GetResult<ResponseSessionFullInfo> GetSession(int sessionId)
+        {
+            return new GetResult<ResponseSessionFullInfo> { };
         }
     }
 }

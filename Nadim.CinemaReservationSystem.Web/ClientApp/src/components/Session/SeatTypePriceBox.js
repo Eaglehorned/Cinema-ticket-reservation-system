@@ -50,7 +50,7 @@ export default class SeatTypePrice extends Component{
         return(
             <div className="list-box-container">
                 <FormGroup
-                    validationState={this.validatePrice() ? '' : 'error'}
+                    validationState={this.validatePrice() ? null : 'error'}
                 >
                     <ControlLabel
                         className="font-large"

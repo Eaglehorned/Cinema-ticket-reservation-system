@@ -31,5 +31,31 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             }
             return BadRequest(result);
         }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult<GetResult<List<ResponseSessionDisplayInfo>>> GetSessionList()
+        {
+            GetResult<List<ResponseSessionDisplayInfo>> result = sessionService.GetSessionList();
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
+        }
+
+        [Authorize]
+        [HttpGet("{sessionId}")]
+        public ActionResult<GetResult<ResponseSessionFullInfo>> GetSession()
+        {
+            GetResult<ResponseSessionFullInfo> result = sessionService.GetSession();
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            NotFound(result);
+        }
     }
 }
