@@ -313,7 +313,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 ResultOk = true,
                 RequestedData = dbContext.CinemaRooms
-                    .Where(r => r.CinemaRoomId == cinemaRoomId)
+                    .Where( r => r.CinemaRoomId == cinemaRoomId)
                     .Select( r => new ResponseCinemaRoomFullInfo
                         {
                             Name = r.Name,

@@ -1,0 +1,21 @@
+.form-session-container{
+    width: 100%;
+}
+
+.session-information-container, .session-seat-type-prices-container{
+    display: inline-block;
+    vertical-align: top;
+    padding: 20px 40px;
+    border: solid 1px #a8a8a8; 
+}
+
+.session-information-container{
+    width: 400px;
+    border-radius: 5px 0 0 5px;
+}
+
+.session-seat-type-prices-container{
+    width: calc(100% - 400px);
+    min-width: 400px;
+    border-radius: 0 5px 5px 0;
+}

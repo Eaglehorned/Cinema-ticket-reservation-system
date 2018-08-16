@@ -58,7 +58,7 @@ export default class SeatTypePrice extends Component{
                         {this.props.seatType.typeName} : 
                     </ControlLabel>
                     <FormControl
-                        value={this.props.SeatTypePrice}
+                        value={this.props.seatType.price}
                         onChange={this.handlePriceChange}
                     />                    
                     {

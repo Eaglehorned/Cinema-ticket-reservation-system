@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Nadim.CinemaReservationSystem.Web.Models;
 using Nadim.CinemaReservationSystem.Web.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Nadim.CinemaReservationSystem.Web.Services
 {
@@ -30,6 +31,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             );
         }
 
+        private bool SessionExist(int sessionId)
+        {
+            return dbContext.Sessions.Any(s => s.SessionId == sessionId);
+        }
+
         public ResultCreated CreateSession(SessionInfo sessionInfo)
         {
             if (!CinemaRoomExists(sessionInfo.CinemaRoomId))
@@ -52,19 +58,18 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             Session session = new Session
             {
-                Film = dbContext.Films.FirstOrDefault(f => f.FilmId == sessionInfo.FilmId),
-                CinemaRoom = dbContext.CinemaRooms.FirstOrDefault(r => r.CinemaRoomId == sessionInfo.CinemaRoomId),
+                FilmId = sessionInfo.FilmId,
+                CinemaRoomId = sessionInfo.CinemaRoomId,
                 BeginTime = sessionInfo.BeginTime,
                 SessionSeatTypePrices = new List<SessionSeatTypePrice>()
             };
 
-            session.SessionSeatTypePrices = (from seatTypePrice in sessionInfo.SessionSeatTypePrices
-                                             select new SessionSeatTypePrice
-                                             {
-                                                 Price = seatTypePrice.Price,
-                                                 SeatTypeId = seatTypePrice.SeatTypeId
-                                             })
-                                             .ToList();
+            session.SessionSeatTypePrices = sessionInfo.SessionSeatTypePrices
+                .Select(stp => new SessionSeatTypePrice
+                {
+                    Price = stp.Price,
+                    SeatTypeId = stp.SeatTypeId
+                }).ToList();
 
             dbContext.Sessions.Add(session);
 
@@ -97,7 +102,82 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         public GetResult<ResponseSessionFullInfo> GetSession(int sessionId)
         {
-            return new GetResult<ResponseSessionFullInfo> { };
+            if (!SessionExist(sessionId))
+            {
+                return new GetResult<ResponseSessionFullInfo>
+                {
+                    ResultOk = false,
+                    Details = "Cant find such session."
+                };
+            }
+
+            return new GetResult<ResponseSessionFullInfo>
+            {
+                ResultOk = true,
+                RequestedData = dbContext.Sessions
+                    .Where(s => s.SessionId == sessionId)
+                    .Select(s => new ResponseSessionFullInfo
+                    {
+                        SessionId = s.SessionId,
+                        Cinema = new ResponseCinemaDisplayInfo
+                        {
+                            Name = s.CinemaRoom.Cinema.Name,
+                            City = s.CinemaRoom.Cinema.City,
+                            CinemaId = s.CinemaRoom.CinemaId
+                        },
+                        CinemaRoom = new ResponseCinemaRoomDisplayInfo
+                        {
+                            Name = s.CinemaRoom.Name,
+                            CinemaRoomId = s.CinemaRoom.CinemaRoomId
+                        },
+                        Film = new ResponseFilmDisplayInfo
+                        {
+                            Name = s.Film.Name,
+                            FilmId = s.Film.FilmId
+                        },
+                        BeginTime = s.BeginTime,
+                        SessionSeatTypePrices = s.SessionSeatTypePrices
+                           .Select(stp => new SessionSeatTypePriceFullInfo
+                           {
+                               SeatTypeId = stp.SeatTypeId,
+                               TypeName = stp.SeatType.TypeName,
+                               Price = stp.Price
+                           }).ToList()
+                    })
+                    .FirstOrDefault()
+            };
+        }
+
+        public Result EditSession(int sessionId, SessionInfo sessionInfo)
+        {
+            if (!SessionExist(sessionId))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "Such cinema does not exist."
+                };
+            }
+
+            Session session = dbContext.Sessions
+                .Include( s => s.SessionSeatTypePrices)
+                .FirstOrDefault(s => s.SessionId == sessionId);
+
+            session.FilmId = sessionInfo.FilmId;
+            session.CinemaRoomId = sessionInfo.CinemaRoomId;
+            session.BeginTime = sessionInfo.BeginTime;
+            session.SessionSeatTypePrices = sessionInfo.SessionSeatTypePrices
+                .Select( stp => new SessionSeatTypePrice {
+                    Price = stp.Price,
+                    SeatTypeId = stp.SeatTypeId
+                }).ToList();
+
+            dbContext.SaveChanges();
+
+            return new Result
+            {
+                ResultOk = true
+            };
         }
     }
 }

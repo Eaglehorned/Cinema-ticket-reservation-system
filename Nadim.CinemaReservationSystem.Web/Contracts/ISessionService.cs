@@ -13,5 +13,7 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
         GetResult<List<ResponseSessionDisplayInfo>> GetSessionList();
 
         GetResult<ResponseSessionFullInfo> GetSession(int sessionId);
+
+        Result EditSession(int sessionId, SessionInfo sessionInfo);
     }
 }

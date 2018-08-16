@@ -8,8 +8,9 @@ export default class Session extends Component{
     constructor(props){
         super(props);
         this.state={
-            chosenAction:'',
+            chosenOperation: '',
             sessionList: [],
+            chosenSessionInfo: undefined,
         }
 
         this.getSessionList();
@@ -60,6 +61,9 @@ export default class Session extends Component{
     }
 
     createSession = (receivedSessionInfo) =>{
+        this.setState({
+            chosenOperation: ''
+        })
         fetch('api/sessions', {
             method: 'POST',
             headers:{
@@ -67,7 +71,12 @@ export default class Session extends Component{
                 'Content-Type': 'application/json',
                 'Authorization': `bearer ${this.props.token}`
             },
-            body: JSON.stringify(receivedSessionInfo)
+            body: JSON.stringify({
+                cinemaRoomId: receivedSessionInfo.cinemaRoom.cinemaRoomId,
+                filmId: receivedSessionInfo.film.filmId,
+                beginTime: receivedSessionInfo.beginTime,
+                sessionSeatTypePrices: receivedSessionInfo.sessionSeatTypePrices
+            })
         })
         .then(response => {
             if (response.ok){
@@ -88,14 +97,121 @@ export default class Session extends Component{
             }
         })
         .then(response => {
-            //TODO add to list
-            // this.setState({
-            //     filmList: this.state.filmList.concat({
-            //         name: receivedSessionInfo.name,
-            //         filmId: response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length)
-            //     })
-            // });
+            this.setState({
+                sessionList: this.state.sessionList.concat({
+                    cinemaName: receivedSessionInfo.cinema.name,
+                    cinemaCity: receivedSessionInfo.cinema.city,
+                    cinemaRoomName: receivedSessionInfo.cinemaRoom.name,
+                    filmName: receivedSessionInfo.film.name,
+                    beginTime: receivedSessionInfo.beginTime,
+                    sessionId: response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length)
+                })
+            });
             this.informWithMessage('Session created.');
+        })
+        .catch(error => {
+            this.informWithMessage(
+            { 
+                text: error.message,
+                isError: true
+            });
+        });
+    }
+
+    getSession = (sessionId) =>{
+        this.setState({
+            chosenOperation: 'editSessionLoading'
+        });
+        fetch(`api/sessions/${sessionId}`,{
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${this.props.token}`
+            }
+        })
+        .then(response => {
+            if (response.ok){
+                return response.json();
+            }
+            if (response.status === 400){
+                return response.json().then((err) => {
+                    throw new Error(`Bad request. ${err.details}`);
+                });
+            }
+            if (response.status === 401){
+                throw new Error('You need to authorize to do that action.');
+            }
+            if (response.status === 404){
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
+            }  
+        })
+        .then(parsedJson => {
+            this.setState({
+                chosenSessionInfo: parsedJson.requestedData,
+                chosenOperation: 'editSession'
+            })
+        })
+        .catch(error => {
+            this.setState({
+                chosenOperation: ''
+            });
+            this.informWithMessage({ 
+                text: error.message,
+                isError: true
+            });
+        });
+    }
+
+    editSession = (receivedSessionInfo) =>{
+        this.setState({
+            chosenOperation: ''
+        })
+        fetch(`api/sessions/${this.state.chosenSessionInfo.sessionId}`, {
+            method: 'PUT',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${this.props.token}`
+            },
+            body: JSON.stringify({
+                cinemaRoomId: receivedSessionInfo.cinemaRoom.cinemaRoomId,
+                filmId: receivedSessionInfo.film.filmId,
+                beginTime: receivedSessionInfo.beginTime,
+                sessionSeatTypePrices: receivedSessionInfo.sessionSeatTypePrices
+            })
+        })
+        .then(response => {
+            if (response.ok){
+                return response;
+            }
+            if (response.status === 400){
+                return response.json().then((err) => {
+                    throw new Error(`Bad request. ${err.details}`);
+                });
+            }
+            if (response.status === 401){
+                throw new Error('You need to authorize to do that action.');
+            }
+            if (response.status === 404){
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
+            }
+        })
+        .then(response => {
+            let tempSessionList = this.state.sessionList;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaName = receivedSessionInfo.cinema.name;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaCity = receivedSessionInfo.cinema.city;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaRoomName = receivedSessionInfo.cinemaRoom.name;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).filmName = receivedSessionInfo.film.name;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).beginTime = receivedSessionInfo.beginTime;
+            this.setState({
+                sessionList: tempSessionList
+            });
+            this.informWithMessage('Session edited.');
         })
         .catch(error => {
             this.informWithMessage(
@@ -114,9 +230,9 @@ export default class Session extends Component{
                     {
                         this.state.sessionList.map((el)=>
                             <SessionDisplayInfoBox
-                                key={el.filmId}
+                                key={el.sessionId}
                                 sessionInfo={el}
-                                // callBackEditFilm={this.getFilm}
+                                callBackEditSession={this.getSession}
                             />
                         )
                     }
@@ -148,7 +264,14 @@ export default class Session extends Component{
                     </div>
                 );
             case 'editSession': 
-                return;
+                return(
+                    <FormSession
+                        callBackInformWithMessage={this.informWithMessage}
+                        sessionInfo={this.state.chosenSessionInfo}
+                        token={this.props.token}
+                        callBackReceiveSessionInfo={this.editSession}
+                    />
+                );
             default:    
                 return this.renderActionsContent();
         }

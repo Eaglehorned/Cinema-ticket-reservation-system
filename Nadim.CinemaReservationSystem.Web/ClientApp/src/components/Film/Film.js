@@ -75,6 +75,9 @@ export default class Film extends Component{
     }
 
     getFilm(filmId){
+        this.setState({
+            chosenOperation: 'editFilmLoading'
+        });
         fetch(`api/films/${filmId}`,{
             method: 'GET',
             headers: {
@@ -172,7 +175,7 @@ export default class Film extends Component{
     editFilm(receivedFilmInfo){
         this.setState({
             chosenOperation: ''
-        })
+        });
         fetch(`api/films/${this.state.chosenFilmInfo.filmId}`, {
             method: 'PUT',
             headers:{
@@ -254,7 +257,7 @@ export default class Film extends Component{
                         callBackCancel={this.cancelCurrentOperation}
                     />
                 );
-            case 'editFilmLoading': 
+            case 'editFilmLoading':
                 return(
                     <div className="font-x-large font-italic">
                         Loading...

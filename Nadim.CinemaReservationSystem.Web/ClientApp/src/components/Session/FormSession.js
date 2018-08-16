@@ -3,6 +3,7 @@ import { Button, DropdownButton, MenuItem, FormGroup, ControlLabel } from 'react
 import { DatePicker, TimePicker } from 'antd';
 import SeatTypePrice from './SeatTypePriceBox';
 import moment from 'moment';
+import '../../styles/Session.css';
 
 export default class FormSession extends Component{
     displayName = FormSession.displayName;
@@ -14,18 +15,21 @@ export default class FormSession extends Component{
                 ? moment(this.props.sessionInfo.beginTime)
                 : moment(),
             cinemaList: [],
-            chosenCinema: undefined,
+            chosenCinema: this.props.sessionInfo ? this.props.sessionInfo.cinema : undefined,
             chosenCinemaRoomsList: [],
-            chosenCinemaRoom: undefined,
+            chosenCinemaRoom: this.props.sessionInfo ? this.props.sessionInfo.cinemaRoom : undefined,
             filmList: [],
-            chosenFilm: undefined,
-            generalInfoInputted: false,
-            seatTypes: [],
+            chosenFilm: this.props.sessionInfo ? this.props.sessionInfo.film : undefined,
+            seatTypes:  this.props.sessionInfo ? this.props.sessionInfo.sessionSeatTypePrices : [],
             showHint: false
         }
         
         this.getCinemaList();
         this.getFilmList();
+
+        if (this.props.sessionInfo){
+            this.getCinemaRoomList(this.props.sessionInfo.cinema.cinemaId);
+        }
     }
 
     informWithMessage = (message) =>{
@@ -148,8 +152,8 @@ export default class FormSession extends Component{
                 );
     }
 
-    getSeatTypes = () => {
-        fetch(`api/cinemas/${this.state.chosenCinema.cinemaId}/cinemaRooms/${this.state.chosenCinemaRoom.cinemaRoomId}/seatTypes`, {
+    getSeatTypes = (cinemaRoomId) => {
+        fetch(`api/cinemas/${this.state.chosenCinema.cinemaId}/cinemaRooms/${cinemaRoomId}/seatTypes`, {
             method: 'GET',
             headers:{
                 'Accept': 'application/json',
@@ -194,7 +198,8 @@ export default class FormSession extends Component{
     handleSelectCinema = (eventKey) =>{
         this.setState({
             chosenCinema: this.state.cinemaList[eventKey],
-            chosenCinemaRoom: undefined
+            chosenCinemaRoom: undefined,
+            seatTypes: []
         })
         this.getCinemaRoomList(this.state.cinemaList[eventKey].cinemaId);
     }
@@ -202,7 +207,8 @@ export default class FormSession extends Component{
     handleSelectCinemaRoom = (eventKey) =>{
         this.setState({
             chosenCinemaRoom: this.state.chosenCinemaRoomsList[eventKey]
-        })
+        });
+        this.getSeatTypes(this.state.chosenCinemaRoomsList[eventKey].cinemaRoomId);
     }
 
     handleSelectFilm = (eventKey) =>{
@@ -226,21 +232,13 @@ export default class FormSession extends Component{
     }
 
     handleSubmitClick = () =>{
-        console.log(this.state.seatTypes);
-        if (!this.state.generalInfoInputted){
-            this.getSeatTypes();
-            this.setState({
-                generalInfoInputted: true
-            });
-        }
-        else{
-            this.props.callBackReceiveSessionInfo({
-                cinemaRoomId: this.state.chosenCinemaRoom.cinemaRoomId,
-                filmId: this.state.chosenFilm.filmId,
-                beginTime: this.state.beginTime.format(),
-                sessionSeatTypePrices: this.state.seatTypes
-            })
-        }
+        this.props.callBackReceiveSessionInfo({
+            cinema: this.state.chosenCinema,
+            cinemaRoom: this.state.chosenCinemaRoom,
+            film: this.state.chosenFilm,
+            beginTime: this.state.beginTime.format(),
+            sessionSeatTypePrices: this.state.seatTypes
+        });
     }
 
     renderChooseCinemaDropDown = () =>{
@@ -320,9 +318,6 @@ export default class FormSession extends Component{
     renderGeneralInfoInputContent = () =>{
         return(
             <fieldset>
-                <h1>
-                    Session information
-                </h1>
                 <FormGroup
                     controlId="formChooseCinema"
                 >
@@ -402,6 +397,17 @@ export default class FormSession extends Component{
                         onChange={this.handleChangeBeginTime}
                     />
                 </FormGroup>
+                <Button
+                    onClick={this.handleSubmitClick}
+                    bsStyle="primary"
+                >
+                    Submit
+                </Button>
+                <Button
+                    // onclick cancel
+                >
+                    Cancel
+                </Button>
             </fieldset>
         );
     }
@@ -409,7 +415,6 @@ export default class FormSession extends Component{
     renderSetSeatTypePrices = () =>{
         return(
             <React.Fragment>
-                <h1>Session seat type prices</h1>
                 <div className="list-container">
                     {
                         this.state.seatTypes.map((el)=>
@@ -426,12 +431,21 @@ export default class FormSession extends Component{
     }
 
     renderContent = () =>{
-        if (this.state.generalInfoInputted){
-            return this.renderSetSeatTypePrices();
-        }
-        else {
-            return this.renderGeneralInfoInputContent();
-        }
+        return(
+            <React.Fragment>
+                <h1>
+                    Session information
+                </h1>
+                <div className="form-session-container">
+                    <div className="session-information-container">
+                        {this.renderGeneralInfoInputContent()}                   
+                    </div>
+                    <div className="session-seat-type-prices-container"> 
+                        {this.renderSetSeatTypePrices()}
+                    </div>
+                </div>
+            </React.Fragment>
+        );
     }
 
     render(){
@@ -439,17 +453,6 @@ export default class FormSession extends Component{
         return(
             <React.Fragment>
                 {content}
-                <Button
-                    onClick={this.handleSubmitClick}
-                    bsStyle="primary"
-                >
-                    Submit
-                </Button>
-                <Button
-                    // onclick cancel
-                >
-                    Cancel
-                </Button>
             </React.Fragment>
         );
     }

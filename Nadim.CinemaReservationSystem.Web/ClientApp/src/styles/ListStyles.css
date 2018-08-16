@@ -1,4 +1,6 @@
 .list-box-container{
+    display: block;
+    margin: auto;
     padding: 10px;
     border: solid 1px #a8a8a8; 
     margin-bottom: 10px;

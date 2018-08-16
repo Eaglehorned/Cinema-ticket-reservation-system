@@ -9,7 +9,7 @@ export default class SessionDisplayInfoBox extends Component{
     }
 
     handleEditClick = () =>{
-
+        this.props.callBackEditSession(this.props.sessionInfo.sessionId);
     }
 
     render(){

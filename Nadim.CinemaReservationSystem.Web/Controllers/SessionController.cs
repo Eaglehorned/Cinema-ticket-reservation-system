@@ -47,15 +47,28 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{sessionId}")]
-        public ActionResult<GetResult<ResponseSessionFullInfo>> GetSession()
+        public ActionResult<GetResult<ResponseSessionFullInfo>> GetSession(int sessionId)
         {
-            GetResult<ResponseSessionFullInfo> result = sessionService.GetSession();
+            GetResult<ResponseSessionFullInfo> result = sessionService.GetSession(sessionId);
 
             if (result.ResultOk)
             {
                 return Ok(result);
             }
-            NotFound(result);
+            return NotFound(result);
+        }
+
+        [Authorize]
+        [HttpPut("{sessionId}")]
+        public ActionResult<Result> EditSession([FromBody] SessionInfo sessionInfo, int sessionId)
+        {
+            Result result = sessionService.EditSession(sessionId, sessionInfo);
+
+            if (result.ResultOk)
+            {
+                return Ok();
+            }
+            return NotFound();
         }
     }
 }
