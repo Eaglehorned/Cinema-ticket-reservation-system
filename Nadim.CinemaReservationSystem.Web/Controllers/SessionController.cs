@@ -67,7 +67,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             {
                 return Ok();
             }
-            return NotFound();
+            return NotFound(result);
         }
     }
 }

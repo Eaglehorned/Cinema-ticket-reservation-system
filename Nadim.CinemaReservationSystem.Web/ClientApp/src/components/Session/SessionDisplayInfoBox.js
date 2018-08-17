@@ -4,10 +4,6 @@ import { Button } from 'react-bootstrap';
 export default class SessionDisplayInfoBox extends Component{
     displayName = SessionDisplayInfoBox.displayName;
 
-    constructor(props){
-        super(props);
-    }
-
     handleEditClick = () =>{
         this.props.callBackEditSession(this.props.sessionInfo.sessionId);
     }

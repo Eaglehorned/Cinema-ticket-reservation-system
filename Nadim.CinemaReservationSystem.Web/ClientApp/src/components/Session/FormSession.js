@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, DropdownButton, MenuItem, FormGroup, ControlLabel } from 'react-bootstrap';
+import { Button, DropdownButton, MenuItem, FormGroup, ControlLabel, HelpBlock } from 'react-bootstrap';
 import { DatePicker, TimePicker } from 'antd';
 import SeatTypePrice from './SeatTypePriceBox';
 import moment from 'moment';
@@ -21,7 +21,7 @@ export default class FormSession extends Component{
             filmList: [],
             chosenFilm: this.props.sessionInfo ? this.props.sessionInfo.film : undefined,
             seatTypes:  this.props.sessionInfo ? this.props.sessionInfo.sessionSeatTypePrices : [],
-            showHint: false
+            showHint: this.props.sessionInfo ? true : false
         }
         
         this.getCinemaList();
@@ -32,8 +32,50 @@ export default class FormSession extends Component{
         }
     }
 
+    validateDoubleNumber(number){
+        const result = /^\d+([.,]\d+)?$/;
+        return result.test(String(number));
+    }
+
     informWithMessage = (message) =>{
         this.props.callBackInformWithMessage(message);
+    }
+
+    validateSeatTypePrices = () =>{
+        let result = true;
+        this.state.seatTypes.forEach(el => result = result && this.validateDoubleNumber(el.price));
+        return result;
+    }
+
+    generateBeginTimeHelpBlock = () =>{
+        let message = '';
+        if (this.state.showHint){
+            if (!this.state.beginTime){
+                message = 'Begin time not entered.';
+            }
+            if (this.state.beginTime.date() <= moment().date()){
+                message = 'Begin date cant be today or in the past.';
+            }
+        }
+        return(
+            <HelpBlock 
+                className="font-italic"
+            >
+                {message}
+            </HelpBlock> 
+        );
+    }
+
+    allowSubmit = () =>{
+        if (this.state.chosenCinema
+        && this.state.chosenCinemaRoom
+        && this.state.chosenFilm
+        && this.state.beginTime
+        && this.validateSeatTypePrices()
+        && this.state.beginTime.date() > moment().date()){
+            return true;
+        }
+        return false;
     }
 
     getCinemaList = () =>{
@@ -196,7 +238,7 @@ export default class FormSession extends Component{
     }
 
     handleSelectCinema = (eventKey) =>{
-        if (this.state.chosenCinema.cinemaId !== this.state.cinemaList[eventKey].cinemaId){
+        if (!this.state.chosenCinema || this.state.chosenCinema.cinemaId !== this.state.cinemaList[eventKey].cinemaId){
             this.setState({
                 chosenCinema: this.state.cinemaList[eventKey],
                 chosenCinemaRoom: undefined,
@@ -207,7 +249,7 @@ export default class FormSession extends Component{
     }
 
     handleSelectCinemaRoom = (eventKey) =>{
-        if (this.state.chosenCinemaRoom.cinemaRoomId !== this.state.chosenCinemaRoomsList[eventKey].cinemaRoomId){
+        if (!this.state.chosenCinemaRoom || this.state.chosenCinemaRoom.cinemaRoomId !== this.state.chosenCinemaRoomsList[eventKey].cinemaRoomId){
             this.setState({
                 chosenCinemaRoom: this.state.chosenCinemaRoomsList[eventKey]
             });
@@ -236,14 +278,24 @@ export default class FormSession extends Component{
     }
 
     handleSubmitClick = () =>{
-        this.props.callBackReceiveSessionInfo({
-            cinema: this.state.chosenCinema,
-            cinemaRoom: this.state.chosenCinemaRoom,
-            film: this.state.chosenFilm,
-            beginTime: this.state.beginTime.format(),
-            sessionSeatTypePrices: this.state.seatTypes
+        if (this.allowSubmit()){
+            this.props.callBackReceiveSessionInfo({
+                cinema: this.state.chosenCinema,
+                cinemaRoom: this.state.chosenCinemaRoom,
+                film: this.state.chosenFilm,
+                beginTime: this.state.beginTime.format(),
+                sessionSeatTypePrices: this.state.seatTypes
+            });
+        }
+        this.setState({
+            showHint: true
         });
     }
+
+    handleCancelClick = () =>{
+        this.props.callBackCancel();
+    }
+
 
     renderChooseCinemaDropDown = () =>{
         return(
@@ -324,6 +376,7 @@ export default class FormSession extends Component{
             <fieldset>
                 <FormGroup
                     controlId="formChooseCinema"
+                    validationState={!this.state.showHint || this.state.chosenCinema ? null : 'error'}
                 >
                     <div>
                         <ControlLabel
@@ -338,9 +391,19 @@ export default class FormSession extends Component{
                         </ControlLabel>
                     </div>
                     {this.renderChooseCinemaDropDown()}
+                    {
+                        !this.state.showHint || this.state.chosenCinema
+                        ? ''
+                        : <HelpBlock 
+                            className="font-italic"
+                        >
+                            Cinema not chosen.
+                        </HelpBlock> 
+                    }
                 </FormGroup>
                 <FormGroup
                     controlId="formChooseCinemaRoom"
+                    validationState={!this.state.showHint || this.state.chosenCinemaRoom ? null : 'error'}
                 >
                     <div>
                         <ControlLabel
@@ -355,9 +418,19 @@ export default class FormSession extends Component{
                         </ControlLabel>
                     </div>
                     {this.renderChooseCinemaRoomDropDown()}
+                    {
+                        !this.state.showHint || this.state.chosenCinemaRoom
+                        ? ''
+                        : <HelpBlock 
+                            className="font-italic"
+                        >
+                            Cinema room not chosen.
+                        </HelpBlock> 
+                    }
                 </FormGroup>
                 <FormGroup
                     controlId="formChooseFilm"
+                    validationState={!this.state.showHint || this.state.chosenFilm ? null : 'error'}
                 >
                     <div>
                         <ControlLabel
@@ -372,9 +445,23 @@ export default class FormSession extends Component{
                         </ControlLabel>
                     </div>
                     {this.renderChooseFilmDropDown()}
+                    {
+                        !this.state.showHint || this.state.chosenFilm
+                        ? ''
+                        : <HelpBlock 
+                            className="font-italic"
+                        >
+                            Cinema not chosen.
+                        </HelpBlock> 
+                    }
                 </FormGroup>
                 <FormGroup
                     controlId="formBeginDate"
+                    validationState={!this.state.showHint 
+                        || (this.state.beginTime
+                        && this.state.beginTime.date() > moment().date())
+                        ? null 
+                        : 'error'}
                 >
                     <ControlLabel
                         className="font-bold-large"
@@ -383,9 +470,10 @@ export default class FormSession extends Component{
                     </ControlLabel>
                     <br/>
                     <DatePicker
-                        defaultValue={this.state.beginTime}
                         onChange={this.handleChangeBeginTime}
+                        value={this.state.beginTime}
                     />
+                    {this.generateBeginTimeHelpBlock()}
                 </FormGroup>
                 <FormGroup
                     controlId="formBeginTime"
@@ -397,8 +485,8 @@ export default class FormSession extends Component{
                     </ControlLabel>
                     <br/>
                     <TimePicker
-                        defaultValue={this.state.beginTime}
                         onChange={this.handleChangeBeginTime}
+                        value={this.state.beginTime}
                     />
                 </FormGroup>
             </fieldset>
@@ -446,7 +534,7 @@ export default class FormSession extends Component{
                         Submit
                     </Button>
                     <Button
-                        // onclick cancel
+                        onClick={this.handleCancelClick}
                     >
                         Cancel
                     </Button>

@@ -4,10 +4,6 @@ import { ControlLabel, FormControl, FormGroup, HelpBlock } from 'react-bootstrap
 export default class SeatTypePrice extends Component{
     displayName = SeatTypePrice.displayName;
 
-    constructor(props){
-        super(props);
-    }
-
     validateDoubleNumber(number){
         const result = /^\d+([.,]\d+)?$/;
         return result.test(String(number));

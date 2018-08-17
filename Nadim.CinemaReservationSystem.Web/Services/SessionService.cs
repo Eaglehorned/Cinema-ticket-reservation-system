@@ -36,6 +36,111 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.Sessions.Any(s => s.SessionId == sessionId);
         }
 
+        private bool ValidateData(SessionInfo session) {
+            return dbContext.CinemaRooms.Any(s => s.CinemaRoomId == session.CinemaRoomId)
+                && dbContext.Films.Any(f => f.FilmId == f.FilmId
+                && session.BeginTime.Date > DateTime.Now.Date);
+        }
+
+        private bool EnsureDontCrossWithPrevSession(int sessionId, SessionInfo session)
+        {
+            var sessionBeforePassedSession = dbContext.Sessions
+                .Include( s=>s.Film )
+                .Where(s => s.CinemaRoomId == session.CinemaRoomId
+                   && session.BeginTime.AddDays(-1).Date <= s.BeginTime.Date
+                   && s.BeginTime < session.BeginTime
+                   && s.SessionId != sessionId)
+                .OrderBy(s => s.BeginTime)
+                .LastOrDefault();
+
+            if (sessionBeforePassedSession == null)
+            {
+                return true;
+            }
+
+            if (session.BeginTime < sessionBeforePassedSession.BeginTime.AddSeconds(sessionBeforePassedSession.Film.Duration))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool EnsureDontCrossWithPrevSession(SessionInfo session)
+        {
+            var sessionBeforePassedSession = dbContext.Sessions
+                .Include(s => s.Film)
+                .Where(s => s.CinemaRoomId == session.CinemaRoomId
+                   && session.BeginTime.AddDays(-1).Date <= s.BeginTime.Date
+                   && s.BeginTime < session.BeginTime)
+                .OrderBy(s => s.BeginTime)
+                .LastOrDefault();
+
+            if (sessionBeforePassedSession == null)
+            {
+                return true;
+            }
+
+            if (session.BeginTime < sessionBeforePassedSession.BeginTime.AddSeconds(sessionBeforePassedSession.Film.Duration))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool EnsureDontCrossWithNextSession(SessionInfo session)
+        {
+            var sessionAfterPassedSession = dbContext.Sessions
+                .Include(s => s.Film)
+                .Where(s => s.CinemaRoomId == session.CinemaRoomId
+                   && s.BeginTime.Date <= session.BeginTime.AddDays(1).Date
+                   && session.BeginTime < s.BeginTime)
+                .OrderBy(s => s.BeginTime)
+                .FirstOrDefault();
+
+            if (sessionAfterPassedSession == null)
+            {
+                return true;
+            }
+
+            if (sessionAfterPassedSession.BeginTime < session.BeginTime.AddSeconds(dbContext.Films
+                .FirstOrDefault(f => f.FilmId == session.FilmId).Duration))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool EnsureDontCrossWithNextSession(int sessionId, SessionInfo session)
+        {
+            var sessionAfterPassedSession = dbContext.Sessions
+                .Include(s => s.Film)
+                .Where(s => s.CinemaRoomId == session.CinemaRoomId
+                   && s.BeginTime.Date <= session.BeginTime.AddDays(1).Date
+                   && session.BeginTime < s.BeginTime
+                   && s.SessionId != sessionId)
+                .OrderBy(s => s.BeginTime)
+                .FirstOrDefault();
+
+            if (sessionAfterPassedSession == null)
+            {
+                return true;
+            }
+
+            if (sessionAfterPassedSession.BeginTime < session.BeginTime.AddSeconds(dbContext.Films
+                .FirstOrDefault(f => f.FilmId == session.FilmId).Duration))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool FilmGoesAtThisTime(SessionInfo session) {
+            return dbContext.Films
+                .Any(f => f.FilmId == session.FilmId 
+                && f.StartDate.Date <= session.BeginTime.Date 
+                && session.BeginTime.Date <= f.EndDate.Date);
+        }
+
         public ResultCreated CreateSession(SessionInfo sessionInfo)
         {
             if (!CinemaRoomExists(sessionInfo.CinemaRoomId))
@@ -53,6 +158,33 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 {
                     ResultOk = false,
                     Details = "Such session already exists."
+                };
+            }
+
+            if (!EnsureDontCrossWithPrevSession(sessionInfo))
+            {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "At this time previous session will go on."
+                };
+            }
+
+            if (!EnsureDontCrossWithNextSession(sessionInfo))
+            {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "At this time next session will go on."
+                };
+            }
+
+            if (!FilmGoesAtThisTime(sessionInfo))
+            {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Film does not go at this time"
                 };
             }
 
@@ -156,6 +288,41 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 {
                     ResultOk = false,
                     Details = "Such cinema does not exist."
+                };
+            }
+
+            if (!ValidateData(sessionInfo)) {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "Invalid data."
+                };
+            }
+
+            if (!EnsureDontCrossWithPrevSession(sessionId, sessionInfo))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "At this time previous session will go on."
+                };
+            }
+
+            if (!EnsureDontCrossWithNextSession(sessionId, sessionInfo))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "At this time next session will go on."
+                };
+            }
+
+            if (!FilmGoesAtThisTime(sessionInfo))
+            {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Film does not go at this time"
                 };
             }
 

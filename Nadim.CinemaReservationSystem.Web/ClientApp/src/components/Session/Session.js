@@ -20,6 +20,12 @@ export default class Session extends Component{
         this.props.callBackInformWithMessage(message);
     }
 
+    cancelCurrentOperation = () =>{
+        this.setState({
+            chosenOperation: ''
+        });
+    }
+
     getSessionList = () =>{
         fetch('api/sessions', {
             method: 'GET',
@@ -203,11 +209,11 @@ export default class Session extends Component{
         })
         .then(response => {
             let tempSessionList = this.state.sessionList;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaName = receivedSessionInfo.cinema.name;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaCity = receivedSessionInfo.cinema.city;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaRoomName = receivedSessionInfo.cinemaRoom.name;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).filmName = receivedSessionInfo.film.name;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).beginTime = receivedSessionInfo.beginTime;
+            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).cinemaName = receivedSessionInfo.cinema.name;
+            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).cinemaCity = receivedSessionInfo.cinema.city;
+            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).cinemaRoomName = receivedSessionInfo.cinemaRoom.name;
+            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).filmName = receivedSessionInfo.film.name;
+            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).beginTime = receivedSessionInfo.beginTime;
             this.setState({
                 sessionList: tempSessionList
             });
@@ -255,6 +261,7 @@ export default class Session extends Component{
                         callBackInformWithMessage={this.informWithMessage}
                         token={this.props.token}
                         callBackReceiveSessionInfo={this.createSession}
+                        callBackCancel={this.cancelCurrentOperation}
                     />
                 );
             case 'editSessionLoading': 
@@ -270,6 +277,7 @@ export default class Session extends Component{
                         sessionInfo={this.state.chosenSessionInfo}
                         token={this.props.token}
                         callBackReceiveSessionInfo={this.editSession}
+                        callBackCancel={this.cancelCurrentOperation}
                     />
                 );
             default:    

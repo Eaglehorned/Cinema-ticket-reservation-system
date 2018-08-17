@@ -70,30 +70,32 @@ export default class Body extends Component{
         return(
             <React.Fragment>
                 {
-                    //this.props.role === 'admin'
-                    //?
-                    <Tabs
-                        justified
-                        activeKey={this.state.chosenOperation}
-                        onSelect={key => this.handleSelectNav(key)}
-                        id="select_operation"
-                    >
-                        <Tab 
-                            eventKey={'cinema'}
-                            title="Cinema"
-                        />
-                        <Tab 
-                            eventKey={'film'}
-                            title="Film"
-                        />
-                        <Tab 
-                            eventKey={'session'}
-                            title="Session"
-                        />
-                    </Tabs>
-                    //:''
+                    this.props.role === 'admin'
+                    ?
+                    <React.Fragment>
+                        <Tabs
+                            justified
+                            activeKey={this.state.chosenOperation}
+                            onSelect={key => this.handleSelectNav(key)}
+                            id="select_operation"
+                        >
+                            <Tab 
+                                eventKey={'cinema'}
+                                title="Cinema"
+                            />
+                            <Tab 
+                                eventKey={'film'}
+                                title="Film"
+                            />
+                            <Tab 
+                                eventKey={'session'}
+                                title="Session"
+                            />
+                        </Tabs>
+                        {content}
+                    </React.Fragment>
+                    :''
                 }
-                {content}
             </React.Fragment>
         );
     }

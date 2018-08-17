@@ -21,7 +21,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
                 .HasOne(s => s.CinemaRoom)
                 .WithMany(r => r.Seats)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
             modelBuilder.Entity<SessionSeatTypePrice>()
                 .HasKey(stp => new { stp.SessionId, stp.SeatTypeId });
 
