@@ -73,7 +73,8 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         {
             GetResult<ResponseCinemaRoomFullInfo> result = сinemaService.GetCinemaRoom(cinemaId, cinemaRoomId);
 
-            if (result.ResultOk) {
+            if (result.ResultOk)
+            {
                 return Ok(result);
             }
             return NotFound(result);
@@ -104,6 +105,32 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             }
             else
                 return NotFound(result);
+        }
+
+        [Authorize]
+        [HttpGet("{cinemaId}/cinemaRooms")]
+        public ActionResult<GetResult<List<ResponseCinemaRoomDisplayInfo>>> GetCinemaRoomList(int cinemaId)
+        {
+            GetResult<List<ResponseCinemaRoomDisplayInfo>> result = сinemaService.GetCinemaRoomList(cinemaId);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
+        }
+
+        [Authorize]
+        [HttpGet("{cinemaId}/cinemaRooms/{cinemaRoomId}/seatTypes")]
+        public ActionResult<GetResult<List<ResponseSeatTypesInCinemaRoomInfo>>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId)
+        {
+            GetResult<List<ResponseSeatTypesInCinemaRoomInfo>> result = сinemaService.GetCinemaRoomSeatTypes(cinemaId, cinemaRoomId);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
         }
     }
 }

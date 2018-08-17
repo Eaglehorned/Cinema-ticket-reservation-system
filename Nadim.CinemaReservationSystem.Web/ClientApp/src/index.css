@@ -16,6 +16,6 @@ input {
 .alert-bottom{
     position: fixed;
     bottom: 5px;
-    left:10%;
-    width: 80%;
+    left:15%;
+    width: 70%;
 }

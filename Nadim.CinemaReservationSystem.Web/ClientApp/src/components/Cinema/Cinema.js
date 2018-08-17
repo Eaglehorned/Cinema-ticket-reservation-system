@@ -18,7 +18,6 @@ export default class Cinema extends Component{
         };
         this.informWithMessage = this.informWithMessage.bind(this);
         this.createCinema = this.createCinema.bind(this);
-        this.cancelCurrentAction = this.cancelCurrentAction.bind(this);
         this.receiveFormCinemaInfo = this.receiveFormCinemaInfo.bind(this);
         this.renderContent = this.renderContent.bind(this);
         this.handleChooseCreateCinemaAction = this.handleChooseCreateCinemaAction.bind(this);
@@ -28,7 +27,7 @@ export default class Cinema extends Component{
         this.getCinemaList();
     }
 
-    cancelCurrentAction(){
+    cancelCurrentAction = () =>{
         this.setState({
             chosenOperation:''
         });

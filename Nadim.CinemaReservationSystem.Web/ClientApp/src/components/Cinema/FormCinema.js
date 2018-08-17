@@ -380,8 +380,6 @@ export default class FormCinema extends Component{
                         displayedComponents={{
                             city: true,
                             name: true,
-                            defaultSeatPrice: true,
-                            vipSeatPrice: true,
                             submit: false,
                             cancel: false
                         }}

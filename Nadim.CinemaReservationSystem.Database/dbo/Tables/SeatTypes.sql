@@ -1,0 +1,5 @@
+﻿CREATE TABLE [dbo].[SeatTypes]
+(
+	[SeatTypeId] INT IDENTITY(1,1) NOT NULL PRIMARY KEY, 
+    [TypeName] NVARCHAR(50) NOT NULL
+)

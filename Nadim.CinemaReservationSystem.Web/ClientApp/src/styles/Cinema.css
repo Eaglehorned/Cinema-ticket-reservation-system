@@ -21,14 +21,6 @@
     background-color: aquamarine;
 }
 
-.content-container .button-container{
-    text-align: center;
-}
-
-.content-container .button-container Button{
-    margin: 10px;
-}
-
 .content-container Button{
     margin-bottom: 5px;
     margin-right: 10px;

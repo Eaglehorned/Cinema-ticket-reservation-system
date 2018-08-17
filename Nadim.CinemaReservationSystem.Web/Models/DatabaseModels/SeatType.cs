@@ -6,13 +6,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nadim.CinemaReservationSystem.Web.Models
 {
-    public class Cinema
+    public class SeatType
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int CinemaId { get; set; }
-        public string City { get; set; }
-        public string Name { get; set; }
+        public int SeatTypeId { get; set; }
+        public string TypeName { get; set; }
 
-        public virtual List<CinemaRoom> CinemaRooms { get; set; }
+        public List<SessionSeatTypePrice> SessionSeatTypePrices { get; set; }
     }
 }

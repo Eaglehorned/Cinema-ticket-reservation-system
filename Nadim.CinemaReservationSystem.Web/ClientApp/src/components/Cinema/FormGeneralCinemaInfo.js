@@ -9,27 +9,20 @@ export default class FormGeneralCinemaInfo extends Component{
         this.state = {
             city: this.props.cinemaInfo ? this.props.cinemaInfo.city : '',
             name: this.props.cinemaInfo ? this.props.cinemaInfo.name : '',
-            defaultPrice: this.props.cinemaInfo ? this.props.cinemaInfo.defaultSeatPrice : '',
-            vipPrice: this.props.cinemaInfo ? this.props.cinemaInfo.vipSeatPrice : '',
             showHint: this.props.needToShowHint ? this.props.needToShowHint: false,
             displayedComponents: this.props.displayedComponents ? 
                                     this.props.displayedComponents : 
                                     {
                                         city: true,
                                         name: true,
-                                        defaultSeatPrice: true,
-                                        vipSeatPrice: true,
                                         submit: true,
                                         cancel: true
                                     }
         }
-        this.validatePrice = this.validatePrice.bind(this);
         this.validateString = this.validateString.bind(this);
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleSubmitCinemaInfoClick = this.handleSubmitCinemaInfoClick.bind(this);
-        this.handleDefaultPriceChange = this.handleDefaultPriceChange.bind(this);
-        this.handleVipPriceChange = this.handleVipPriceChange.bind(this);
         this.handleCancelClick = this.handleCancelClick.bind(this);
         this.allowSubmitClick = this.allowSubmitClick.bind(this);
     }
@@ -39,29 +32,10 @@ export default class FormGeneralCinemaInfo extends Component{
         return result.test(String(number));
     }
 
-    validateDoubleNumber(number){
-        const result = /^\d+([.,]\d+)?$/;
-        return result.test(String(number));
-    }
-
     validateString(str){
         return !this.state.showHint || str
         ?''
         :'Data not entered';
-    }
-
-    validatePrice(price){
-        if (this.state.showHint){
-            return price
-            ?(this.validateDoubleNumber(price)
-                ? ''
-                :'Data not valid'
-            )
-            :'Data not entered';
-        }
-        else{
-            return '';
-        }
     }
 
     handleCityChange(event){
@@ -73,15 +47,11 @@ export default class FormGeneralCinemaInfo extends Component{
                 info:
                 {
                     city: event.target.value,
-                    name: this.state.name,
-                    defaultSeatPrice: this.state.defaultPrice,
-                    vipSeatPrice: this.state.vipPrice
+                    name: this.state.name
                 },
                 allowSubmit: this.allowSubmitClick(
                     event.target.value,
-                    this.state.name,
-                    this.state.defaultPrice,
-                    this.state.vipPrice           
+                    this.state.name       
                 )
             });
         }
@@ -96,60 +66,10 @@ export default class FormGeneralCinemaInfo extends Component{
                 info:
                 {
                     city: this.state.city,
-                    name: event.target.value,
-                    defaultSeatPrice: this.state.defaultPrice,
-                    vipSeatPrice: this.state.vipPrice
+                    name: event.target.value
                 },
                 allowSubmit: this.allowSubmitClick(
                     this.state.city,
-                    event.target.value,
-                    this.state.defaultPrice,
-                    this.state.vipPrice
-                )
-            });
-        }
-    }
-
-    handleDefaultPriceChange(event){
-        this.setState({
-            defaultPrice: event.target.value
-        });
-        if (this.props.callBackHandleInfoChange){
-            this.props.callBackHandleInfoChange({
-                info:
-                {
-                    city: this.state.city,
-                    name: this.state.name,
-                    defaultSeatPrice: event.target.value,
-                    vipSeatPrice: this.state.vipPrice
-                },
-                allowSubmit: this.allowSubmitClick(
-                    this.state.city,
-                    this.state.name,
-                    event.target.value,
-                    this.state.vipPrice 
-                )
-            });
-        }
-    }
-
-    handleVipPriceChange(event){
-        this.setState({
-            vipPrice: event.target.value
-        });
-        if (this.props.callBackHandleInfoChange){
-            this.props.callBackHandleInfoChange({
-                info:
-                {
-                    city: this.state.city,
-                    name: this.state.name,
-                    defaultSeatPrice: this.state.defaultPrice,
-                    vipSeatPrice: event.target.value
-                },
-                allowSubmit: this.allowSubmitClick(
-                    this.state.city,
-                    this.state.name,
-                    this.state.defaultPrice,
                     event.target.value
                 )
             });
@@ -159,15 +79,11 @@ export default class FormGeneralCinemaInfo extends Component{
     handleSubmitCinemaInfoClick(){
         this.allowSubmitClick(
             this.state.name,
-            this.state.city,
-            this.state.defaultPrice,
-            this.state.vipPrice
+            this.state.city
         )
         ?this.props.callBackFromParent({
             city: this.state.city,
-            name: this.state.name,
-            defaultSeatPrice: this.state.defaultPrice,
-            vipSeatPrice: this.state.vipPrice
+            name: this.state.name
         })
         : this.setState({
             showHint: true
@@ -178,13 +94,7 @@ export default class FormGeneralCinemaInfo extends Component{
         this.props.callBackCancel();
     }
 
-    allowSubmitClick(city, name, defaultPrice, vipPrice ){
-        if (this.state.displayedComponents.defaultSeatPrice && !this.validateDoubleNumber(defaultPrice)){
-            return false;
-        }
-        if (this.state.displayedComponents.vipSeatPrice && !this.validateDoubleNumber(vipPrice)){
-            return false;
-        }
+    allowSubmitClick(city, name){
         if (this.state.displayedComponents.city && !city){
             return false;
         }
@@ -234,46 +144,6 @@ export default class FormGeneralCinemaInfo extends Component{
                     <p className="font-italic error-text">
                     {
                         this.validateString(this.state.city)
-                    }
-                    </p>
-                </fieldset>
-                <fieldset
-                    className={this.state.displayedComponents.defaultSeatPrice ? '' : 'hidden'}
-                >
-                    <label htmlFor="defaultSeatPriceInput" className="font-bold-large">
-                        Price for default seat USD : 
-                    </label> 
-                    <input
-                        type="text" 
-                        className="form-control form-control-sm"
-                        id="defaultSeatPriceInput"
-                        value={this.state.defaultPrice} 
-                        onChange={this.handleDefaultPriceChange}
-                        placeholder="Price"
-                    />
-                    <p className="font-italic error-text">
-                    {
-                        this.validatePrice(this.state.defaultPrice)
-                    }
-                    </p>
-                </fieldset>
-                <fieldset
-                    className={this.state.displayedComponents.vipSeatPrice ? '' : 'hidden'}
-                >
-                    <label htmlFor="vipSeatPriceInput" className="font-bold-large">
-                        Price for VIP seat USD : 
-                    </label> 
-                    <input
-                        type="text" 
-                        className="form-control form-control-sm"
-                        id="vipSeatPriceInput"
-                        value={this.state.vipPrice} 
-                        onChange={this.handleVipPriceChange}
-                        placeholder="Price"
-                    />
-                    <p className="font-italic error-text">
-                    {
-                        this.validatePrice(this.state.vipPrice)
                     }
                     </p>
                 </fieldset>

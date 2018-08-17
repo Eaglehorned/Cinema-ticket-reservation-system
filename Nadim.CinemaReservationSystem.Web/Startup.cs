@@ -43,6 +43,7 @@ namespace Nadim.CinemaReservationSystem.Web
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddTransient<ISessionService, SessionService>();
             services.AddTransient<ICinemaService, CinemaService>();
             services.AddTransient<IFilmService, FilmService>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
