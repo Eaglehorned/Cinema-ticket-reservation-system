@@ -3,23 +3,25 @@ import { Tabs, Tab } from 'react-bootstrap';
 import Cinema from './Cinema/Cinema';
 import Film from './Film/Film';
 import Session from './Session/Session';
+import Reservation from './Reservation/Reservation';
 
 export default class Body extends Component{
     constructor(props){
         super(props);
         this.state={
-            chosenOperation: 'cinema'
+            chosenOperation: ''
         }
-        this.renderNav = this.renderNav.bind(this);
-        this.handleSelectNav = this.handleSelectNav.bind(this);
-        this.informWithMessage = this.informWithMessage.bind(this);
     }
 
-    informWithMessage(message){
+    componentWillReceiveProps(nextProps) {
+        this.setState({chosenOperation: ''});
+      }
+
+    informWithMessage = (message) =>{
         this.props.callBackInformWithMessage(message);
     }
 
-    handleSelectNav(eventKey){
+    handleSelectNav = (eventKey) =>{
         this.setState({
             chosenOperation: eventKey
         });
@@ -65,37 +67,57 @@ export default class Body extends Component{
         }
     }
 
-    renderNav(){
+    renderAdminNav = () =>{
+        return(
+            <Tabs
+                justified
+                activeKey={this.state.chosenOperation}
+                onSelect={key => this.handleSelectNav(key)}
+                id="select_operation"
+            >
+                <Tab 
+                    eventKey={'cinema'}
+                    title="Cinema"
+                />
+                <Tab 
+                    eventKey={'film'}
+                    title="Film"
+                />
+                <Tab 
+                    eventKey={'session'}
+                    title="Session"
+                />
+            </Tabs>
+        );
+    }
+
+    renderUserNav = () =>{
+        return(
+            <Tabs
+                justified
+                activeKey={this.state.chosenOperation}
+                onSelect={key => this.handleSelectNav(key)}
+                id="select_operation"
+            >
+                <Tab 
+                    eventKey={'reservation'}
+                    title="Reservation"
+                />
+            </Tabs>
+        );
+    }
+
+    renderNav = () =>{
+        let nav;
         let content = this.renderContent();
         return(
             <React.Fragment>
-                {
-                    this.props.role === 'admin'
-                    ?
-                    <React.Fragment>
-                        <Tabs
-                            justified
-                            activeKey={this.state.chosenOperation}
-                            onSelect={key => this.handleSelectNav(key)}
-                            id="select_operation"
-                        >
-                            <Tab 
-                                eventKey={'cinema'}
-                                title="Cinema"
-                            />
-                            <Tab 
-                                eventKey={'film'}
-                                title="Film"
-                            />
-                            <Tab 
-                                eventKey={'session'}
-                                title="Session"
-                            />
-                        </Tabs>
-                        {content}
-                    </React.Fragment>
-                    :''
-                }
+            {
+                this.props.role === 'admin'
+                ? this.renderAdminNav()
+                : this.renderUserNav()
+            }
+            {content}
             </React.Fragment>
         );
     }
