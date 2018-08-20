@@ -13,7 +13,7 @@ export default class SeatBox extends Component{
     }
 
     render(){
-        const styleName = `seat-${this.props.seatInfo.type}`;
+        const styleName = `seat-${this.props.seatInfo.type}${this.props.booked ? '-booked' : ''}`;
         return(
             <div className={styleName} onClick={this.handleOnSeatClick}>
             </div>

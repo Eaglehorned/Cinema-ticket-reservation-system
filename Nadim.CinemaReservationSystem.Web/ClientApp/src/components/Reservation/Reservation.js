@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import SearchBar from './SearchBar';
 import SessionDisplayInfoBox from '../Session/SessionDisplayInfoBox';
 import ReserveTicket from './ReserveTicket';
-import moment from 'moment';
 import '../../styles/Reservation.css';
 
 export default class Reservation extends Component{

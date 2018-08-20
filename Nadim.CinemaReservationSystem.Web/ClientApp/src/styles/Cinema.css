@@ -9,7 +9,15 @@
     margin: 20px;
 }
 
-.content-container .seat-default, .seat-vip{
+.content-container .seat-vip-booked{
+    background-color: rgb(29, 175, 127);
+}
+
+.content-container .seat-default-booked{
+    background-color:  rgba(163, 163, 163, 0.733);
+}
+
+.content-container .seat-default, .seat-vip, .seat-vip-booked, .seat-default-booked{
     width: 30px;
     height: 30px;
     border: solid black;

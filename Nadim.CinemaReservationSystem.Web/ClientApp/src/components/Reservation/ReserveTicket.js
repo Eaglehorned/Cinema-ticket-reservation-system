@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ChooseSeats from './ChooseSeats';
 
 export default class ReserveTicket extends Component{
     displayName = ReserveTicket.displayName;
@@ -12,7 +13,11 @@ export default class ReserveTicket extends Component{
     }
 
     renderChooseSeatsContent(){
-        return ;//chooseSeatsComponent
+        return(
+            <ChooseSeats
+                seats={this.props.session.seats}
+            />
+        );
     }
 
     renderConfirmContent(){
@@ -20,7 +25,7 @@ export default class ReserveTicket extends Component{
     }
     
     renderContent = () =>{
-        if (!seatsChosen){
+        if (!this.state.seatsChosen){
             return this.renderChooseSeatsContent();
         }
         else{

@@ -15,3 +15,21 @@
     font-size: xx-large;
     font-weight: bold;
 }
+
+.choose-container{
+    width: 100%;
+}
+
+.choose-container > .seats-scheme-container{
+    padding: 20px;
+    padding-right: 10px;
+    width: 70%;
+    display: inline-block;
+}
+
+.choose-container > .chosen-seats-container{
+    padding: 20px;
+    padding-left: 10px;
+    width: 30%;
+    display: inline-block;
+}

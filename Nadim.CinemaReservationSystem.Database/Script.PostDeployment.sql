@@ -20,9 +20,10 @@ INSERT [dbo].[Seats] ([SeatId], [Row], [Column], [SeatTypeId], [CinemaRoomId]) V
 SET IDENTITY_INSERT [dbo].[Seats] OFF
 SET IDENTITY_INSERT [dbo].[Films] ON 
 
-INSERT [dbo].[Films] ([FilmId], [Name], [StartDate], [EndDate], [Duration], [Description]) VALUES (1,'Slender man' , '2018-08-21 00:00:00.000', '2018-09-21 00:00:00.000', 5400, 'Scary movie')
+INSERT [dbo].[Films] ([FilmId], [Name], [StartDate], [EndDate], [Duration], [Description]) VALUES (1, N'Slender man', '2018-08-21T00:00:00', '2018-09-21T00:00:00', 5400, N'Scary movie')
 SET IDENTITY_INSERT [dbo].[Films] OFF
 SET IDENTITY_INSERT [dbo].[Users] ON 
 
 INSERT [dbo].[Users] ([UserId], [Email], [Password], [FirstName], [LastName], [Role], [UserName]) VALUES (1, N'1@1.com', N'356A192B7913B04C54574D18C28D46E6395428AB', N'1', N'1', N'admin', N'1')
+INSERT [dbo].[Users] ([UserId], [Email], [Password], [FirstName], [LastName], [Role], [UserName]) VALUES (2, N'2@2.com', N'DA4B9237BACCCDF19C0760CAB7AEC4A8359010B0', N'2', N'2', N'user', N'2')
 SET IDENTITY_INSERT [dbo].[Users] OFF

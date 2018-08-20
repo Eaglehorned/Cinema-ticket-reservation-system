@@ -41,23 +41,18 @@ export default class SeatsScheme extends Component{
                             className="row"
                             key={item[0].row}>
                             {item.map((itemArray) => 
-                                <SeatBox 
+                            {
+                                console.log(itemArray);
+                                    return <SeatBox 
                                     key={this.generateKey(itemArray.row, itemArray.column)}
                                     seatInfo={{row: itemArray.row, column: itemArray.column, type: itemArray.type}}
+                                    booked={itemArray.booked ? true : false}
                                     callBackFromParent={this.handleSeatTypeChange}
                                 />
+                            }
                             )}           
                         </div>
                     )}
-                </div>
-                <div 
-                    className={this.state.mode ==='display' ? 'hidden' : null}
-                >
-                    <Button
-                        bsStyle="primary" onClick={this.handleSubmitClick}
-                    >
-                        Submit
-                    </Button>
                 </div>
             </React.Fragment>
         );
