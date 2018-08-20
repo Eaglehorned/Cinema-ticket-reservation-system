@@ -44,6 +44,18 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return NotFound(result);
         }
 
+        [HttpGet("filmId={filmId}")]
+        public ActionResult<GetResult<List<ResponseSessionDisplayInfo>>> GetFilteredSessionList(int filmId)
+        {
+            GetResult<List<ResponseSessionDisplayInfo>> result = sessionService.GetSessionList(filmId);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
+        }
+
         [Authorize]
         [HttpGet("{sessionId}")]
         public ActionResult<GetResult<ResponseSessionFullInfo>> GetSession(int sessionId)

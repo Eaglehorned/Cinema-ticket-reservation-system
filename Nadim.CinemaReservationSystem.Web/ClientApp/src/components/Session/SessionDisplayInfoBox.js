@@ -4,8 +4,8 @@ import { Button } from 'react-bootstrap';
 export default class SessionDisplayInfoBox extends Component{
     displayName = SessionDisplayInfoBox.displayName;
 
-    handleEditClick = () =>{
-        this.props.callBackEditSession(this.props.sessionInfo.sessionId);
+    handleActionButtonClick = () =>{
+        this.props.callBackHandleSessionAction(this.props.sessionInfo.sessionId);
     }
 
     render(){
@@ -23,9 +23,9 @@ export default class SessionDisplayInfoBox extends Component{
                     </div>
                 </div>
                 <Button
-                    onClick={this.handleEditClick}
+                    onClick={this.handleActionButtonClick}
                 >
-                    Edit
+                    {this.props.mode === 'reserve' ? 'Reserve' : 'Edit'}
                 </Button>
             </div>
         );

@@ -141,6 +141,25 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 && session.BeginTime.Date <= f.EndDate.Date);
         }
 
+        public GetResult<List<ResponseSessionDisplayInfo>> GetSessionList(int filmId)
+        {
+            return new GetResult<List<ResponseSessionDisplayInfo>>
+            {
+                ResultOk = true,
+                RequestedData = dbContext.Sessions
+                .Where( s => filmId == s.FilmId)
+                    .Select(s => new ResponseSessionDisplayInfo
+                    {
+                        SessionId = s.SessionId,
+                        FilmName = s.Film.Name,
+                        CinemaRoomName = s.CinemaRoom.Name,
+                        CinemaName = s.CinemaRoom.Cinema.Name,
+                        CinemaCity = s.CinemaRoom.Cinema.City,
+                        BeginTime = s.BeginTime
+                    }).ToList()
+            };
+        }
+
         public ResultCreated CreateSession(SessionInfo sessionInfo)
         {
             if (!CinemaRoomExists(sessionInfo.CinemaRoomId))

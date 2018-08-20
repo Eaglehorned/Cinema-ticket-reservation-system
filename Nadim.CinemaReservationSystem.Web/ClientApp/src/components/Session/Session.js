@@ -238,7 +238,7 @@ export default class Session extends Component{
                             <SessionDisplayInfoBox
                                 key={el.sessionId}
                                 sessionInfo={el}
-                                callBackEditSession={this.getSession}
+                                callBackHandleSessionAction={this.getSession}
                             />
                         )
                     }

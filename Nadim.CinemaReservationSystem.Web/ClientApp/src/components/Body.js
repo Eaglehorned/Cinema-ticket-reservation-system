@@ -54,6 +54,15 @@ export default class Body extends Component{
         );
     }
 
+    renderReservationContent = () =>{
+        return(
+            <Reservation
+                token={this.props.token}
+                callBackInformWithMessage={this.props.callBackInformWithMessage}
+            />
+        );
+    }
+
     renderContent = () => {
         switch(this.state.chosenOperation){
             case 'cinema': 
@@ -62,6 +71,8 @@ export default class Body extends Component{
                 return this.renderFilmContent();
             case 'session': 
                 return this.renderSessionContent();
+            case 'reservation':
+                return this.renderReservationContent();
             default: 
                 return '';
         }
@@ -108,7 +119,6 @@ export default class Body extends Component{
     }
 
     renderNav = () =>{
-        let nav;
         let content = this.renderContent();
         return(
             <React.Fragment>
