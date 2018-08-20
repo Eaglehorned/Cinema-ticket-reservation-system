@@ -31,7 +31,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             }
             return BadRequest(result);
         }
-        
+
         [HttpGet]
         public ActionResult<GetResult<List<ResponseSessionDisplayInfo>>> GetSessionList()
         {
@@ -78,6 +78,19 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             if (result.ResultOk)
             {
                 return Ok();
+            }
+            return NotFound(result);
+        }
+
+        [Authorize]
+        [HttpGet("{sessionId}/seats")]
+        public ActionResult<GetResult<List<SeatReservationInfo>>> GetSessionList(int sessionId)
+        {
+            GetResult<List<SeatReservationInfo>> result = sessionService.GetSessionSeats(sessionId);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
             }
             return NotFound(result);
         }

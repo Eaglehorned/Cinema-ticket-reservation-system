@@ -222,6 +222,15 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     SeatTypeId = stp.SeatTypeId
                 }).ToList();
 
+            session.SessionSeats = dbContext.Seats
+                .Where(s => s.CinemaRoomId == sessionInfo.CinemaRoomId)
+                .Select(s => new SessionSeat
+                {
+                    SeatId = s.SeatId,
+                    Booked = false,
+                    LockedTime = null
+                }).ToList();
+
             dbContext.Sessions.Add(session);
 
             dbContext.SaveChanges();
@@ -299,6 +308,22 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
+        public GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId) {
+            return new GetResult<List<SeatReservationInfo>>
+            {
+                ResultOk = true,
+                RequestedData = dbContext.SessionSeats
+                    .Where( ss => ss.SessionId == sessionId)
+                    .Select( ss => new SeatReservationInfo {
+                        Row = ss.Seat.Row,
+                        Column = ss.Seat.Column,
+                        Type = ss.Seat.Type.TypeName,
+                        Booked = ss.Booked || ss.LockedTime != null,
+                        SessionSeatId = ss.SessionSeatId
+                    }).ToList()
+            };
+        }
+
         public Result EditSession(int sessionId, SessionInfo sessionInfo)
         {
             if (!SessionExist(sessionId))
@@ -347,15 +372,26 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             Session session = dbContext.Sessions
                 .Include( s => s.SessionSeatTypePrices)
+                .Include ( s=> s.SessionSeats)
                 .FirstOrDefault(s => s.SessionId == sessionId);
 
             session.FilmId = sessionInfo.FilmId;
             session.CinemaRoomId = sessionInfo.CinemaRoomId;
             session.BeginTime = sessionInfo.BeginTime;
+
             session.SessionSeatTypePrices = sessionInfo.SessionSeatTypePrices
                 .Select( stp => new SessionSeatTypePrice {
                     Price = stp.Price,
                     SeatTypeId = stp.SeatTypeId
+                }).ToList();
+
+            session.SessionSeats = dbContext.Seats
+                .Where(s => s.CinemaRoomId == sessionInfo.CinemaRoomId)
+                .Select(s => new SessionSeat
+                {
+                    SeatId = s.SeatId,
+                    Booked = false,
+                    LockedTime = null
                 }).ToList();
 
             dbContext.SaveChanges();

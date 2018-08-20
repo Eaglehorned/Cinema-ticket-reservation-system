@@ -14,8 +14,10 @@ export default class Body extends Component{
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({chosenOperation: ''});
-      }
+        if (nextProps.role !== this.props.role){
+            this.setState({chosenOperation: ''});
+        }
+    }
 
     informWithMessage = (message) =>{
         this.props.callBackInformWithMessage(message);
