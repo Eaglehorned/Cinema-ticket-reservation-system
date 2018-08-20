@@ -1,5 +1,17 @@
 .inline-information-block{
     width: 100%;
-    text-align: center;
+    padding: 10px;
+}
+
+.inline-information-block > .information-block{
+    font-size: large;
     padding: 5px;
+    margin-right: 40px;
+    display: inline-block; 
+}
+
+.header-string-box{
+    width: 100%;
+    font-size: xx-large;
+    font-weight: bold;
 }

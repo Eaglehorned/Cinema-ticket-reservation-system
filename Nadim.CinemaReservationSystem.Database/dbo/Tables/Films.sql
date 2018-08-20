@@ -5,5 +5,5 @@
     [StartDate] DATETIME NOT NULL, 
     [EndDate] DATETIME NOT NULL, 
     [Duration] INT NOT NULL, 
-    [Description] NVARCHAR(200) NOT NULL,
+    [Description] NVARCHAR(500) NOT NULL,
 )

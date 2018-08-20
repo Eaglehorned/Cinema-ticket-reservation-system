@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import SearchBar from './SearchBar';
 import SessionDisplayInfoBox from '../Session/SessionDisplayInfoBox';
-import ReserveTicket from './ReserveTicket'
+import ReserveTicket from './ReserveTicket';
+import moment from 'moment';
 import '../../styles/Reservation.css';
 
 export default class Reservation extends Component{
@@ -49,6 +50,7 @@ export default class Reservation extends Component{
         .then(parsedJson => {
             let tempSession = this.state.session;
             tempSession.info = parsedJson.requestedData;
+            tempSession.info.beginTime = new Date(tempSession.info.beginTime);
             this.setState({
                 session : tempSession
             })
@@ -60,7 +62,7 @@ export default class Reservation extends Component{
             this.setState({
                 chosenOperation: ''
             });
-            this.callBackInformWithMessage({ 
+            this.props.callBackInformWithMessage({ 
                 text: error.message,
                 isError: true
             });
@@ -136,7 +138,7 @@ export default class Reservation extends Component{
             this.setState({
                 chosenOperation: ''
             });
-            this.callBackInformWithMessage({ 
+            this.props.callBackInformWithMessage({ 
                 text: error.message,
                 isError: true
             });
@@ -181,11 +183,11 @@ export default class Reservation extends Component{
     renderContent = () =>{
         switch(this.state.chosenOperation){
             case 'reservation':
-                console.log(this.state.session);
                 return(
                     <ReserveTicket
                         token={this.props.token}
                         callBackInformWithMessage={this.props.callBackInformWithMessage}
+                        session={this.state.session}
                     />
                 );
             case 'reservationLoading':
