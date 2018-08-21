@@ -154,6 +154,12 @@ export default class Reservation extends Component{
         this.getSession(sessionId);
     }
 
+    handleCancelOperation = () =>{
+        this.setState({
+            chosenOperation: ''
+        });
+    }
+
     renderSessionListContent = () =>{
         return(
             <React.Fragment>
@@ -187,6 +193,7 @@ export default class Reservation extends Component{
                         token={this.props.token}
                         callBackInformWithMessage={this.props.callBackInformWithMessage}
                         session={this.state.session}
+                        callBackCancelReservation={this.handleCancelOperation}
                     />
                 );
             case 'reservationLoading':

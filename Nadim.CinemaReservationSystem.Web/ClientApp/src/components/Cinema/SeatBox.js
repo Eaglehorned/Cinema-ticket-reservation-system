@@ -13,9 +13,18 @@ export default class SeatBox extends Component{
     }
 
     render(){
-        const styleName = `seat-${this.props.seatInfo.type}${this.props.booked ? '-booked' : ''}`;
+        let styleName = `seat-${this.props.seatInfo.type}${this.props.booked ? '-booked' : ''}`;
+        if(this.props.seatInfo.booked){
+            styleName = 'booked';
+        }
+        else if(this.props.seatInfo.chosen){
+            styleName = `${this.props.seatInfo.type}-chosen`
+        }
+        else{
+            styleName = this.props.seatInfo.type
+        }
         return(
-            <div className={styleName} onClick={this.handleOnSeatClick}>
+            <div className={`seat-${styleName}`} onClick={this.handleOnSeatClick}>
             </div>
         );
     }

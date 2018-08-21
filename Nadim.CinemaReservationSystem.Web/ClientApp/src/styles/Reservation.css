@@ -25,11 +25,72 @@
     padding-right: 10px;
     width: 70%;
     display: inline-block;
+    vertical-align: top;
 }
 
 .choose-container > .chosen-seats-container{
-    padding: 20px;
-    padding-left: 10px;
+    padding-top: 20px;
     width: 30%;
     display: inline-block;
+    vertical-align: top;
+    text-align: center;
+}
+
+.choose-container .seat-info-list-container{
+    height: 250px;
+}
+
+.choose-container Button{
+    margin: 0;
+    margin-top: 10px;
+}
+
+.seat-info-list-container{
+    display: block;
+    overflow: auto;
+    width: 300px;
+    margin: auto;
+    margin-bottom: 20px; 
+}
+
+.seat-info-block{
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px; 
+    border: 1px solid rgb(119, 119, 119);
+}
+
+.confirm-reservation-container{
+    width: 100%;
+}
+
+.confirm-reservation-container > .chosen-seats-container{
+    padding-top: 20px;
+    width: 60%;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+}
+
+.confirm-reservation-container > .confirm-content-container{
+    padding-top: 20px;
+    width: 40%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.confirm-components-block{
+    padding-top: 19px; 
+    text-align: center;
+    width: 300px;
+    height: 200px;
+    border-radius: 20px;
+    background-color: rgba(91, 172, 219, 0.541);
+    display: block;
+    margin: auto;
+}
+
+.confirm-reservation-container Button{
+    margin: 0;
+    margin-top: 10px;
 }

@@ -110,7 +110,7 @@ export default class Session extends Component{
                     cinemaRoomName: receivedSessionInfo.cinemaRoom.name,
                     filmName: receivedSessionInfo.film.name,
                     beginTime: receivedSessionInfo.beginTime,
-                    sessionId: response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length)
+                    sessionId: parseInt(response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length), 10)
                 })
             });
             this.informWithMessage('Session created.');
@@ -209,11 +209,11 @@ export default class Session extends Component{
         })
         .then(response => {
             let tempSessionList = this.state.sessionList;
-            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).cinemaName = receivedSessionInfo.cinema.name;
-            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).cinemaCity = receivedSessionInfo.cinema.city;
-            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).cinemaRoomName = receivedSessionInfo.cinemaRoom.name;
-            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).filmName = receivedSessionInfo.film.name;
-            tempSessionList.find( el => el.sessionId == this.state.chosenSessionInfo.sessionId).beginTime = receivedSessionInfo.beginTime;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaName = receivedSessionInfo.cinema.name;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaCity = receivedSessionInfo.cinema.city;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaRoomName = receivedSessionInfo.cinemaRoom.name;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).filmName = receivedSessionInfo.film.name;
+            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).beginTime = receivedSessionInfo.beginTime;
             this.setState({
                 sessionList: tempSessionList
             });
@@ -280,7 +280,7 @@ export default class Session extends Component{
                         callBackCancel={this.cancelCurrentOperation}
                     />
                 );
-            default:    
+            default:
                 return this.renderActionsContent();
         }
     }
