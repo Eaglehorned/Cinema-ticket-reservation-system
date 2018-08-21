@@ -228,7 +228,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 {
                     SeatId = s.SeatId,
                     Booked = false,
-                    LockedTime = null
+                    LastTimeUpdated = DateTime.Now
                 }).ToList();
 
             dbContext.Sessions.Add(session);
@@ -318,7 +318,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         Row = ss.Seat.Row,
                         Column = ss.Seat.Column,
                         Type = ss.Seat.Type.TypeName,
-                        Booked = ss.Booked || ss.LockedTime != null,
+                        Booked = ss.Booked,
                         SessionSeatId = ss.SessionSeatId
                     }).ToList()
             };
@@ -391,7 +391,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 {
                     SeatId = s.SeatId,
                     Booked = false,
-                    LockedTime = null
+                    LastTimeUpdated = DateTime.Now
                 }).ToList();
 
             dbContext.SaveChanges();

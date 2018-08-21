@@ -4,6 +4,5 @@
 	[SessionId] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[Sessions]([SessionId]),
 	[SeatId] INT NOT NULL FOREIGN KEY REFERENCES [dbo].[Seats]([SeatId]), 
     [Booked] BIT NOT NULL, 
-    [LockedTime] DATETIME NULL,
-
+    [LastTimeUpdated] DATETIME NOT NULL,
 )

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SearchBar from './SearchBar';
 import SessionDisplayInfoBox from '../Session/SessionDisplayInfoBox';
 import ReserveTicket from './ReserveTicket';
+import moment from 'moment';
 import '../../styles/Reservation.css';
 
 export default class Reservation extends Component{
@@ -72,6 +73,7 @@ export default class Reservation extends Component{
         fetch(`api/sessions/${sessionId}/seats`,{
             method: 'GET',
             headers: {
+                'If-Modified-Since': moment().format(),
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': `bearer ${this.props.token}`

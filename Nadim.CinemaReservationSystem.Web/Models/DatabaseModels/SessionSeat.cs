@@ -18,6 +18,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public Seat Seat { get; set; }
 
         public bool Booked { get; set; }
-        public DateTime? LockedTime { get; set; }
+        public DateTime LastTimeUpdated { get; set; }
     }
 }
