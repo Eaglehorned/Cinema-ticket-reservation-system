@@ -16,11 +16,11 @@ export default class ReserveTicket extends Component{
             lastTimeUpdated: moment()
         }
 
-        this.handleSeatClickFetch({
-            sessionSeatId: 1,
-            booked: true,
-            lastTimeUpdated: this.state.lastTimeUpdated
-        })
+        // this.handleSeatClick({
+        //     sessionSeatId: 1,
+        //     booked: true,
+        //     lastTimeUpdated: this.state.lastTimeUpdated
+        // })
     }
 
     createOrder = () =>{
@@ -76,7 +76,7 @@ export default class ReserveTicket extends Component{
 
     //TODO need to finish
     handleSeatClickFetch = (seatInfo) =>{
-        fetch(`api/sessions/${this.props.session.info.sessionId}/seats/${seatInfo.sessionSeatId}`,{
+        return fetch(`api/sessions/${this.props.session.info.sessionId}/seats/${seatInfo.sessionSeatId}`,{
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -88,29 +88,76 @@ export default class ReserveTicket extends Component{
                 lastTimeUpdated: moment().format()
             })
         })
+        .then(response =>{
+            if (response.ok){
+                return response;
+            }
+            if (response.status === 400){
+                return response.json().then((err) => {
+                    throw new Error(`Bad request. ${err.details}`);
+                });
+            }
+            if (response.status === 401){
+                throw new Error('You need to authorize to do that action.');
+            }
+            if (response.status === 404){
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
+            }
+        })
+        .then(response =>{
+            if(seatInfo.booked){
+                this.LockSessionSeat(seatInfo);   
+            }
+            else{
+                this.UnlockSessionSeat(seatInfo)
+            }
+        })
+        .catch(error => {
+            this.setState({
+                chosenOperation: ''
+            });
+            this.props.callBackInformWithMessage({ 
+                text: error.message,
+                isError: true
+            });
+        });
+    }
+
+    LockSessionSeat = (seatInfo) =>{
+        let tempSeats = this.state.seats;
+        tempSeats[seatInfo.row][seatInfo.column].chosen = true;
+        this.setState({
+            seats: tempSeats,
+            chosenSeats: this.state.chosenSeats.concat(tempSeats[seatInfo.row][seatInfo.column])
+        });
+    }
+
+    UnlockSessionSeat = (seatInfo) =>{
+        let tempSeats = this.state.seats;
+        tempSeats[seatInfo.row][seatInfo.column].chosen = false;
+        let tempChosenSeats = this.state.chosenSeats;
+        tempChosenSeats.splice(tempChosenSeats.findIndex( el => el.sessionSeatId === seatInfo.sessionSeatId), 1);
+        this.setState({
+            seats: tempSeats,
+            chosenSeats: tempChosenSeats
+        });
     }
 
     handleSeatClick = (seatInfo) =>{
         if(!this.state.seats[seatInfo.row][seatInfo.column].booked){
             if(!this.state.chosenSeats.find(el => el.sessionSeatId === seatInfo.sessionSeatId)){
                 if(this.state.chosenSeats.length < 10){
-                    let tempSeats = this.state.seats;
-                    tempSeats[seatInfo.row][seatInfo.column].chosen = true;
-                    this.setState({
-                        seatInfo: tempSeats,
-                        chosenSeats: this.state.chosenSeats.concat(tempSeats[seatInfo.row][seatInfo.column])
-                    });
+                    let tempSeatInfo = Object.assign({}, seatInfo);
+                    tempSeatInfo.booked = true;
+                    this.handleSeatClickFetch(tempSeatInfo);
                 }
             }
             else{
-                let tempSeats = this.state.seats;
-                tempSeats[seatInfo.row][seatInfo.column].chosen = false;
-                let tempChosenSeats = this.state.chosenSeats;
-                tempChosenSeats.splice(tempChosenSeats.findIndex( el => el.sessionSeatId === seatInfo.sessionSeatId), 1);
-                this.setState({
-                    seatInfo: tempSeats,
-                    chosenSeats: tempChosenSeats
-                });
+                let tempSeatInfo = Object.assign({}, seatInfo);
+                tempSeatInfo.booked = false;
+                this.handleSeatClickFetch(tempSeatInfo);
             }
         }
     }

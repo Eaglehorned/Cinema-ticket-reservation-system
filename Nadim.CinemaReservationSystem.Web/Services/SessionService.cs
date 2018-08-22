@@ -41,6 +41,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.SessionSeats.Any(ss => ss.SessionSeatId == sessionSeatId);
         }
 
+        private bool SessionSeatIsBooked(int sessionSeatId)
+        {
+            return dbContext.SessionSeats.FirstOrDefault(ss => ss.SessionSeatId == sessionSeatId).Booked;
+        }
+
         private bool ValidateData(SessionInfo session) {
             return dbContext.CinemaRooms.Any(s => s.CinemaRoomId == session.CinemaRoomId)
                 && dbContext.Films.Any(f => f.FilmId == f.FilmId
@@ -163,6 +168,15 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 {
                     ResultOk = false,
                     Details = "Such session seat does not exist."
+                };
+            }
+
+            if (seatInfo.Booked && SessionSeatIsBooked(sessionSeatId))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "This seat is already booked."
                 };
             }
 

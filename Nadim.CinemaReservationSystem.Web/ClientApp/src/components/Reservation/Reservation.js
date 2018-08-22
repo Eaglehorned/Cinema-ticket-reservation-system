@@ -93,7 +93,7 @@ export default class Reservation extends Component{
                 return response.json().then((err) => {
                     throw new Error(`Not found. ${err.details}`);
                 });
-            }  
+            }
         })
         .then(parsedJson => {
             let tempSession = this.state.session;

@@ -20,8 +20,8 @@ export default class SeatsScheme extends Component{
                         <div 
                             className="row"
                             key={item[0].row}>
-                            {item.map((itemArray) => 
-                                <SeatBox 
+                            {item.map((itemArray) =>
+                                    <SeatBox 
                                     key={this.generateKey(itemArray.row, itemArray.column)}
                                     seatInfo={itemArray}
                                     callBackFromParent={this.handleSeatClick}
