@@ -61,19 +61,26 @@ export default class Login extends Component {
             .then(parsedJson => {
                 if (parsedJson.resultOk === true) {
                     let role;
+                    let userId;
                     for (let key in this.parseJwt(parsedJson.token)){
                         if (key.indexOf('role') !== -1){
                             role = this.parseJwt(parsedJson.token)[key];
-                            break;
+                            continue;
+                        }
+                        if (key.indexOf('nameidentifier') !== -1){
+                            userId = this.parseJwt(parsedJson.token)[key];
+                            continue;
                         }
                     }
                     localStorage.setItem('token', parsedJson.token);
                     localStorage.setItem('username', parsedJson.fullUserName);
                     localStorage.setItem('role', role);
+                    localStorage.setItem('userId', userId);
                     this.props.callBackFromParent({
                         username: parsedJson.fullUserName,
                         token: parsedJson.token,
-                        role: role
+                        role: role,
+                        userId: userId
                     });
                 }
                 else{

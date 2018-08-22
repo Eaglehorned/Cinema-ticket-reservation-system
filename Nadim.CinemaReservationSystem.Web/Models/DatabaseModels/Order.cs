@@ -6,15 +6,19 @@ using System.Threading.Tasks;
 
 namespace Nadim.CinemaReservationSystem.Web.Models
 {
-    public class Ticket
+    public class Order
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int TicketId { get; set; }
+        public int OrderId { get; set; }
 
         public int UserId { get; set; }
         public User User { get; set; }
+        
+        public int SessionId { get; set; }
+        public Session Session { get; set; }
 
-        public int SessionSeatId { get; set; }
-        public SessionSeat SessionSeat { get; set; }
+        public bool Confirmed { get; set; }
+
+        public List<SessionSeat> SessionSeats { get; set; }
     }
 }

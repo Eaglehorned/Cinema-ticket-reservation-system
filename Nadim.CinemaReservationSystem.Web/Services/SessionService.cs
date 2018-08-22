@@ -36,6 +36,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.Sessions.Any(s => s.SessionId == sessionId);
         }
 
+        private bool SessionSeatExist(int sessionSeatId)
+        {
+            return dbContext.SessionSeats.Any(ss => ss.SessionSeatId == sessionSeatId);
+        }
+
         private bool ValidateData(SessionInfo session) {
             return dbContext.CinemaRooms.Any(s => s.CinemaRoomId == session.CinemaRoomId)
                 && dbContext.Films.Any(f => f.FilmId == f.FilmId
@@ -139,6 +144,40 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 .Any(f => f.FilmId == session.FilmId 
                 && f.StartDate.Date <= session.BeginTime.Date 
                 && session.BeginTime.Date <= f.EndDate.Date);
+        }
+
+        public Result EditSessionSeat(int sessionId, int sessionSeatId, SessionSeatInfo seatInfo)
+        {
+            if (!SessionExist(sessionId))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "Such session does not exist."
+                };
+            }
+
+            if (!SessionSeatExist(sessionSeatId))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "Such session seat does not exist."
+                };
+            }
+
+            SessionSeat sessionSeat = dbContext.SessionSeats
+                .FirstOrDefault(ss => ss.SessionSeatId == sessionSeatId);
+
+            sessionSeat.Booked = seatInfo.Booked;
+            sessionSeat.LastTimeUpdated = seatInfo.LastTimeUpdated;
+
+            dbContext.SaveChanges();
+
+            return new Result
+            {
+                ResultOk = true,
+            };
         }
 
         public GetResult<List<ResponseSessionDisplayInfo>> GetSessionList(int filmId)
@@ -308,13 +347,35 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId) {
+        public GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId, string lastTimeUpdatedString)
+        {
+            if (String.IsNullOrEmpty(lastTimeUpdatedString))
+            {
+                return new GetResult<List<SeatReservationInfo>>
+                {
+                    ResultOk = true,
+                    RequestedData = dbContext.SessionSeats
+                        .Where(ss => ss.SessionId == sessionId)
+                        .Select(ss => new SeatReservationInfo
+                        {
+                            Row = ss.Seat.Row,
+                            Column = ss.Seat.Column,
+                            Type = ss.Seat.Type.TypeName,
+                            Booked = ss.Booked,
+                            SessionSeatId = ss.SessionSeatId
+                        }).ToList()
+                };
+            }
+
+            DateTime lastTimeUpdated = Utils.FromUTCStringToDateTime(lastTimeUpdatedString);
+
             return new GetResult<List<SeatReservationInfo>>
             {
                 ResultOk = true,
                 RequestedData = dbContext.SessionSeats
-                    .Where( ss => ss.SessionId == sessionId)
-                    .Select( ss => new SeatReservationInfo {
+                    .Where(ss => ss.SessionId == sessionId && lastTimeUpdated < ss.LastTimeUpdated)
+                    .Select(ss => new SeatReservationInfo
+                    {
                         Row = ss.Seat.Row,
                         Column = ss.Seat.Column,
                         Type = ss.Seat.Type.TypeName,

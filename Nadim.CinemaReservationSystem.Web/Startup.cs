@@ -47,6 +47,7 @@ namespace Nadim.CinemaReservationSystem.Web
             services.AddTransient<ICinemaService, CinemaService>();
             services.AddTransient<IFilmService, FilmService>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
+            services.AddTransient<IOrderService, OrderService>();
             services.AddDbContext<Nadim.CinemaReservationSystem.Web.Models.CinemaReservationSystemContext>(options => options.UseSqlServer(Configuration["ConnectionString"]));
 
             // In production, the React files will be served from this directory

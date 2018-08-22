@@ -17,6 +17,9 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public int SeatId { get; set; }
         public Seat Seat { get; set; }
 
+        public int? OrderId { get; set; }
+        public Order Order { get; set; }
+
         public bool Booked { get; set; }
         public DateTime LastTimeUpdated { get; set; }
     }

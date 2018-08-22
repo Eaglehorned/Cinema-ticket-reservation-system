@@ -12,6 +12,7 @@ export default class App extends Component {
             username: localStorage.getItem('username'),
             token: localStorage.getItem('token'),
             role: localStorage.getItem('role'),
+            userId: localStorage.getItem('userId'),
             show: false,
             infoMessage:'',
             alertStyle:'info'
@@ -48,7 +49,8 @@ export default class App extends Component {
         this.setState({
             username: userInfo.username,
             token: userInfo.token,
-            role: userInfo.role
+            role: userInfo.role,
+            userId: userInfo.userId
         })
     }
 
@@ -91,6 +93,7 @@ export default class App extends Component {
                     role={this.state.role}
                     token={this.state.token}
                     callBackInformWithMessage={this.informWithMessage}
+                    userId={this.state.userId}
                 />
             </React.Fragment>
         );

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ChooseSeats from './ChooseSeats';
 import ConfirmReservation from './ConfirmReservation';
+import moment from 'moment';
 
 export default class ReserveTicket extends Component{
     displayName = ReserveTicket.displayName;
@@ -10,19 +11,96 @@ export default class ReserveTicket extends Component{
         this.state={
             seatsChosen: false,
             seats: this.props.session.seats,
-            chosenSeats: []
+            chosenSeats: [],
+            reservationConfirmed: false,
+            lastTimeUpdated: moment()
         }
+
+        this.handleSeatClickFetch({
+            sessionSeatId: 1,
+            booked: true,
+            lastTimeUpdated: this.state.lastTimeUpdated
+        })
+    }
+
+    createOrder = () =>{
+        fetch('api/orders/', {
+            method: 'POST',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${this.props.token}`
+            },
+            body: JSON.stringify({
+                userId: this.props.userId,
+                sessionId: this.props.session.info.sessionId
+            })
+        })
+        .then(response => {
+            if (response.ok){
+                return response;
+            }
+            if (response.status === 400){
+                return response.json().then((err) => {
+                    throw new Error(`Bad request. ${err.details}`);
+                });
+            }
+            if (response.status === 401){
+                throw new Error('You need to authorize to do that action.');
+            }
+            if (response.status === 404){
+                return response.json().then((err) => {
+                    throw new Error(`Not found. ${err.details}`);
+                });
+            }
+        })
+        .then(response => {
+            // this.setState({
+            //     orderId: parseInt(response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length), 10) 
+            // })
+        })
+        .catch(error => {
+            this.props.callBackInformWithMessage(
+            { 
+                text: error.message,
+                isError: true
+            });
+        });
+    }
+
+    componentWillUnmount(){
+        if (this.state.reservationConfirmed){
+
+        }
+    }
+
+    //TODO need to finish
+    handleSeatClickFetch = (seatInfo) =>{
+        fetch(`api/sessions/${this.props.session.info.sessionId}/seats/${seatInfo.sessionSeatId}`,{
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${this.props.token}`
+            },
+            body: JSON.stringify({
+                booked: seatInfo.booked,
+                lastTimeUpdated: moment().format()
+            })
+        })
     }
 
     handleSeatClick = (seatInfo) =>{
         if(!this.state.seats[seatInfo.row][seatInfo.column].booked){
             if(!this.state.chosenSeats.find(el => el.sessionSeatId === seatInfo.sessionSeatId)){
-                let tempSeats = this.state.seats;
-                tempSeats[seatInfo.row][seatInfo.column].chosen = true;
-                this.setState({
-                    seatInfo: tempSeats,
-                    chosenSeats: this.state.chosenSeats.concat(tempSeats[seatInfo.row][seatInfo.column])
-                });
+                if(this.state.chosenSeats.length < 10){
+                    let tempSeats = this.state.seats;
+                    tempSeats[seatInfo.row][seatInfo.column].chosen = true;
+                    this.setState({
+                        seatInfo: tempSeats,
+                        chosenSeats: this.state.chosenSeats.concat(tempSeats[seatInfo.row][seatInfo.column])
+                    });
+                }
             }
             else{
                 let tempSeats = this.state.seats;
@@ -49,6 +127,25 @@ export default class ReserveTicket extends Component{
         })
     }
 
+    handleConfirmReservation = () =>{
+        let self = this;
+        let promise = new Promise((resolve, reject) => {
+            self.setState({
+               reservationConfirmed: true
+            })
+            resolve();
+        });
+
+        promise
+            .then(
+                result => self.props.callBackCancelReservation(),
+                error => self.props.callBackInformWithMessage({
+                    text: 'Unable to reserve',
+                    isError: true
+                })
+            );
+    }
+
     renderChooseSeatsContent(){
         return(
             <ChooseSeats
@@ -68,6 +165,7 @@ export default class ReserveTicket extends Component{
                 chosenSeats={this.state.chosenSeats}
                 sessionSeatTypePrices={this.props.session.info.sessionSeatTypePrices}
                 callBackCancelConfirm={this.handleCancelConfirm}
+                callBackConfirmReservation={this.handleConfirmReservation}
             />
         );
     }

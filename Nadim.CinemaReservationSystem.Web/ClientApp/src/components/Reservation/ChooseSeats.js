@@ -14,6 +14,13 @@ export default class ChooseSeats extends Component{
                         seatsArray={this.props.seats}
                         callBackFromParent={this.props.callBackHandleSeatClick}
                     />
+                    {  
+                        this.props.chosenSeats.length === 10 
+                        ? <div className="font-large font-bold">
+                            You have chosen maximum count of seats.
+                        </div>
+                        : ''
+                    }
                 </div>
                 <div className="chosen-seats-container">
                     <div className="seat-info-list-container">

@@ -7,8 +7,12 @@ namespace Nadim.CinemaReservationSystem.Web.Models
 {
     public class SessionSeatInfo
     {
-        public int SessionSeatId;
         public bool Booked { get; set; }
         public DateTime LastTimeUpdated { get; set; }
+    }
+
+    public class ResponseSessionSeatInfo : SessionSeatInfo
+    {
+        public int SessionSeatId;
     }
 }

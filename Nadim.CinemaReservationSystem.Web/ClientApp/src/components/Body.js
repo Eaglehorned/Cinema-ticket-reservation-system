@@ -61,6 +61,7 @@ export default class Body extends Component{
             <Reservation
                 token={this.props.token}
                 callBackInformWithMessage={this.props.callBackInformWithMessage}
+                userId={this.props.userId}
             />
         );
     }
