@@ -47,7 +47,7 @@ export default class ConfirmReservation extends Component{
                                 bsStyle="primary"
                                 onClick={this.props.callBackConfirmReservation}
                             >
-                                Pay for tickes
+                                Book tickets
                             </Button>
                         </div>
                         <div>

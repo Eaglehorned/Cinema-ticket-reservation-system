@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Nadim.CinemaReservationSystem.Web.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Nadim.CinemaReservationSystem.Web
 {
@@ -15,9 +16,16 @@ namespace Nadim.CinemaReservationSystem.Web
             this.dbContext = dbContext;
         }
 
-        private bool SessionExists(int sessionId)
+        private bool SessionExists(int sessionSeatId)
         {
-            return dbContext.Sessions.Any(s => s.SessionId == sessionId);
+            return dbContext.SessionSeats
+                .Include(ss => ss.Session)
+                .FirstOrDefault(ss => ss.SessionSeatId == sessionSeatId).Session != null;
+        }
+
+        private bool ValidateSeatList(List<int> list)
+        {
+            return list == null || list.Count == 0 && list.Count <= 10;
         }
 
         private bool UserExists(int userId) {
@@ -31,7 +39,16 @@ namespace Nadim.CinemaReservationSystem.Web
 
         public ResultCreated CreateOrder(OrderInfo orderInfo)
         {
-            if (!SessionExists(orderInfo.SessionId)) {
+            if (ValidateSeatList(orderInfo.SessionSeats))
+            {
+                return new ResultCreated
+                {
+                    ResultOk = false,
+                    Details = "Invalid seats information."
+                };
+            }
+
+            if (!SessionExists(orderInfo.SessionSeats.FirstOrDefault())) {
                 return new ResultCreated
                 {
                     ResultOk = false,
@@ -50,10 +67,16 @@ namespace Nadim.CinemaReservationSystem.Web
 
             Order order = new Order
             {
-                UserId = orderInfo.UserId,
-                SessionId = orderInfo.SessionId,
-                Confirmed = false
+                UserId = orderInfo.UserId
             };
+
+            foreach (var sessionSeatId in orderInfo.SessionSeats)
+            {
+                order.SessionSeats.Add(
+                    dbContext.SessionSeats
+                        .FirstOrDefault(ss => ss.SessionSeatId == sessionSeatId)
+                );
+            }
 
             dbContext.Orders.Add(order);
             dbContext.SaveChanges();

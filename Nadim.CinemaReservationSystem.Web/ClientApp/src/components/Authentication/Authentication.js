@@ -84,7 +84,7 @@ export default class Authentication extends Component {
             role: '',
             userId: ''
         })
-    }   
+    }
 
     renderAuthenticationContent() {
         return(
@@ -117,13 +117,33 @@ export default class Authentication extends Component {
         return(
             <div className="login">
                 <h3>Username: {this.state.username}</h3>
-                <button 
-                    type="button" 
-                    className="btn btn-secondary btn-sm" 
+                <Button
                     onClick={this.handleLogout}
                 >
                     Log out
-                </button>
+                </Button>
+                {
+                this.state.role === 'admin' ?
+                <div>
+                    <div>
+                        <Button
+                            bsSize="xsmall"
+                            onClick={() => this.props.callBackSetShownRole('admin')}
+                        >
+                            Admin
+                        </Button>
+                    </div>
+                    <div>
+                        <Button
+                            bsSize="xsmall"
+                            onClick={() => this.props.callBackSetShownRole('user')}
+                        >
+                            User
+                        </Button>
+                    </div>
+                </div>
+                : ''
+                }
             </div>
         );
     }

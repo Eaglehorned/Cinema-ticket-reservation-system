@@ -149,6 +149,7 @@ export default class SearchBar extends Component{
                 <Button
                     bsStyle="primary"
                     onClick={this.handleSearchClick}
+                    disabled={!this.state.chosenFilm}
                 >
                     Search
                 </Button>

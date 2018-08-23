@@ -151,8 +151,25 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 && session.BeginTime.Date <= f.EndDate.Date);
         }
 
+        private void ClearSessionSeats(int sessionId)
+        {
+            var sessionSeats = dbContext.SessionSeats
+                .Where(ss => ss.Order == null && ss.Booked && ss.SessionId == sessionId);
+            foreach (var seat in sessionSeats)
+            {
+                if (seat.LastTimeUpdated.AddMinutes(10) < DateTime.Now)
+                {
+                    seat.Booked = false;
+                    seat.LastTimeUpdated = DateTime.Now;
+                }
+            }
+            dbContext.SaveChanges();
+        }
+
         public Result EditSessionSeat(int sessionId, int sessionSeatId, SessionSeatInfo seatInfo)
         {
+            ClearSessionSeats(sessionId);
+
             if (!SessionExist(sessionId))
             {
                 return new Result
@@ -363,6 +380,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         public GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId, string lastTimeUpdatedString)
         {
+            ClearSessionSeats(sessionId);
+
             if (String.IsNullOrEmpty(lastTimeUpdatedString))
             {
                 return new GetResult<List<SeatReservationInfo>>

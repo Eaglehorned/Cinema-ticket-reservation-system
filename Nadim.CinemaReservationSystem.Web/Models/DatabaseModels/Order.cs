@@ -13,12 +13,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
 
         public int UserId { get; set; }
         public User User { get; set; }
-        
-        public int SessionId { get; set; }
-        public Session Session { get; set; }
 
-        public bool Confirmed { get; set; }
-
-        public List<SessionSeat> SessionSeats { get; set; }
+        public List<SessionSeat> SessionSeats { get; set; } = new List<SessionSeat>();
     }
 }

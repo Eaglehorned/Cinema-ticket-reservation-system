@@ -28,7 +28,6 @@ export default class SeatBox extends Component{
                 className={`seat-${styleName}`} 
                 onClick={this.handleOnSeatClick}
             />
-            //</div>
         );
     }
 }

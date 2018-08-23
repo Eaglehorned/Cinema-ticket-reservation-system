@@ -95,3 +95,13 @@
     margin: 0;
     margin-top: 10px;
 }
+
+.seat-types-info-panel{
+    padding-top: 0; 
+    vertical-align: middle;
+}
+
+.seat-type-info-block{
+    display: inline-block;
+    padding: 10px;
+}
