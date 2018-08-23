@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import {DropdownButton, MenuItem, Button, FormGroup} from 'react-bootstrap';
+import {DropdownButton, MenuItem, Button, FormGroup, ButtonGroup} from 'react-bootstrap';
+import { DatePicker } from 'antd';
+import moment from 'moment';
 
 export default class SearchBar extends Component{
     displayName = SearchBar.displayName;
@@ -8,10 +10,17 @@ export default class SearchBar extends Component{
         super(props);
         this.state={
             filmList: [],
-            chosenFilm: undefined
+            chosenFilm: undefined,
+            chosenStartDate: moment(),
+            chosenEndDate: moment().add(1, 'day')
         }
 
         this.getFilmList();
+
+        this.getSessionList({
+            startDate: moment().format('L'),
+            endDate: moment().add(14, 'days').format('L')
+        });
     }
 
     getFilmList = () => {
@@ -58,14 +67,42 @@ export default class SearchBar extends Component{
         this.setState({
             chosenFilm: this.state.filmList[eventKey]
         });
+        this.getSessionList({
+            filmId: this.state.filmList[eventKey].filmId,
+            startDate: this.state.chosenStartDate.format('L'),
+            endDate: this.state.chosenEndDate.format('L')
+        })
     }
 
-    handleSearchClick = () =>{
-        this.getSessionList(this.state.chosenFilm.filmId);
+    handleChangeDate = (time) =>{
+        const nextDay = moment(time);
+        nextDay.add(1, 'day');
+        this.setState({
+            chosenStartDate: time,
+            chosenEndDate: nextDay
+        });
+        this.getSessionList({
+            filmId: this.state.chosenFilm ? this.state.chosenFilm.filmId : undefined,
+            startDate: time.format('L'),
+            endDate: nextDay.format('L')
+        })
     }
 
-    getSessionList = (filmId) =>{
-        fetch(`api/sessions/filmId=${filmId}`, {
+    getSessionList = (filters) =>{
+        console.log(filters);
+        let filterString = '';
+        for (let prop in filters){
+            if(filters[prop]){ 
+                if (filterString === ''){
+                    filterString = `${prop}=${filters[prop]}`;
+                }
+                else{
+                    filterString = filterString.concat(`&${prop}=${filters[prop]}`);
+                }
+            }
+        }
+
+        fetch(`api/sessions?${filterString}`, {
             method: 'GET',
             headers:{
                 'Accept': 'application/json',
@@ -99,7 +136,7 @@ export default class SearchBar extends Component{
                 sessionList: parsedJson.requestedData
             });
         })
-        .catch(error => this.informWithMessage(
+        .catch(error => this.props.callBackInformWithMessage(
             { 
                 text: error.message,
                 isError: true
@@ -110,50 +147,46 @@ export default class SearchBar extends Component{
     renderChooseFilmDropDown = () =>{
         return(
             <React.Fragment>
-                <DropdownButton
-                    bsStyle="default"
-                    title="Choose film"
-                    id={"choose-film-dropdown"}
-                    disabled={this.state.filmList.length === 0}
+                <ButtonGroup 
+                    justified
+                    className="dropdownbutton-container display-inline-block"
                 >
-                    {
-                        this.state.filmList.map((el, i) => 
-                            <MenuItem
-                                key={i}
-                                eventKey={i}
-                                onSelect={this.handleSelectFilm}
-                            >
-                                {` ${el.name}`}
-                            </MenuItem>
-                        )
-                    }
-                </DropdownButton>
+                    <DropdownButton
+                        bsStyle="default"
+                        title={this.state.chosenFilm ? this.state.chosenFilm.name : 'Choose film'}
+                        id={"choose-film-dropdown"}
+                        disabled={this.state.filmList.length === 0}
+                        block={true}
+                    >
+                        {
+                            this.state.filmList.map((el, i) => 
+                                <MenuItem
+                                    key={i}
+                                    eventKey={i}
+                                    onSelect={this.handleSelectFilm}
+                                >
+                                    {` ${el.name}`}
+                                </MenuItem>
+                            )
+                        }
+                    </DropdownButton>
+                </ButtonGroup>
+                <DatePicker
+                    className="display-inline-block"
+                    onChange={this.handleChangeDate}
+                    value={this.state.chosenStartDate}
+                />
             </React.Fragment>   
         );
     }
 
     render(){
         return(
-            <div>
+            <React.Fragment>
                 <FormGroup>
                     {this.renderChooseFilmDropDown()}
-                    {this.state.chosenFilm 
-                        ? <div className="font-large">
-                            <span className="font-bold">
-                                Chosen film :{' '}
-                            </span>
-                            {this.state.chosenFilm.name}
-                        </div> 
-                        : ''}
                 </FormGroup>
-                <Button
-                    bsStyle="primary"
-                    onClick={this.handleSearchClick}
-                    disabled={!this.state.chosenFilm}
-                >
-                    Search
-                </Button>
-            </div>
+            </React.Fragment>
         );
     }
 }

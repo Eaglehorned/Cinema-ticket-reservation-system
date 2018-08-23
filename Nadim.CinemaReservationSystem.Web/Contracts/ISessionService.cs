@@ -10,13 +10,11 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
     {
         ResultCreated CreateSession(SessionInfo session);
 
-        GetResult<List<ResponseSessionDisplayInfo>> GetSessionList();
+        GetResult<List<ResponseSessionDisplayInfo>> GetSessionList(SessionFilter filter);
 
         GetResult<ResponseSessionFullInfo> GetSession(int sessionId);
 
         Result EditSession(int sessionId, SessionInfo sessionInfo);
-
-        GetResult<List<ResponseSessionDisplayInfo>> GetSessionList(int filmId);
 
         GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId, string lastUpdated);
 

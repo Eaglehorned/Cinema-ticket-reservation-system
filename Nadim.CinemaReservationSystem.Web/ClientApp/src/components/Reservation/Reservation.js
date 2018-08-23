@@ -165,9 +165,9 @@ export default class Reservation extends Component{
             <React.Fragment>
                 <h1>Sessions</h1>
                     <SearchBar
-                        callBackInformWithMessage={this.props.callBackInformWithMessage}
                         token={this.props.token}
                         callBackReceiveSessionList={this.handleReceiveSessionList}
+                        callBackInformWithMessage={this.props.callBackInformWithMessage}
                     />
                     <div className="list-container">
                         {

@@ -101,7 +101,16 @@
     vertical-align: middle;
 }
 
-.seat-type-info-block{
+.display-inline-block{
     display: inline-block;
+    margin-right: 15px;
+}
+
+.seat-type-info-block{
     padding: 10px;
+    display: inline-block;
+}
+
+.dropdownbutton-container{
+    width: 180px;
 }
