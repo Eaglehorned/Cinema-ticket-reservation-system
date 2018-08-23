@@ -114,3 +114,12 @@
 .dropdownbutton-container{
     width: 180px;
 }
+
+.session-cinema-display-container{
+    padding: 0 10px;
+}
+
+.session-film-display-container{
+    padding: 0 10px;
+    margin-bottom: 40px;
+}

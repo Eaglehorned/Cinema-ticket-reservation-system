@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {DropdownButton, MenuItem, Button, FormGroup, ButtonGroup} from 'react-bootstrap';
+import {DropdownButton, MenuItem, FormGroup, ButtonGroup} from 'react-bootstrap';
 import { DatePicker } from 'antd';
 import moment from 'moment';
 
@@ -9,13 +9,13 @@ export default class SearchBar extends Component{
     constructor(props){
         super(props);
         this.state={
-            filmList: [],
-            chosenFilm: undefined,
+            //filmList: [],
+            //chosenFilm: undefined,
             chosenStartDate: moment(),
             chosenEndDate: moment().add(1, 'day')
         }
 
-        this.getFilmList();
+        //this.getFilmList();
 
         this.getSessionList({
             startDate: moment().format('L'),
@@ -23,56 +23,56 @@ export default class SearchBar extends Component{
         });
     }
 
-    getFilmList = () => {
-        fetch('api/films', {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(parsedJson => {
-            this.setState({
-                filmList: parsedJson.requestedData,
-            });
-        })
-        .catch(error => this.props.callBackInformWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            })
-        );
-    }
+    // getFilmList = () => {
+    //     fetch('api/films', {
+    //         method: 'GET',
+    //         headers:{
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `bearer ${this.props.token}`
+    //         }
+    //     })
+    //     .then(response => {
+    //         if (response.ok){
+    //             return response.json();
+    //         }
+    //         if (response.status === 400){
+    //             return response.json().then((err) => {
+    //                 throw new Error(`Bad request. ${err.details}`);
+    //             });
+    //         }
+    //         if (response.status === 401){
+    //             throw new Error('You need to authorize to do that action.');
+    //         }
+    //         if (response.status === 404){
+    //             return response.json().then((err) => {
+    //                 throw new Error(`Not found. ${err.details}`);
+    //             });
+    //         }
+    //     })
+    //     .then(parsedJson => {
+    //         this.setState({
+    //             filmList: parsedJson.requestedData,
+    //         });
+    //     })
+    //     .catch(error => this.props.callBackInformWithMessage(
+    //         { 
+    //             text: error.message,
+    //             isError: true
+    //         })
+    //     );
+    // }
 
-    handleSelectFilm = (eventKey) =>{
-        this.setState({
-            chosenFilm: this.state.filmList[eventKey]
-        });
-        this.getSessionList({
-            filmId: this.state.filmList[eventKey].filmId,
-            startDate: this.state.chosenStartDate.format('L'),
-            endDate: this.state.chosenEndDate.format('L')
-        })
-    }
+    // handleSelectFilm = (eventKey) =>{
+    //     this.setState({
+    //         chosenFilm: this.state.filmList[eventKey]
+    //     });
+    //     this.getSessionList({
+    //         filmId: this.state.filmList[eventKey].filmId,
+    //         startDate: this.state.chosenStartDate.format('L'),
+    //         endDate: this.state.chosenEndDate.format('L')
+    //     })
+    // }
 
     handleChangeDate = (time) =>{
         const nextDay = moment(time);
@@ -82,14 +82,13 @@ export default class SearchBar extends Component{
             chosenEndDate: nextDay
         });
         this.getSessionList({
-            filmId: this.state.chosenFilm ? this.state.chosenFilm.filmId : undefined,
+            //filmId: this.state.chosenFilm ? this.state.chosenFilm.filmId : undefined,
             startDate: time.format('L'),
             endDate: nextDay.format('L')
         })
     }
 
     getSessionList = (filters) =>{
-        console.log(filters);
         let filterString = '';
         for (let prop in filters){
             if(filters[prop]){ 
@@ -132,9 +131,6 @@ export default class SearchBar extends Component{
             this.props.callBackReceiveSessionList(
                 parsedJson.requestedData
             );
-            this.setState({
-                sessionList: parsedJson.requestedData
-            });
         })
         .catch(error => this.props.callBackInformWithMessage(
             { 
@@ -144,10 +140,10 @@ export default class SearchBar extends Component{
         );
     }
 
-    renderChooseFilmDropDown = () =>{
+    renderFiltersContent = () =>{
         return(
             <React.Fragment>
-                <ButtonGroup 
+                {/* <ButtonGroup 
                     justified
                     className="dropdownbutton-container display-inline-block"
                 >
@@ -170,7 +166,7 @@ export default class SearchBar extends Component{
                             )
                         }
                     </DropdownButton>
-                </ButtonGroup>
+                </ButtonGroup> */}
                 <DatePicker
                     className="display-inline-block"
                     onChange={this.handleChangeDate}
@@ -184,7 +180,7 @@ export default class SearchBar extends Component{
         return(
             <React.Fragment>
                 <FormGroup>
-                    {this.renderChooseFilmDropDown()}
+                    {this.renderFiltersContent()}
                 </FormGroup>
             </React.Fragment>
         );

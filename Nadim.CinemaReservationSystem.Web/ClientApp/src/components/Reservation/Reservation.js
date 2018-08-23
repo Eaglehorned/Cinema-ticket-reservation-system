@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SearchBar from './SearchBar';
 import SessionDisplayInfoBox from '../Session/SessionDisplayInfoBox';
 import ReserveTicket from './ReserveTicket';
+import DisplaySessions from './DisplaySessions';
 import '../../styles/Reservation.css';
 
 export default class Reservation extends Component{
@@ -170,16 +171,10 @@ export default class Reservation extends Component{
                         callBackInformWithMessage={this.props.callBackInformWithMessage}
                     />
                     <div className="list-container">
-                        {
-                            this.state.sessionList.map((el)=>
-                                <SessionDisplayInfoBox
-                                    key={el.sessionId}
-                                    sessionInfo={el}
-                                    callBackHandleSessionAction={this.handleReserveTicketClick}
-                                    mode={'reserve'}
-                                />
-                            )
-                        }
+                        <DisplaySessions
+                            sessions={this.state.sessionList}
+                            callBackHandleSessionAction={this.handleReserveTicketClick}
+                        />
                     </div>
             </React.Fragment>
         );

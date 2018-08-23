@@ -105,10 +105,9 @@ export default class Session extends Component{
         .then(response => {
             this.setState({
                 sessionList: this.state.sessionList.concat({
-                    cinemaName: receivedSessionInfo.cinema.name,
-                    cinemaCity: receivedSessionInfo.cinema.city,
-                    cinemaRoomName: receivedSessionInfo.cinemaRoom.name,
-                    filmName: receivedSessionInfo.film.name,
+                    cinema: receivedSessionInfo.cinema,
+                    cinemaRoom: receivedSessionInfo.cinemaRoom,
+                    film: receivedSessionInfo.film,
                     beginTime: receivedSessionInfo.beginTime,
                     sessionId: parseInt(response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length), 10)
                 })

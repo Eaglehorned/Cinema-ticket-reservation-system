@@ -305,10 +305,19 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     .Select(s => new ResponseSessionDisplayInfo
                     {
                         SessionId = s.SessionId,
-                        FilmName = s.Film.Name,
-                        CinemaRoomName = s.CinemaRoom.Name,
-                        CinemaName = s.CinemaRoom.Cinema.Name,
-                        CinemaCity = s.CinemaRoom.Cinema.City,
+                        Film = new ResponseFilmDisplayInfo {
+                            FilmId = s.FilmId,
+                            Name = s.Film.Name
+                        },
+                        Cinema = new ResponseCinemaDisplayInfo {
+                            Name = s.CinemaRoom.Cinema.Name,
+                            City = s.CinemaRoom.Cinema.City,
+                            CinemaId = s.CinemaRoom.Cinema.CinemaId
+                        },
+                        CinemaRoom = new ResponseCinemaRoomDisplayInfo {
+                            Name = s.CinemaRoom.Name,
+                            CinemaRoomId = s.CinemaRoomId
+                        },
                         BeginTime = s.BeginTime
                     }).ToList()
             };
