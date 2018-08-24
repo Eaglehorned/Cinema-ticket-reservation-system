@@ -11,6 +11,7 @@ using Nadim.CinemaReservationSystem.Web.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace Nadim.CinemaReservationSystem.Web
 {
@@ -58,8 +59,17 @@ namespace Nadim.CinemaReservationSystem.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            var filterLoggerSettings = new FilterLoggerSettings
+            {
+                {"Microsoft", LogLevel.Error },
+                {"System", LogLevel.Error },
+            };
+
+            loggerFactory = loggerFactory.WithFilter(filterLoggerSettings);
+
+            loggerFactory.AddFile(Configuration["Logging:LogFile"]);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
