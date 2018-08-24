@@ -293,16 +293,18 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
+        //TODO improve
         public GetResult<List<ResponseSessionDisplayInfo>> GetSessionList(SessionFilter filter)
         {
+            var query = dbContext.Sessions
+                .Where(s => filter.FilmId != null ? s.FilmId == filter.FilmId : true)
+                .Where(s => filter.StartDate != null ? filter.StartDate < s.BeginTime : true)
+                .Where(s => filter.EndDate != null ? s.BeginTime < filter.EndDate : true);
+
             return new GetResult<List<ResponseSessionDisplayInfo>>
             {
                 ResultOk = true,
-                RequestedData = dbContext.Sessions
-                    .Where(s => filter.FilmId != null ? s.FilmId == filter.FilmId : true)
-                    .Where(s => filter.StartDate != null ? filter.StartDate < s.BeginTime  : true)
-                    .Where(s => filter.EndDate != null ? s.BeginTime < filter.EndDate : true)
-                    .Select(s => new ResponseSessionDisplayInfo
+                RequestedData = query.Select(s => new ResponseSessionDisplayInfo
                     {
                         SessionId = s.SessionId,
                         Film = new ResponseFilmDisplayInfo {

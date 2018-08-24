@@ -12,6 +12,11 @@ export default class DisplayCinema extends Component{
                     {
                         this.props.sessions.map((el)=>
                             <SessionDisplayInfoBox
+                                displayedComponents={{
+                                    cinemaRoom: true,
+                                    film: true,
+                                    beginTime: true
+                                }}
                                 key={el.sessionId}
                                 sessionInfo={el}
                                 callBackHandleSessionAction={this.props.callBackHandleSessionAction}

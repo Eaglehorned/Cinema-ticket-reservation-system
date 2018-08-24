@@ -207,12 +207,13 @@ export default class Session extends Component{
             }
         })
         .then(response => {
-            let tempSessionList = this.state.sessionList;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaName = receivedSessionInfo.cinema.name;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaCity = receivedSessionInfo.cinema.city;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).cinemaRoomName = receivedSessionInfo.cinemaRoom.name;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).filmName = receivedSessionInfo.film.name;
-            tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId).beginTime = receivedSessionInfo.beginTime;
+            const tempSessionList = this.state.sessionList;
+            const tempSessionChangedElement = tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId);
+            tempSessionChangedElement.cinemaName = receivedSessionInfo.cinema.name;
+            tempSessionChangedElement.cinemaCity = receivedSessionInfo.cinema.city;
+            tempSessionChangedElement.cinemaRoomName = receivedSessionInfo.cinemaRoom.name;
+            tempSessionChangedElement.filmName = receivedSessionInfo.film.name;
+            tempSessionChangedElement.beginTime = receivedSessionInfo.beginTime;
             this.setState({
                 sessionList: tempSessionList
             });

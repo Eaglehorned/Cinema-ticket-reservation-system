@@ -1,4 +1,4 @@
-.list-box-container{
+.list-box-container, .clickable-session-list-box-container{
     display: block;
     margin: auto;
     padding: 10px;
@@ -15,4 +15,12 @@
     display: inline-block;
     margin-right: 10px;
     margin-bottom: 3px; 
+}
+
+.clickable-session-list-box-container{
+    transition: 0.3s ;
+}
+
+.clickable-session-list-box-container:hover{
+    background-color: rgb(200, 200, 200);
 }
