@@ -1,31 +1,54 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
+import SessionDisplayInfoBoxField from './SessionDisplayInfoBoxField';
 
 export default class SessionDisplayInfoBox extends Component{
     displayName = SessionDisplayInfoBox.displayName;
 
-    handleEditClick = () =>{
-        this.props.callBackEditSession(this.props.sessionInfo.sessionId);
-    }
-
     render(){
         return(
-            <div className="list-box-container">
+            <div 
+                className={this.props.mode === 'reserve' ? 'clickable-session-list-box-container' : 'list-box-container'}
+                onClick={this.props.mode === 'reserve' 
+                    ? () => this.props.callBackHandleSessionAction(this.props.sessionInfo.sessionId)
+                    : () => {}}    
+            >
                 <div className="font-large">
                     <div>
-                        <div className="list-box-inline-item"><span className="font-bold">Cinema :</span> {this.props.sessionInfo.cinemaName}</div>
-                        <div className="list-box-inline-item"><span className="font-bold">Cinema city :</span> {this.props.sessionInfo.cinemaCity}</div>
-                        <div className="list-box-inline-item"><span className="font-bold">Cinema room :</span> {this.props.sessionInfo.cinemaRoomName}</div>
+                        <SessionDisplayInfoBoxField
+                            displayThis={!this.props.displayedComponents || this.props.displayedComponents.cinema}
+                            label='Cinema name'
+                            value={this.props.sessionInfo.cinema.name}
+                        />
+                        <SessionDisplayInfoBoxField
+                            displayThis={!this.props.displayedComponents || this.props.displayedComponents.cinema}
+                            label='Cinema city'
+                            value={this.props.sessionInfo.cinema.city}
+                        />
+                        <SessionDisplayInfoBoxField
+                            displayThis={!this.props.displayedComponents || this.props.displayedComponents.cinemaRoom}
+                            label='Cinema room'
+                            value={this.props.sessionInfo.cinemaRoom.name}
+                        />
+                        <SessionDisplayInfoBoxField
+                            displayThis={!this.props.displayedComponents || this.props.displayedComponents.film}
+                            label='Film'
+                            value={this.props.sessionInfo.film.name}
+                        />
                     </div>
                     <div>
-                        <div className="list-box-inline-item"><span className="font-bold">Film :</span> {this.props.sessionInfo.filmName}</div>
-                        <div className="list-box-inline-item"><span className="font-bold">Time :</span> {new Date(this.props.sessionInfo.beginTime).toLocaleString()}</div>
+                        <SessionDisplayInfoBoxField
+                            displayThis={!this.props.displayedComponents || this.props.displayedComponents.beginTime}
+                            label='Time'
+                            value={new Date(this.props.sessionInfo.beginTime).toLocaleString()}
+                        />
                     </div>
                 </div>
                 <Button
-                    onClick={this.handleEditClick}
+                    onClick={() => this.props.callBackHandleSessionAction(this.props.sessionInfo.sessionId)}
+                    hidden={this.props.mode == 'reserve'}
                 >
-                    Edit
+                    {this.props.mode === 'reserve' ? 'Reserve' : 'Edit'}
                 </Button>
             </div>
         );

@@ -21,6 +21,12 @@ export default class Registration extends Component {
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
     }
 
+    parseJwt(token) {
+        let base64Url = token.split('.')[1];
+        let base64 = base64Url.replace('-', '+').replace('_', '/');
+        return JSON.parse(window.atob(base64));
+    }
+
     validateEmail(email) {
         const result = /^([\w-.]+)@((\[[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
         return result.test(String(email).toLowerCase());
@@ -78,18 +84,29 @@ export default class Registration extends Component {
             })
         }).then(response => response.json())
             .then(parsedJson => {
-                if (parsedJson.resultOk === true) {
+                if (parsedJson.resultOk === true){
+                    let role;
+                    let userId;
+                    for (let key in this.parseJwt(parsedJson.token)){
+                        if (key.indexOf('role') !== -1){
+                            role = this.parseJwt(parsedJson.token)[key];
+                            continue;
+                        }
+                        if (key.indexOf('nameidentifier') !== -1){
+                            userId = this.parseJwt(parsedJson.token)[key];
+                            continue;
+                        }
+                    }
                     localStorage.setItem('token', parsedJson.token);
                     localStorage.setItem('username', this.state.userName);
-                    localStorage.setItem('role', 'user');
+                    localStorage.setItem('role', role);
+                    localStorage.setItem('userId', userId);
                     this.props.callBackFromParent({
                         username: this.state.userName,
                         token: parsedJson.token,
-                        role: 'user'
+                        role: role,
+                        userId: userId
                     });
-                    this.setState({
-                        error:''
-                    })
                 }
                 else {
                     this.setState({

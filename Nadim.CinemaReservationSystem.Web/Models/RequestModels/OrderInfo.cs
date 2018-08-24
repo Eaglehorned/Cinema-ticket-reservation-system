@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nadim.CinemaReservationSystem.Web.Models
 {
-    public class User : UserRegistrationInfo
+    public class OrderInfo
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
-        public string Role { get; set; }
+        public List<int> SessionSeats { get; set; }
     }
 }

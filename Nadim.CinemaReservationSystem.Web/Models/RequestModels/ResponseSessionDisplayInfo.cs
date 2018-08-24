@@ -8,10 +8,9 @@ namespace Nadim.CinemaReservationSystem.Web.Models
     public class ResponseSessionDisplayInfo
     {
         public int SessionId { get; set; }
-        public string CinemaName { get; set; }
-        public string CinemaCity { get; set; }
-        public string CinemaRoomName { get; set; }
-        public string FilmName { get; set; }
+        public ResponseCinemaDisplayInfo Cinema { get; set; }
+        public ResponseCinemaRoomDisplayInfo CinemaRoom { get; set; }
+        public ResponseFilmDisplayInfo Film { get; set; }
         public DateTime BeginTime { get; set; }
     }
 }

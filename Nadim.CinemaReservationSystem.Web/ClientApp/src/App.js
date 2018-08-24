@@ -12,6 +12,8 @@ export default class App extends Component {
             username: localStorage.getItem('username'),
             token: localStorage.getItem('token'),
             role: localStorage.getItem('role'),
+            shownRole: localStorage.getItem('role'),
+            userId: localStorage.getItem('userId'),
             show: false,
             infoMessage:'',
             alertStyle:'info'
@@ -19,6 +21,12 @@ export default class App extends Component {
         this.setUserInfo = this.setUserInfo.bind(this);
         this.informWithMessage = this.informWithMessage.bind(this);
         this.renderAlertMessage = this.renderAlertMessage.bind(this);
+    }
+
+    setShownRole = (role) =>{
+        this.setState({
+            shownRole: role
+        })
     }
 
     informWithMessage(message){
@@ -48,7 +56,9 @@ export default class App extends Component {
         this.setState({
             username: userInfo.username,
             token: userInfo.token,
-            role: userInfo.role
+            role: userInfo.role,
+            userId: userInfo.userId,
+            shownRole: userInfo.role
         })
     }
 
@@ -86,11 +96,13 @@ export default class App extends Component {
                     username={this.state.username}
                     role={this.state.role}
                     callBackSetUserInfo={this.setUserInfo}
+                    callBackSetShownRole={this.setShownRole}
                 />
                 <Body
-                    role={this.state.role}
+                    role={this.state.shownRole}
                     token={this.state.token}
                     callBackInformWithMessage={this.informWithMessage}
+                    userId={this.state.userId}
                 />
             </React.Fragment>
         );

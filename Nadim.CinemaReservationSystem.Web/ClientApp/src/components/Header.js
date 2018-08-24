@@ -8,10 +8,9 @@ export default class Header extends Component{
     constructor(props){
         super(props);
         this.state={};
-        this.setUserInfo = this.setUserInfo.bind(this);
     }
 
-    setUserInfo(userInfo){
+    setUserInfo = (userInfo) =>{
         this.props.callBackSetUserInfo(userInfo);
     }
 
@@ -22,6 +21,7 @@ export default class Header extends Component{
                     username={this.props.username}
                     role={this.props.role}
                     callBackSetUserInfo={this.setUserInfo}
+                    callBackSetShownRole={this.props.callBackSetShownRole}
                 />
             </div>
         )

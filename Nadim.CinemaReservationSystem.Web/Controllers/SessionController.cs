@@ -31,11 +31,11 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             }
             return BadRequest(result);
         }
-        
+
         [HttpGet]
-        public ActionResult<GetResult<List<ResponseSessionDisplayInfo>>> GetSessionList()
+        public ActionResult<GetResult<List<ResponseSessionDisplayInfo>>> GetSessionList([FromQuery] SessionFilter filter)
         {
-            GetResult<List<ResponseSessionDisplayInfo>> result = sessionService.GetSessionList();
+            GetResult<List<ResponseSessionDisplayInfo>> result = sessionService.GetSessionList(filter);
 
             if (result.ResultOk)
             {
@@ -59,13 +59,39 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPut("{sessionId}")]
-        public ActionResult<Result> EditSession([FromBody] SessionInfo sessionInfo, int sessionId)
+        public ActionResult<Result> EditSession(int sessionId, [FromBody] SessionInfo sessionInfo)
         {
             Result result = sessionService.EditSession(sessionId, sessionInfo);
 
             if (result.ResultOk)
             {
                 return Ok();
+            }
+            return NotFound(result);
+        }
+
+        [Authorize]
+        [HttpPut("{sessionId}/seats/{sessionSeatId}")]
+        public ActionResult<Result> EditSessionSeat(int sessionId, int sessionSeatId, [FromBody]SessionSeatInfo sessionSeatInfo)
+        {
+            Result result = sessionService.EditSessionSeat(sessionId, sessionSeatId, sessionSeatInfo);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            return NotFound(result);
+        }
+
+        [Authorize]
+        [HttpGet("{sessionId}/seats")]
+        public ActionResult<GetResult<List<SeatReservationInfo>>> GetSessionSeats(int sessionId, [FromHeader(Name = "If-Modified-Since")]string lastTimeUpdated)
+        {
+            GetResult<List<SeatReservationInfo>> result = sessionService.GetSessionSeats(sessionId, lastTimeUpdated);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
             }
             return NotFound(result);
         }

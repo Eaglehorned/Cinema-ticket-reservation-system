@@ -9,18 +9,6 @@
     margin: 20px;
 }
 
-.content-container .seat-default, .seat-vip{
-    width: 30px;
-    height: 30px;
-    border: solid black;
-    margin: 5px;
-    display: inline-block;
-}
-
-.content-container .seat-vip{
-    background-color: aquamarine;
-}
-
 .content-container Button{
     margin-bottom: 5px;
     margin-right: 10px;
@@ -75,4 +63,28 @@
 
 .buttons-for-list{
     margin-top: 5px;
+}
+
+.content-container .seat-vip-chosen{
+    background-color: #0794d4;
+}
+
+.content-container .seat-default-chosen{
+    background-color:  #e94584;
+}
+
+.content-container .seat-booked{
+    background-color: #adadad;
+}
+
+.content-container .seat-default, .seat-vip, .seat-vip-chosen, .seat-default-chosen, .seat-booked{
+    width: 30px;
+    height: 30px;
+    border: solid black;
+    margin: 5px;
+    display: inline-block;
+}
+
+.content-container .seat-vip{
+    background-color: aquamarine;
 }

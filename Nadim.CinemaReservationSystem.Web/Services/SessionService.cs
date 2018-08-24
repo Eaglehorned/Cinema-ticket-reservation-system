@@ -36,6 +36,16 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return dbContext.Sessions.Any(s => s.SessionId == sessionId);
         }
 
+        private bool SessionSeatExist(int sessionSeatId)
+        {
+            return dbContext.SessionSeats.Any(ss => ss.SessionSeatId == sessionSeatId);
+        }
+
+        private bool SessionSeatIsBooked(int sessionSeatId)
+        {
+            return dbContext.SessionSeats.FirstOrDefault(ss => ss.SessionSeatId == sessionSeatId).Booked;
+        }
+
         private bool ValidateData(SessionInfo session) {
             return dbContext.CinemaRooms.Any(s => s.CinemaRoomId == session.CinemaRoomId)
                 && dbContext.Films.Any(f => f.FilmId == f.FilmId
@@ -141,6 +151,66 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 && session.BeginTime.Date <= f.EndDate.Date);
         }
 
+        private void ClearSessionSeats(int sessionId)
+        {
+            var sessionSeats = dbContext.SessionSeats
+                .Where(ss => ss.Order == null && ss.Booked && ss.SessionId == sessionId);
+            foreach (var seat in sessionSeats)
+            {
+                if (seat.LastTimeUpdated.AddMinutes(10) < DateTime.Now)
+                {
+                    seat.Booked = false;
+                    seat.LastTimeUpdated = DateTime.Now;
+                }
+            }
+            dbContext.SaveChanges();
+        }
+
+        public Result EditSessionSeat(int sessionId, int sessionSeatId, SessionSeatInfo seatInfo)
+        {
+            ClearSessionSeats(sessionId);
+
+            if (!SessionExist(sessionId))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "Such session does not exist."
+                };
+            }
+
+            if (!SessionSeatExist(sessionSeatId))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "Such session seat does not exist."
+                };
+            }
+
+            if (seatInfo.Booked && SessionSeatIsBooked(sessionSeatId))
+            {
+                return new Result
+                {
+                    ResultOk = false,
+                    Details = "This seat is already booked."
+                };
+            }
+
+            SessionSeat sessionSeat = dbContext.SessionSeats
+                .FirstOrDefault(ss => ss.SessionSeatId == sessionSeatId);
+
+            sessionSeat.Booked = seatInfo.Booked;
+            sessionSeat.LastTimeUpdated = seatInfo.LastTimeUpdated;
+
+            dbContext.SaveChanges();
+
+            return new Result
+            {
+                ResultOk = true,
+            };
+        }
+
         public ResultCreated CreateSession(SessionInfo sessionInfo)
         {
             if (!CinemaRoomExists(sessionInfo.CinemaRoomId))
@@ -203,6 +273,15 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     SeatTypeId = stp.SeatTypeId
                 }).ToList();
 
+            session.SessionSeats = dbContext.Seats
+                .Where(s => s.CinemaRoomId == sessionInfo.CinemaRoomId)
+                .Select(s => new SessionSeat
+                {
+                    SeatId = s.SeatId,
+                    Booked = false,
+                    LastTimeUpdated = DateTime.Now
+                }).ToList();
+
             dbContext.Sessions.Add(session);
 
             dbContext.SaveChanges();
@@ -214,19 +293,33 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public GetResult<List<ResponseSessionDisplayInfo>> GetSessionList()
+        //TODO improve
+        public GetResult<List<ResponseSessionDisplayInfo>> GetSessionList(SessionFilter filter)
         {
+            var query = dbContext.Sessions
+                .Where(s => filter.FilmId != null ? s.FilmId == filter.FilmId : true)
+                .Where(s => filter.StartDate != null ? filter.StartDate < s.BeginTime : true)
+                .Where(s => filter.EndDate != null ? s.BeginTime < filter.EndDate : true);
+
             return new GetResult<List<ResponseSessionDisplayInfo>>
             {
                 ResultOk = true,
-                RequestedData = dbContext.Sessions
-                    .Select(s => new ResponseSessionDisplayInfo
+                RequestedData = query.Select(s => new ResponseSessionDisplayInfo
                     {
                         SessionId = s.SessionId,
-                        FilmName = s.Film.Name,
-                        CinemaRoomName = s.CinemaRoom.Name,
-                        CinemaName = s.CinemaRoom.Cinema.Name,
-                        CinemaCity = s.CinemaRoom.Cinema.City,
+                        Film = new ResponseFilmDisplayInfo {
+                            FilmId = s.FilmId,
+                            Name = s.Film.Name
+                        },
+                        Cinema = new ResponseCinemaDisplayInfo {
+                            Name = s.CinemaRoom.Cinema.Name,
+                            City = s.CinemaRoom.Cinema.City,
+                            CinemaId = s.CinemaRoom.Cinema.CinemaId
+                        },
+                        CinemaRoom = new ResponseCinemaRoomDisplayInfo {
+                            Name = s.CinemaRoom.Name,
+                            CinemaRoomId = s.CinemaRoomId
+                        },
                         BeginTime = s.BeginTime
                     }).ToList()
             };
@@ -280,6 +373,46 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
+        public GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId, string lastTimeUpdatedString)
+        {
+            ClearSessionSeats(sessionId);
+
+            if (String.IsNullOrEmpty(lastTimeUpdatedString))
+            {
+                return new GetResult<List<SeatReservationInfo>>
+                {
+                    ResultOk = true,
+                    RequestedData = dbContext.SessionSeats
+                        .Where(ss => ss.SessionId == sessionId)
+                        .Select(ss => new SeatReservationInfo
+                        {
+                            Row = ss.Seat.Row,
+                            Column = ss.Seat.Column,
+                            Type = ss.Seat.Type.TypeName,
+                            Booked = ss.Booked,
+                            SessionSeatId = ss.SessionSeatId
+                        }).ToList()
+                };
+            }
+
+            DateTime lastTimeUpdated = Utils.FromUTCStringToDateTime(lastTimeUpdatedString);
+
+            return new GetResult<List<SeatReservationInfo>>
+            {
+                ResultOk = true,
+                RequestedData = dbContext.SessionSeats
+                    .Where(ss => ss.SessionId == sessionId && lastTimeUpdated < ss.LastTimeUpdated)
+                    .Select(ss => new SeatReservationInfo
+                    {
+                        Row = ss.Seat.Row,
+                        Column = ss.Seat.Column,
+                        Type = ss.Seat.Type.TypeName,
+                        Booked = ss.Booked,
+                        SessionSeatId = ss.SessionSeatId
+                    }).ToList()
+            };
+        }
+
         public Result EditSession(int sessionId, SessionInfo sessionInfo)
         {
             if (!SessionExist(sessionId))
@@ -328,15 +461,26 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             Session session = dbContext.Sessions
                 .Include( s => s.SessionSeatTypePrices)
+                .Include ( s=> s.SessionSeats)
                 .FirstOrDefault(s => s.SessionId == sessionId);
 
             session.FilmId = sessionInfo.FilmId;
             session.CinemaRoomId = sessionInfo.CinemaRoomId;
             session.BeginTime = sessionInfo.BeginTime;
+
             session.SessionSeatTypePrices = sessionInfo.SessionSeatTypePrices
                 .Select( stp => new SessionSeatTypePrice {
                     Price = stp.Price,
                     SeatTypeId = stp.SeatTypeId
+                }).ToList();
+
+            session.SessionSeats = dbContext.Seats
+                .Where(s => s.CinemaRoomId == sessionInfo.CinemaRoomId)
+                .Select(s => new SessionSeat
+                {
+                    SeatId = s.SeatId,
+                    Booked = false,
+                    LastTimeUpdated = DateTime.Now
                 }).ToList();
 
             dbContext.SaveChanges();
