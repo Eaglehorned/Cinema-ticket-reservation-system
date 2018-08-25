@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nadim.CinemaReservationSystem.Web.Contracts;
 using Nadim.CinemaReservationSystem.Web.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Nadim.CinemaReservationSystem.Web.Controllers
 {

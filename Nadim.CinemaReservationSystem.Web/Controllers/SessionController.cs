@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Nadim.CinemaReservationSystem.Web.Contracts;
 using Nadim.CinemaReservationSystem.Web.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 
 namespace Nadim.CinemaReservationSystem.Web.Controllers
 {
@@ -14,12 +10,10 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
     public class SessionController : Controller
     {
         private readonly ISessionService sessionService;
-        private readonly ILogger<CinemaController> logger;
 
-        public SessionController(ISessionService sessionService, ILogger<CinemaController> logger)
+        public SessionController(ISessionService sessionService)
         {
             this.sessionService = sessionService;
-            this.logger = logger;
         }
 
         [Authorize(Roles = "admin")]

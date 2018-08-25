@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
@@ -68,8 +67,8 @@ namespace Nadim.CinemaReservationSystem.Web
             };
 
             loggerFactory = loggerFactory.WithFilter(filterLoggerSettings);
-
             loggerFactory.AddFile(Configuration["Logging:LogFile"]);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
