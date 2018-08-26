@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Web.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace Nadim.CinemaReservationSystem.Web
 {
@@ -78,6 +81,18 @@ namespace Nadim.CinemaReservationSystem.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
+            app.UseExceptionHandler(
+                options =>
+                {
+                    options.Run(
+                        async context =>
+                        {
+                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            await context.Response.WriteAsync("Server side error.");
+                        });
+                }
+            );
 
             app.UseAuthentication();
 
