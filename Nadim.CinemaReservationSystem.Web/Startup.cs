@@ -12,8 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Web.Http;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Nadim.CinemaReservationSystem.Web
 {
@@ -89,7 +89,13 @@ namespace Nadim.CinemaReservationSystem.Web
                         {
                             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                             context.Response.ContentType = "application/json";
-                            await context.Response.WriteAsync("Server side error.");
+                            var settings = new JsonSerializerSettings();
+                            settings.ContractResolver = new Nadim.CinemaReservationSystem.Web.Models.LowercaseContractResolver();
+                            var json = JsonConvert.SerializeObject(new  Result{
+                                ResultOk = false,
+                                Details = "Server side error."
+                            }, Formatting.Indented, settings);
+                            await context.Response.WriteAsync(json);
                         });
                 }
             );
