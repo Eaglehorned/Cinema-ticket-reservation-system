@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import SeatsScheme from '../Cinema/SeatsScheme';
 import ChosenSeatInfoBox from './ChosenSeatInfoBox';
 import { Button } from 'react-bootstrap';

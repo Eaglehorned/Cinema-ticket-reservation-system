@@ -6,7 +6,7 @@
     padding: 5px;
     border-left: groove 1px black;
     margin-left: calc(100% - 400px); 
-    background-color: rgb(235, 254, 255);
+    background-color: rgba(235, 235, 235, 0.829);
     position: relative;
     height: 183px;
     width: 400px;

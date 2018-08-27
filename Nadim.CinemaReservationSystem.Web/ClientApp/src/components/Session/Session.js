@@ -15,11 +15,7 @@ export default class Session extends Component{
 
         this.getSessionList();
     }
-
-    informWithMessage = (message) => {
-        this.props.callBackInformWithMessage(message);
-    }
-
+    
     cancelCurrentOperation = () =>{
         this.setState({
             chosenOperation: ''
@@ -38,6 +34,11 @@ export default class Session extends Component{
         .then(response => {
             if (response.ok){
                 return response.json();
+            }
+            if (response.status === 500){
+                return response.json().then((err) => {
+                    throw new Error(`${err.details}`);
+                });
             }
             if (response.status === 400){
                 return response.json().then((err) => {
@@ -58,7 +59,7 @@ export default class Session extends Component{
                 sessionList: parsedJson.requestedData,
             });
         })
-        .catch(error => this.informWithMessage(
+        .catch(error => this.props.callBackInformWithMessage(
             { 
                 text: error.message,
                 isError: true
@@ -112,10 +113,10 @@ export default class Session extends Component{
                     sessionId: parseInt(response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length), 10)
                 })
             });
-            this.informWithMessage('Session created.');
+            this.props.callBackInformWithMessage('Session created.');
         })
         .catch(error => {
-            this.informWithMessage(
+            this.props.callBackInformWithMessage(
             { 
                 text: error.message,
                 isError: true
@@ -163,7 +164,7 @@ export default class Session extends Component{
             this.setState({
                 chosenOperation: ''
             });
-            this.informWithMessage({ 
+            this.props.callBackInformWithMessage({ 
                 text: error.message,
                 isError: true
             });
@@ -217,10 +218,10 @@ export default class Session extends Component{
             this.setState({
                 sessionList: tempSessionList
             });
-            this.informWithMessage('Session edited.');
+            this.props.callBackInformWithMessage('Session edited.');
         })
         .catch(error => {
-            this.informWithMessage(
+            this.props.callBackInformWithMessage(
             { 
                 text: error.message,
                 isError: true
@@ -258,7 +259,7 @@ export default class Session extends Component{
             case 'createSession':
                 return( 
                     <FormSession
-                        callBackInformWithMessage={this.informWithMessage}
+                        callBackInformWithMessage={this.props.callBackInformWithMessage}
                         token={this.props.token}
                         callBackReceiveSessionInfo={this.createSession}
                         callBackCancel={this.cancelCurrentOperation}
@@ -273,7 +274,7 @@ export default class Session extends Component{
             case 'editSession': 
                 return(
                     <FormSession
-                        callBackInformWithMessage={this.informWithMessage}
+                        callBackInformWithMessage={this.props.callBackInformWithMessage}
                         sessionInfo={this.state.chosenSessionInfo}
                         token={this.props.token}
                         callBackReceiveSessionInfo={this.editSession}

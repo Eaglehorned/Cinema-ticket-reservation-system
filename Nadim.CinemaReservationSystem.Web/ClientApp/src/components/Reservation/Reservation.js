@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import SearchBar from './SearchBar';
-import SessionDisplayInfoBox from '../Session/SessionDisplayInfoBox';
 import ReserveTicket from './ReserveTicket';
 import DisplaySessions from './DisplaySessions';
 import '../../styles/Reservation.css';

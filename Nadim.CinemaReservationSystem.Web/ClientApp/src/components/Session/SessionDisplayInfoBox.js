@@ -46,7 +46,7 @@ export default class SessionDisplayInfoBox extends Component{
                 </div>
                 <Button
                     onClick={() => this.props.callBackHandleSessionAction(this.props.sessionInfo.sessionId)}
-                    hidden={this.props.mode == 'reserve'}
+                    hidden={this.props.mode === 'reserve'}
                 >
                     {this.props.mode === 'reserve' ? 'Reserve' : 'Edit'}
                 </Button>

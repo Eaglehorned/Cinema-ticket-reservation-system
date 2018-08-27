@@ -21,8 +21,21 @@ export default class Body extends Component{
                 })
             }
             else{
-                this.setState({chosenOperation: ''});
+                this.setState({chosenOperation: 'cinema'});
             }
+        }
+    }
+
+    componentDidMount(){
+        if (this.props.role !== 'admin'){
+            this.setState({
+                chosenOperation: 'reservation'
+            })
+        }
+        else{
+            this.setState({
+                chosenOperation: 'cinema'
+            })
         }
     }
 

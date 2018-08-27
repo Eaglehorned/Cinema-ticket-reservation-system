@@ -1,29 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Authentication from './Authentication/Authentication';
 import '../styles/Header.css'
 
-export default class Header extends Component{
-    displayName = Header.displayName;
+const Header = (props) =>{
 
-    constructor(props){
-        super(props);
-        this.state={};
-    }
-
-    setUserInfo = (userInfo) =>{
-        this.props.callBackSetUserInfo(userInfo);
-    }
-
-    render(){
-        return(
-            <div className="header">
-                <Authentication
-                    username={this.props.username}
-                    role={this.props.role}
-                    callBackSetUserInfo={this.setUserInfo}
-                    callBackSetShownRole={this.props.callBackSetShownRole}
-                />
-            </div>
-        )
-    }
+    return(
+        <div className="header">
+            <Authentication
+                username={props.username}
+                role={props.role}
+                callBackSetUserInfo={(userInfo) => props.callBackSetUserInfo(userInfo)}
+                callBackSetShownRole={props.callBackSetShownRole}
+            />
+        </div>
+    );
 }
+
+export default Header;

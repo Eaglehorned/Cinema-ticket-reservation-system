@@ -18,9 +18,6 @@ export default class App extends Component {
             infoMessage:'',
             alertStyle:'info'
         }
-        this.setUserInfo = this.setUserInfo.bind(this);
-        this.informWithMessage = this.informWithMessage.bind(this);
-        this.renderAlertMessage = this.renderAlertMessage.bind(this);
     }
 
     setShownRole = (role) =>{
@@ -29,7 +26,7 @@ export default class App extends Component {
         })
     }
 
-    informWithMessage(message){
+    informWithMessage = (message) =>{
         if (message.isError){
             this.setState({
                 show: true,
@@ -52,7 +49,7 @@ export default class App extends Component {
             }),4000);
     }
 
-    setUserInfo(userInfo){
+    setUserInfo = (userInfo) =>{
         this.setState({
             username: userInfo.username,
             token: userInfo.token,
@@ -62,7 +59,7 @@ export default class App extends Component {
         })
     }
 
-    renderAlertMessage(){
+    renderAlertMessage = () =>{
         return(
             <Alert
                 bsStyle={`${this.state.alertStyle} alert-bottom`}

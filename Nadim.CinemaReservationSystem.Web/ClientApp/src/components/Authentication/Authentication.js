@@ -4,6 +4,7 @@ import Login from './Login';
 import Registration from './Registration';
 import Modal from 'react-modal';
 import '../../styles/Authentication.css';
+import AuthenticationActions from '../../Actions/AuthenticationActions';
 
 export default class Authentication extends Component {
     constructor(props) {
@@ -15,28 +16,21 @@ export default class Authentication extends Component {
             role: this.props.role,
             userId: this.props.userId
         }
-        this.openModal = this.openModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
-        this.handleRegistration = this.handleRegistration.bind(this);
-        this.handleLogin = this.handleLogin.bind(this);
-        this.renderAuthenticationContent = this.renderAuthenticationContent.bind(this);
-        this.renderLogoutContent = this.renderLogoutContent.bind(this);
-        this.handleLogout = this.handleLogout.bind(this);
     }
 
-    openModal() {
+    openModal = () =>{
         this.setState({
             modalIsOpen: true,
         })
     }
 
-    closeModal() {
+    closeModal = () =>{
         this.setState({
             modalIsOpen: false,
         })
     }
 
-    handleRegistration = (authenticationData) => {
+    setUserInfo = (authenticationData) =>{
         this.setState({
             username: authenticationData.username,
             token: authenticationData.token,
@@ -44,41 +38,26 @@ export default class Authentication extends Component {
             userId: authenticationData.userId,
             modalIsOpen: false
         })
-        this.props.callBackSetUserInfo({
-            username: this.state.username,
-            token: this.state.token,
-            role: this.state.role,
-            userId: this.state.userId
-        })
-    }
 
-    handleLogin = (authenticationData) => {
-        this.setState({
-            username: authenticationData.username,
-            token: authenticationData.token,
-            role: authenticationData.role,
-            userId: authenticationData.userId
-        })
+        localStorage.setItem('username', authenticationData.username);
+        localStorage.setItem('token', authenticationData.token);
+        localStorage.setItem('role', authenticationData.role);
+        localStorage.setItem('userId', authenticationData.userId);
+
         this.props.callBackSetUserInfo({
             username: authenticationData.username,
             token: authenticationData.token,
             role: authenticationData.role,
             userId: authenticationData.userId
-        })
+        })  
     }
 
-    handleLogout(){
-        this.setState({
-            username: '',
-            token: '',
-            role: '',
-            userId: ''
-        })
-        localStorage.setItem('username', '');
-        localStorage.setItem('token', '');
-        localStorage.setItem('role', '');
-        localStorage.setItem('userId', '');
-        this.props.callBackSetUserInfo({
+    handleAuthorization = (authenticationData) => {
+        this.setUserInfo(authenticationData)
+    }
+
+    handleLogout = () =>{
+        this.setUserInfo({
             username: '',
             token: '',
             role: '',
@@ -86,12 +65,12 @@ export default class Authentication extends Component {
         })
     }
 
-    renderAuthenticationContent() {
+    renderAuthenticationContent = () =>{
         return(
             <React.Fragment>
                 <fieldset className="login">
                     <Login 
-                        callBackFromParent={this.handleLogin}
+                        callBackFromParent={this.handleAuthorization}
                     />
                     <Button
                         bsStyle="primary"
@@ -107,13 +86,13 @@ export default class Authentication extends Component {
                     ariaHideApp={false}
                     className="authentication-Modal"
                 >
-                    <Registration callBackFromParent={this.handleRegistration}/>
+                    <Registration callBackFromParent={this.handleAuthorization}/>
                 </Modal>
             </React.Fragment>
         );
     }
 
-    renderLogoutContent() {
+    renderLogoutContent = () =>{
         return(
             <div className="login">
                 <h3>Username: {this.state.username}</h3>
