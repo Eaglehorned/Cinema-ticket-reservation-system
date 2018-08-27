@@ -168,7 +168,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         private IEnumerable<Session> FormFilteredSessionQuery(SessionFilter filter)
         {
-            IEnumerable<Session> query = dbContext.Sessions
+            IQueryable<Session> query = dbContext.Sessions
                 .Include(s => s.Film)
                 .Include(s => s.CinemaRoom)
                 .Include(s => s.CinemaRoom.Cinema);

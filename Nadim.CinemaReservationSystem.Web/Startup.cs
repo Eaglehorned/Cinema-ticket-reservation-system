@@ -79,26 +79,26 @@ namespace Nadim.CinemaReservationSystem.Web
             else
             {
                 app.UseHsts();
+                app.UseExceptionHandler(
+                    options =>
+                    {
+                        options.Run(
+                            async context =>
+                            {
+                                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                                context.Response.ContentType = "application/json";
+                                var settings = new JsonSerializerSettings();
+                                settings.ContractResolver = new Nadim.CinemaReservationSystem.Web.Models.LowercaseContractResolver();
+                                var json = JsonConvert.SerializeObject(new Result
+                                {
+                                    ResultOk = false,
+                                    Details = "Server side error."
+                                }, Formatting.Indented, settings);
+                                await context.Response.WriteAsync(json);
+                            });
+                    }
+                );
             }
-
-            app.UseExceptionHandler(
-                options =>
-                {
-                    options.Run(
-                        async context =>
-                        {
-                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            context.Response.ContentType = "application/json";
-                            var settings = new JsonSerializerSettings();
-                            settings.ContractResolver = new Nadim.CinemaReservationSystem.Web.Models.LowercaseContractResolver();
-                            var json = JsonConvert.SerializeObject(new  Result{
-                                ResultOk = false,
-                                Details = "Server side error."
-                            }, Formatting.Indented, settings);
-                            await context.Response.WriteAsync(json);
-                        });
-                }
-            );
 
             app.UseAuthentication();
 

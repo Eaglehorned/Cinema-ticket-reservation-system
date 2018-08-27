@@ -32,7 +32,6 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         [HttpGet]
         public ActionResult<GetResult<List<ResponseSessionDisplayInfo>>> GetSessionList([FromQuery] SessionFilter filter)
         {
-            throw new System.Exception("test");
             GetResult<List<ResponseSessionDisplayInfo>> result = sessionService.GetSessionList(filter);
 
             if (result.ResultOk)
