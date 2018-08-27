@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +10,10 @@ using Nadim.CinemaReservationSystem.Web.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using System.Net;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Nadim.CinemaReservationSystem.Web
 {
@@ -43,11 +46,11 @@ namespace Nadim.CinemaReservationSystem.Web
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddTransient<ISessionService, SessionService>();
-            services.AddTransient<ICinemaService, CinemaService>();
-            services.AddTransient<IFilmService, FilmService>();
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
-            services.AddTransient<IOrderService, OrderService>();
+            services.AddScoped<ISessionService, SessionService>();
+            services.AddScoped<ICinemaService, CinemaService>();
+            services.AddScoped<IFilmService, FilmService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddDbContext<Nadim.CinemaReservationSystem.Web.Models.CinemaReservationSystemContext>(options => options.UseSqlServer(Configuration["ConnectionString"]));
 
             // In production, the React files will be served from this directory
@@ -58,16 +61,43 @@ namespace Nadim.CinemaReservationSystem.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            var filterLoggerSettings = new FilterLoggerSettings
+            {
+                {"Microsoft", LogLevel.Error },
+                {"System", LogLevel.Error },
+            };
+
+            loggerFactory = loggerFactory.WithFilter(filterLoggerSettings);
+            loggerFactory.AddFile(Configuration["Logging:LogFile"]);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
+                app.UseExceptionHandler(
+                    options =>
+                    {
+                        options.Run(
+                            async context =>
+                            {
+                                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                                context.Response.ContentType = "application/json";
+                                var settings = new JsonSerializerSettings();
+                                settings.ContractResolver = new Nadim.CinemaReservationSystem.Web.Models.LowercaseContractResolver();
+                                var json = JsonConvert.SerializeObject(new Result
+                                {
+                                    ResultOk = false,
+                                    Details = "Server side error."
+                                }, Formatting.Indented, settings);
+                                await context.Response.WriteAsync(json);
+                            });
+                    }
+                );
             }
 
             app.UseAuthentication();

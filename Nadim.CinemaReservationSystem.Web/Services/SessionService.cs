@@ -166,6 +166,29 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             dbContext.SaveChanges();
         }
 
+        private IQueryable<Session> FormFilteredSessionQuery(SessionFilter filter)
+        {
+            IQueryable<Session> query = dbContext.Sessions
+                .Include(s => s.Film)
+                .Include(s => s.CinemaRoom)
+                .Include(s => s.CinemaRoom.Cinema);
+
+            if (filter.FilmId != null)
+            {
+                query = query.Where(s => s.FilmId == filter.FilmId);
+            }
+            if (filter.StartDate != null)
+            {
+                query = query.Where(s => filter.StartDate < s.BeginTime);
+            }
+            if (filter.EndDate != null)
+            {
+                query = query.Where(s => s.BeginTime < filter.EndDate);
+            }
+
+            return query;
+        }
+
         public Result EditSessionSeat(int sessionId, int sessionSeatId, SessionSeatInfo seatInfo)
         {
             ClearSessionSeats(sessionId);
@@ -293,35 +316,35 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        //TODO improve
         public GetResult<List<ResponseSessionDisplayInfo>> GetSessionList(SessionFilter filter)
         {
-            var query = dbContext.Sessions
-                .Where(s => filter.FilmId != null ? s.FilmId == filter.FilmId : true)
-                .Where(s => filter.StartDate != null ? filter.StartDate < s.BeginTime : true)
-                .Where(s => filter.EndDate != null ? s.BeginTime < filter.EndDate : true);
+            var query = FormFilteredSessionQuery(filter);
 
             return new GetResult<List<ResponseSessionDisplayInfo>>
             {
                 ResultOk = true,
-                RequestedData = query.Select(s => new ResponseSessionDisplayInfo
+                RequestedData = query
+                .Select(s => new ResponseSessionDisplayInfo
+                {
+                    SessionId = s.SessionId,
+                    Film = new ResponseFilmDisplayInfo
                     {
-                        SessionId = s.SessionId,
-                        Film = new ResponseFilmDisplayInfo {
-                            FilmId = s.FilmId,
-                            Name = s.Film.Name
-                        },
-                        Cinema = new ResponseCinemaDisplayInfo {
-                            Name = s.CinemaRoom.Cinema.Name,
-                            City = s.CinemaRoom.Cinema.City,
-                            CinemaId = s.CinemaRoom.Cinema.CinemaId
-                        },
-                        CinemaRoom = new ResponseCinemaRoomDisplayInfo {
-                            Name = s.CinemaRoom.Name,
-                            CinemaRoomId = s.CinemaRoomId
-                        },
-                        BeginTime = s.BeginTime
-                    }).ToList()
+                        FilmId = s.FilmId,
+                        Name = s.Film.Name
+                    },
+                    Cinema = new ResponseCinemaDisplayInfo
+                    {
+                        Name = s.CinemaRoom.Cinema.Name,
+                        City = s.CinemaRoom.Cinema.City,
+                        CinemaId = s.CinemaRoom.Cinema.CinemaId
+                    },
+                    CinemaRoom = new ResponseCinemaRoomDisplayInfo
+                    {
+                        Name = s.CinemaRoom.Name,
+                        CinemaRoomId = s.CinemaRoomId
+                    },
+                    BeginTime = s.BeginTime
+                }).ToList()
             };
         }
 
