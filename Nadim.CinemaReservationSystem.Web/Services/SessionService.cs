@@ -175,15 +175,15 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             if (filter.FilmId != null)
             {
-                query.Where(s => s.FilmId == filter.FilmId);
+                query = query.Where(s => s.FilmId == filter.FilmId);
             }
             if (filter.StartDate != null)
             {
-                query.Where(s => filter.StartDate < s.BeginTime);
+                query = query.Where(s => filter.StartDate < s.BeginTime);
             }
             if (filter.EndDate != null)
             {
-                query.Where(s => s.BeginTime < filter.EndDate);
+                query = query.Where(s => s.BeginTime < filter.EndDate);
             }
 
             return query;

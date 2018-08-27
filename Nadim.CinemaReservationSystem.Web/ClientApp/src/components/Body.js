@@ -15,7 +15,14 @@ export default class Body extends Component{
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.role !== this.props.role){
-            this.setState({chosenOperation: ''});
+            if (nextProps.role !== 'admin'){
+                this.setState({
+                    chosenOperation: 'reservation'
+                })
+            }
+            else{
+                this.setState({chosenOperation: ''});
+            }
         }
     }
 
@@ -105,22 +112,6 @@ export default class Body extends Component{
         );
     }
 
-    renderUserNav = () =>{
-        return(
-            <Tabs
-                justified
-                activeKey={this.state.chosenOperation}
-                onSelect={key => this.handleSelectNav(key)}
-                id="select_operation"
-            >
-                <Tab 
-                    eventKey={'reservation'}
-                    title="Reservation"
-                />
-            </Tabs>
-        );
-    }
-
     renderNav = () =>{
         let content = this.renderContent();
         return(
@@ -128,7 +119,7 @@ export default class Body extends Component{
             {
                 this.props.role === 'admin'
                 ? this.renderAdminNav()
-                : this.renderUserNav()
+                : ''
             }
             {content}
             </React.Fragment>
