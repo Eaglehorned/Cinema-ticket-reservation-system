@@ -46,11 +46,11 @@ namespace Nadim.CinemaReservationSystem.Web
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddTransient<ISessionService, SessionService>();
-            services.AddTransient<ICinemaService, CinemaService>();
-            services.AddTransient<IFilmService, FilmService>();
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
-            services.AddTransient<IOrderService, OrderService>();
+            services.AddScoped<ISessionService, SessionService>();
+            services.AddScoped<ICinemaService, CinemaService>();
+            services.AddScoped<IFilmService, FilmService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddDbContext<Nadim.CinemaReservationSystem.Web.Models.CinemaReservationSystemContext>(options => options.UseSqlServer(Configuration["ConnectionString"]));
 
             // In production, the React files will be served from this directory
