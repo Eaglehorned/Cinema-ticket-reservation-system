@@ -166,7 +166,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             dbContext.SaveChanges();
         }
 
-        private IEnumerable<Session> FormFilteredSessionQuery(SessionFilter filter)
+        private IQueryable<Session> FormFilteredSessionQuery(SessionFilter filter)
         {
             IQueryable<Session> query = dbContext.Sessions
                 .Include(s => s.Film)
