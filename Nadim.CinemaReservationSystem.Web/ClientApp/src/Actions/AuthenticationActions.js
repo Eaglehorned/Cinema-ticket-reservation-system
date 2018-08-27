@@ -22,7 +22,6 @@ export default class AuthenticationActions{
     }
 
     static formUserInfo = (userInfo) =>{
-        console.log(userInfo);
         let role = AuthenticationActions.getParameterFromJwt(
             'role', 
             AuthenticationActions.parseJwt(userInfo.token)
@@ -54,12 +53,7 @@ export default class AuthenticationActions{
     static registerUser = (userInfo) =>{
         return AuthenticationService.registerUser(userInfo)
         .then(AuthenticationActions.handleRequstError)
-        //here dont work
-        .then(parsedJson =>
-            AuthenticationService.completeUserInfoWithoutUsername(
-            parsedJson,
-            userInfo.username
-        ))
+        .then(parsedJson => AuthenticationActions.completeUserInfoWithoutUsername(parsedJson, userInfo.userName))
         .then(AuthenticationActions.formUserInfo);
     }
 
@@ -72,5 +66,13 @@ export default class AuthenticationActions{
                 throw new Error(error.details);
             });
         }
+    }
+
+    static allowRegisterClick = (email, password, lastName, firstName) =>{
+        return AuthenticationActions.validateEmail(email) && password && lastName && firstName;
+    }
+
+    static allowLoginClick = (email, password) =>{
+        return AuthenticationActions.validateEmail(email) && password;
     }
 }

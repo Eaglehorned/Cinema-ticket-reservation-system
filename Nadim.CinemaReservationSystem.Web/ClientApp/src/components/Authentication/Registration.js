@@ -17,12 +17,6 @@ export default class Registration extends Component {
         }
     }
 
-    parseJwt = (token) =>{
-        let base64Url = token.split('.')[1];
-        let base64 = base64Url.replace('-', '+').replace('_', '/');
-        return JSON.parse(window.atob(base64));
-    }
-
     validateEmail = (email) =>{
         const result = /^([\w-.]+)@((\[[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
         return result.test(String(email).toLowerCase());
@@ -64,20 +58,6 @@ export default class Registration extends Component {
     }
 
     handleRegisterClick = () =>{
-        // fetch('api/Authentication/Register', {
-        //     method: 'POST',
-        //     headers:{
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //         Email: this.state.email,
-        //         Password: this.state.password,
-        //         FirstName: this.state.firstName,
-        //         LastName: this.state.lastName,
-        //         Username: this.state.userName,
-        //     })
-        // })
         AuthenticationActions.registerUser({
             email: this.state.email,
             password: this.state.password,
@@ -88,44 +68,11 @@ export default class Registration extends Component {
         .then(responseUserInfo =>
             this.props.callBackFromParent(responseUserInfo)
         )
-        // .catch(error =>{
-        //     this.setState({
-        //         error: error.message,
-        //     })
-        // });
-        
-        // .then(response => response.json())
-        // .then(parsedJson => {
-        //     if (parsedJson.resultOk === true){
-        //         let role;
-        //         let userId;
-        //         for (let key in this.parseJwt(parsedJson.token)){
-        //             if (key.indexOf('role') !== -1){
-        //                 role = this.parseJwt(parsedJson.token)[key];
-        //                 continue;
-        //             }
-        //             if (key.indexOf('nameidentifier') !== -1){
-        //                 userId = this.parseJwt(parsedJson.token)[key];
-        //                 continue;
-        //             }
-        //         }
-        //         localStorage.setItem('token', parsedJson.token);
-        //         localStorage.setItem('username', this.state.userName);
-        //         localStorage.setItem('role', role);
-        //         localStorage.setItem('userId', userId);
-        //         this.props.callBackFromParent({
-        //             username: this.state.userName,
-        //             token: parsedJson.token,
-        //             role: role,
-        //             userId: userId
-        //         });
-        //     }
-        //     else {
-        //         this.setState({
-        //             error: parsedJson.details,
-        //         })
-        //     }
-        // })
+        .catch(error =>{
+            this.setState({
+                error: error.message,
+            })
+        });
     }
 
     render(){
@@ -160,7 +107,12 @@ export default class Registration extends Component {
                 <Button
                     bsStyle="primary"
                     onClick={this.handleRegisterClick} 
-                    disabled={!(this.validateEmail(this.state.email) && this.state.password && this.state.lastName && this.state.firstName)}
+                    disabled={!AuthenticationActions.allowRegisterClick(
+                        this.state.email,
+                        this.state.password,
+                        this.state.lastName,
+                        this.state.firstName
+                    )}
                 >
                     Register
                 </Button>

@@ -15,11 +15,6 @@ export default class Login extends Component {
         }
     }
 
-    validateEmail(email) {
-        const result = /^([\w-.]+)@((\[[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-        return result.test(String(email).toLowerCase());
-    }
-
     handleEmailChange = (event) =>{
         this.setState({
             email: event.target.value,
@@ -77,7 +72,7 @@ export default class Login extends Component {
                     bsStyle="primary"
                     bsSize="small"
                     onClick={this.handleLoginClick} 
-                    disabled={!(this.validateEmail(this.state.email) && this.state.password)}
+                    disabled={!AuthenticationActions.allowLoginClick(this.state.email, this.state.password)}
                 >
                     Log in
                 </Button>

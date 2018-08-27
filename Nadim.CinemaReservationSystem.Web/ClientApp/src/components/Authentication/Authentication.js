@@ -4,6 +4,7 @@ import Login from './Login';
 import Registration from './Registration';
 import Modal from 'react-modal';
 import '../../styles/Authentication.css';
+import Logout from './Logout';
 import AuthenticationActions from '../../Actions/AuthenticationActions';
 
 export default class Authentication extends Component {
@@ -94,36 +95,12 @@ export default class Authentication extends Component {
 
     renderLogoutContent = () =>{
         return(
-            <div className="login">
-                <h3>Username: {this.state.username}</h3>
-                <Button
-                    onClick={this.handleLogout}
-                >
-                    Log out
-                </Button>
-                {
-                this.state.role === 'admin' ?
-                <div>
-                    <div>
-                        <Button
-                            bsSize="xsmall"
-                            onClick={() => this.props.callBackSetShownRole('admin')}
-                        >
-                            Admin
-                        </Button>
-                    </div>
-                    <div>
-                        <Button
-                            bsSize="xsmall"
-                            onClick={() => this.props.callBackSetShownRole('user')}
-                        >
-                            User
-                        </Button>
-                    </div>
-                </div>
-                : ''
-                }
-            </div>
+            <Logout
+                username={this.state.username}
+                role={this.state.role}
+                callBackHandleLogout={this.handleLogout}
+                callBackSetShownRole={this.props.callBackSetShownRole}
+            />
         );
     }
 
