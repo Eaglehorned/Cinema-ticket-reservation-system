@@ -7,7 +7,7 @@ const ListItem = (props) =>{
         <div                 
             className={props.mode === 'reserve' ? 'clickable-session-list-box-container font-large' : 'list-box-container font-large'}
             onClick={props.mode === 'reserve' 
-            ? () => props.callbackFromParent(props.id)
+            ? () => props.callBackFromParent(props.id)
             : () => {}}    
         >
             <div>
@@ -22,7 +22,7 @@ const ListItem = (props) =>{
                 }
             </div>
             <Button
-                onClick={() => props.callbackFromParent(props.id)}
+                onClick={() => props.callBackFromParent(props.id)}
                 hidden={props.mode === 'reserve'}
             >
                 Edit

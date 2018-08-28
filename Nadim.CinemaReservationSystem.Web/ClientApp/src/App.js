@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TokenService from './Services/TokenService';
+import ApplicationService from './Services/ApplicationService';
 import Header from './components/Header';
 import Body from './components/Body';
 import MyAlert from './components/MyAlert';
@@ -19,6 +20,7 @@ export default class App extends Component {
             alertStyle:'info'
         }
         TokenService.setToken(localStorage.getItem('token'));
+        ApplicationService.setInformWithMessage(this.informWithMessage);
     }
 
     setShownRole = (role) =>{

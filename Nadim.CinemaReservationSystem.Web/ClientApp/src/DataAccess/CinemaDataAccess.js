@@ -1,12 +1,13 @@
 import TokenService from '../Services/TokenService';
+import ApplicationService from '../Services/ApplicationService';
 
 export default class CinemaDataAccess{
 
     static getCinemaList = () =>{
         return CinemaDataAccess.getCinemaListFetch()
-        .then(CinemaDataAccess.handleRequstError)
-        .then(CinemaDataAccess.parseJson)
-        .then(CinemaDataAccess.getRequsetedData);
+        .then(ApplicationService.handleRequstError)
+        .then(ApplicationService.parseJson)
+        .then(ApplicationService.getRequsetedData);
     }
 
     static getCinemaListFetch = () =>{
@@ -21,10 +22,10 @@ export default class CinemaDataAccess{
 
     static getCinema = (id) =>{
         return CinemaDataAccess.getCinemaFetch(id)
-        .then(CinemaDataAccess.handleRequstError)
-        .then(CinemaDataAccess.parseJson)
-        .then(CinemaDataAccess.getRequsetedData)
-        .then(requestedData => CinemaDataAccess.CompeleteCinemaInfoWithId(requestedData, id))
+        .then(ApplicationService.handleRequstError)
+        .then(ApplicationService.parseJson)
+        .then(ApplicationService.getRequsetedData)
+        .then(requestedData => CinemaDataAccess.compeleteCinemaInfoWithId(requestedData, id))
     }
 
     static getCinemaFetch = (id) =>{
@@ -40,7 +41,7 @@ export default class CinemaDataAccess{
 
     static createCinema = (cinemaInfo) =>{
         return CinemaDataAccess.createCinemaFetch(cinemaInfo)
-        .then(CinemaDataAccess.handleRequstError)
+        .then(ApplicationService.handleRequstError)
         .then((response) => CinemaDataAccess.formFullCinemaRoom(cinemaInfo, CinemaDataAccess.getIdFromResponse(response)))
     }
 
@@ -56,6 +57,66 @@ export default class CinemaDataAccess{
         })
     }
 
+    static getCinemaRoom  = (cinemaid, cinemaRoomId) =>{
+        return CinemaDataAccess.getCinemaRoomFetch(cinemaid, cinemaRoomId)
+        .then(ApplicationService.handleRequstError)
+        .then(ApplicationService.parseJson)
+        .then((cinemaInfo) => CinemaDataAccess.handleReceivedCinemaRoomInfo(cinemaInfo, cinemaRoomId));
+    }
+
+    static getCinemaRoomFetch = (cinemaId, cinemaRoomId) =>{
+        return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}`, {
+            method: 'GET',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`
+            }
+        });
+    }
+
+    static handleReceivedCinemaRoomInfo(cinemaRoomInfo, cinemaRoomId){
+        let cinemaInfo = {};
+        cinemaInfo.info = {};
+        cinemaInfo.info.name = cinemaRoomInfo.requestedData.name;
+        cinemaInfo.info.cinemaRoomId = cinemaRoomId;
+        cinemaInfo.seats = cinemaRoomInfo.requestedData.seats;
+
+        cinemaInfo.seats.sort((a, b) => {
+            if (a.row === b.row){
+                if (a.column > b.column){
+                    return 1;
+                }
+                if (a.column < b.column){
+                    return -1;
+                } 
+                return 0;
+            }
+            if (a.row > b.row){
+                return 1;
+            }
+            return -1;
+        });
+
+        cinemaInfo.info.rows = cinemaInfo.seats[cinemaInfo.seats.length - 1].row + 1;
+        cinemaInfo.info.columns = cinemaInfo.seats[cinemaInfo.seats.length - 1].column + 1;
+
+        cinemaInfo.seats = CinemaDataAccess.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
+
+        return cinemaInfo;
+    }
+
+    static convertSeatsArray(seats, rows, columns){
+        let seatsArray = [];
+        for (let i = 0; i < rows; i++){
+            seatsArray[i] = [];
+            for (let j = 0; j < columns; j++) {
+                seatsArray[i].push(seats[i * columns + j]);
+            }
+        }
+        return seatsArray;
+    } 
+
     static completeCinemaInfoWithCinemaRooms = (cinemaInfo) =>{
         cinemaInfo.cinemaRooms = [];
         return cinemaInfo;
@@ -64,49 +125,41 @@ export default class CinemaDataAccess{
     static formFullCinemaRoom = (cinemaInfo, id) =>{
         let tempCinema = {};
         tempCinema.info = cinemaInfo;
-        CinemaDataAccess.CompeleteCinemaInfoWithId(tempCinema, id);
+        CinemaDataAccess.compeleteCinemaInfoWithId(tempCinema, id);
         tempCinema.cinemaRooms = [];
         return tempCinema;
     }
 
-    static getIdFromResponse = (response) =>{
-        return response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length);
-    }
-
-    static CompeleteCinemaInfoWithId = (requestedData, id) =>{
+    static compeleteCinemaInfoWithId = (requestedData, id) =>{
         requestedData.info.cinemaId = id;
         return requestedData;
     }
 
-    static getRequsetedData = (parsedJson) =>{
-        return (parsedJson.requestedData);
+    static createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
+        return CinemaDataAccess.createCinemaRoomFetch(cinemaId, cinemaRoomInfo)
+        .then(ApplicationService.handleRequstError)
+        .then(response => CinemaDataAccess.formCinemaRoomInfo(cinemaRoomInfo.name, ApplicationService.getIdFromResponse(response)));
     }
 
-    static parseJson = (response) =>{
-        return response.json();
+    static createCinemaRoomFetch = (cinemaId, cinemaRoomInfo) =>{
+        return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
+            method:'POST',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`
+            },
+            body: JSON.stringify({
+                name: cinemaRoomInfo.name,
+                seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
+            })
+        })
     }
-
-    static handleRequstError = (response) =>{
-        if (response.ok){
-            return response;
-        }
-        if (response.status === 400){
-            return response.json().then((err) => {
-                throw new Error(`Bad request. ${err.details}`);
-            });
-        }
-        if (response.status === 401){
-            throw new Error('You need to authorize to do that action.');
-        }
-        if (response.status === 404){
-            return response.json().then((err) => {
-                throw new Error(`Not found. ${err.details}`);
-            });
-        }
-        if (response.status === 500){
-            return response.json().then((err) => {
-                throw new Error(err.details);
-            });
-        }
+    
+    static formCinemaRoomInfo = (name, cinemaRoomId) =>{
+        let cinemaRoom = {};
+        cinemaRoom.name = name;
+        cinemaRoom.cinemaRoomId = cinemaRoomId;
+        return cinemaRoom;
     }
 }

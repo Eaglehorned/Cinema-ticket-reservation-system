@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Button } from 'react-bootstrap';
 import FormCinema from './FormCinema';
 import CinemaService from '../../Services/CinemaService';
+import ApplicationService from '../../Services/ApplicationService';
 import ListItem from '../ListItem';
 import '../../styles/FontStyles.css';
 import '../../styles/Cinema.css';
@@ -19,13 +20,6 @@ export default class Cinema extends Component{
         };
 
         this.getCinemaList();
-    }
-
-    InformWithErrorMessage = (error) =>{
-        this.props.callBackInformWithMessage({ 
-            text: error.message,
-            isError: true
-        })
     }
 
     cancelCurrentAction = () =>{
@@ -53,7 +47,7 @@ export default class Cinema extends Component{
             });
         })
         .catch(error => 
-            this.InformWithErrorMessage(error)
+            ApplicationService.informWithErrorMessage(error)
         );
     }
 
@@ -66,10 +60,11 @@ export default class Cinema extends Component{
             })
         })
         .catch(error => {
+            console.log(error);
             this.setState({
                 chosenOperation:''
             });
-            this.InformWithErrorMessage(error);
+            ApplicationService.informWithErrorMessage(error);
         });
     }
 
@@ -93,7 +88,7 @@ export default class Cinema extends Component{
             this.setState({
                 chosenOperation: ''
             });
-            this.InformWithErrorMessage(error);
+            ApplicationService.informWithErrorMessage(error);
         });
     }
 
@@ -122,7 +117,7 @@ export default class Cinema extends Component{
                                     {label: "Name", value: el.name},
                                     {label: "City", value: el.city}
                                 ]}
-                                callbackFromParent={this.handleChooseEditCinemaAction}
+                                callBackFromParent={this.handleChooseEditCinemaAction}
                                 id={el.cinemaId}
                                 key={el.cinemaId}
                                 mode="edit"

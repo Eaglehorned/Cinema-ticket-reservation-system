@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FormFilm from './FormFilm';
 import { Button } from 'react-bootstrap';
 import FilmDisplayInfoBox from './FilmDisplayInfoBox';
+import ApplicationService from '../../Services/ApplicationService';
 
 export default class Film extends Component{
     displayName = Film.displayName;
@@ -24,10 +25,6 @@ export default class Film extends Component{
         this.editFilm = this.editFilm.bind(this);
 
         this.getFilmList();
-    }
-
-    informWithMessage(message){
-        this.props.callBackInformWithMessage(message);
     }
 
     cancelCurrentOperation(){
@@ -66,7 +63,7 @@ export default class Film extends Component{
                         filmList: parsedJson.requestedData,
                     });
                 })
-                .catch(error => this.informWithMessage(
+                .catch(error => ApplicationService.informWithMessage(
                     { 
                         text: error.message,
                         isError: true
@@ -116,7 +113,7 @@ export default class Film extends Component{
             this.setState({
                 chosenOperation: ''
             });
-            this.informWithMessage({ 
+            ApplicationService.informWithMessage({ 
                 text: error.message,
                 isError: true
             });
@@ -161,10 +158,10 @@ export default class Film extends Component{
                     filmId: response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length)
                 })
             });
-            this.informWithMessage('Film created.');
+            ApplicationService.informWithMessage('Film created.');
         })
         .catch(error => {
-            this.informWithMessage(
+            ApplicationService.informWithMessage(
             { 
                 text: error.message,
                 isError: true
@@ -209,9 +206,9 @@ export default class Film extends Component{
             this.setState({
                 filmList: tempFilmList
             })
-            this.informWithMessage('Flm information edited.');
+            ApplicationService.informWithMessage('Film information edited.');
         })
-        .catch(error => this.informWithMessage(
+        .catch(error => ApplicationService.informWithMessage(
             { 
                 text: error.message,
                 isError: true
