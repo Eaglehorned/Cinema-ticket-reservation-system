@@ -1,5 +1,23 @@
+import TokenService from '../Services/TokenService';
+
 export default class AuthenticationDataAccess{
+    
     static loginUser = (userInfo) =>{
+        return AuthenticationDataAccess.loginUserFetch(userInfo)  
+        .then(AuthenticationDataAccess.handleRequstError)
+        .then(AuthenticationDataAccess.formUserInfo)
+        .then(AuthenticationDataAccess.setToken);
+    }
+
+    static registerUser = (userInfo) =>{
+        return AuthenticationDataAccess.registerUserFetch(userInfo)
+        .then(AuthenticationDataAccess.handleRequstError)
+        .then(parsedJson => AuthenticationDataAccess.completeUserInfoWithoutUsername(parsedJson, userInfo.userName))
+        .then(AuthenticationDataAccess.formUserInfo)
+        .then(AuthenticationDataAccess.setToken);
+    }
+
+    static loginUserFetch = (userInfo) =>{
         return fetch('api/Authentication/Login', {
             method: 'POST',
             headers: {
@@ -10,12 +28,10 @@ export default class AuthenticationDataAccess{
                 Email: userInfo.email,
                 Password: userInfo.password,
             })
-        })        
-        .then(AuthenticationDataAccess.handleRequstError)
-        .then(AuthenticationDataAccess.formUserInfo);
+        });
     }
 
-    static registerUser = (userInfo) =>{
+    static registerUserFetch = (userInfo) =>{
         return fetch('api/Authentication/Register', {
             method: 'POST',
             headers:{
@@ -29,10 +45,7 @@ export default class AuthenticationDataAccess{
                 LastName: userInfo.lastName,
                 Username: userInfo.userName,
             })
-        })
-        .then(AuthenticationDataAccess.handleRequstError)
-        .then(parsedJson => AuthenticationDataAccess.completeUserInfoWithoutUsername(parsedJson, userInfo.userName))
-        .then(AuthenticationDataAccess.formUserInfo);
+        });
     }
 
     static handleRequstError = (response) =>{
@@ -61,6 +74,11 @@ export default class AuthenticationDataAccess{
             role: role,
             userId: userId
         });
+    }
+
+    static setToken = (userInfo) =>{
+        TokenService.setToken(userInfo.token);
+        return userInfo;
     }
 
     static parseJwt = (token) =>{

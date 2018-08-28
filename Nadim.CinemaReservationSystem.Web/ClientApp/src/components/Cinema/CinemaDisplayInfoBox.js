@@ -1,33 +1,27 @@
-import React, {Component} from 'react';
-import {Button} from 'react-bootstrap';
+import React from 'react';
+import { Button } from 'react-bootstrap';
+import DisplayInfoBoxField from '../DisplayInfoBoxField';
 
-export default class CinemaDisplayInfoBox extends Component{
-    displayName = CinemaDisplayInfoBox.displayName;
+const CinemaDisplayInfoBox = (props) =>{
 
-    constructor(props){
-        super(props);
-        this.handleEditClick = this.handleEditClick.bind(this);
-    }
-
-    handleEditClick(){
-        this.props.callBackEditCinema(this.props.cinemaInfo.cinemaId);
-    }
-
-    render(){
-        return(
-            <div className="list-box-container">
-                <div className="font-large">
-                    <span className="font-bold">Name: </span>{this.props.cinemaInfo.name}
-                </div>
-                <div className="font-large">
-                    <span className="font-bold">City: </span>{this.props.cinemaInfo.city}
-                </div>
-                <Button
-                    onClick={this.handleEditClick}
-                >
-                    Edit
-                </Button>
-            </div>
-        );
-    }
+    return(
+        <div className="list-box-container">
+            <DisplayInfoBoxField
+                label="Name"
+                value={props.cinemaInfo.name}
+            />
+            <DisplayInfoBoxField
+                displayThis={true}
+                label="City"
+                value={props.cinemaInfo.city}
+            />
+            <Button
+                onClick={() => props.callBackEditCinema(props.cinemaInfo.cinemaId)}
+            >
+                Edit
+            </Button>
+        </div>
+    );
 }
+
+export default CinemaDisplayInfoBox;

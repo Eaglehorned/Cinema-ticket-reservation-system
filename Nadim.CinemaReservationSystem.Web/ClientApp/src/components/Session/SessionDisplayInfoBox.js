@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import SessionDisplayInfoBoxField from './SessionDisplayInfoBoxField';
+import DisplayInfoBoxField from '../DisplayInfoBoxField';
 
 export default class SessionDisplayInfoBox extends Component{
     displayName = SessionDisplayInfoBox.displayName;
@@ -15,29 +15,29 @@ export default class SessionDisplayInfoBox extends Component{
             >
                 <div className="font-large">
                     <div>
-                        <SessionDisplayInfoBoxField
+                        <DisplayInfoBoxField
                             displayThis={!this.props.displayedComponents || this.props.displayedComponents.cinema}
                             label='Cinema name'
                             value={this.props.sessionInfo.cinema.name}
                         />
-                        <SessionDisplayInfoBoxField
+                        <DisplayInfoBoxField
                             displayThis={!this.props.displayedComponents || this.props.displayedComponents.cinema}
                             label='Cinema city'
                             value={this.props.sessionInfo.cinema.city}
                         />
-                        <SessionDisplayInfoBoxField
+                        <DisplayInfoBoxField
                             displayThis={!this.props.displayedComponents || this.props.displayedComponents.cinemaRoom}
                             label='Cinema room'
                             value={this.props.sessionInfo.cinemaRoom.name}
                         />
-                        <SessionDisplayInfoBoxField
+                        <DisplayInfoBoxField
                             displayThis={!this.props.displayedComponents || this.props.displayedComponents.film}
                             label='Film'
                             value={this.props.sessionInfo.film.name}
                         />
                     </div>
                     <div>
-                        <SessionDisplayInfoBoxField
+                        <DisplayInfoBoxField
                             displayThis={!this.props.displayedComponents || this.props.displayedComponents.beginTime}
                             label='Time'
                             value={new Date(this.props.sessionInfo.beginTime).toLocaleString()}

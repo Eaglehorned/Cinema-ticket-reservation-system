@@ -5,6 +5,7 @@ import Registration from './Registration';
 import Modal from 'react-modal';
 import '../../styles/Authentication.css';
 import Logout from './Logout';
+import TokenService from '../../Services/TokenService';
 
 export default class Authentication extends Component {
     constructor(props) {
@@ -29,20 +30,17 @@ export default class Authentication extends Component {
     setUserInfo = (authenticationData) =>{
         this.setState({
             username: authenticationData.username,
-            token: authenticationData.token,
             role: authenticationData.role,
             userId: authenticationData.userId,
             modalIsOpen: false
         });
 
         localStorage.setItem('username', authenticationData.username);
-        localStorage.setItem('token', authenticationData.token);
         localStorage.setItem('role', authenticationData.role);
         localStorage.setItem('userId', authenticationData.userId);
 
         this.props.callBackSetUserInfo({
             username: authenticationData.username,
-            token: authenticationData.token,
             role: authenticationData.role,
             userId: authenticationData.userId
         });
@@ -55,10 +53,10 @@ export default class Authentication extends Component {
     handleLogout = () =>{
         this.setUserInfo({
             username: '',
-            token: '',
             role: '',
             userId: ''
         });
+        TokenService.setToken('')
     }
 
     renderAuthenticationContent = () =>{
