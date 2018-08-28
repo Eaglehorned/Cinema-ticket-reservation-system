@@ -216,6 +216,7 @@ export default class FormCinemaRoom extends Component{
                     <SeatTypeChange
                         seatInfo={this.state.seatToChangeType}
                         callBackSubmitSeatTypeChange={this.submitSeatTypeChange}
+                        callBackCancelSeatTypeChange={this.closeModal}
                     />
                 </Modal>
             </div>
