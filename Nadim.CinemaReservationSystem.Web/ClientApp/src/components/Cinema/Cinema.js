@@ -16,13 +16,6 @@ export default class Cinema extends Component{
             cinemaList: [],
             chosenCinemaInfo: undefined,
         };
-        this.informWithMessage = this.informWithMessage.bind(this);
-        this.createCinema = this.createCinema.bind(this);
-        this.receiveFormCinemaInfo = this.receiveFormCinemaInfo.bind(this);
-        this.renderContent = this.renderContent.bind(this);
-        this.handleChooseCreateCinemaAction = this.handleChooseCreateCinemaAction.bind(this);
-        this.handleChooseEditCinemaAction = this.handleChooseEditCinemaAction.bind(this);
-        this.renderActionsContent = this.renderActionsContent.bind(this);
 
         this.getCinemaList();
     }
@@ -33,21 +26,18 @@ export default class Cinema extends Component{
         });
     }
 
-    receiveFormCinemaInfo(receivedCinemaInfo){
-        let tempCinemaList = this.state.cinemaList;
-        tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinemaInfo.info.cinemaId).name = receivedCinemaInfo.name;
-        tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinemaInfo.info.cinemaId).city = receivedCinemaInfo.city;
+    receiveFormCinemaInfo = (receivedCinemaInfo) =>{
+        const tempCinemaList = this.state.cinemaList;
+        const tempChosenCinema = tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinemaInfo.info.cinemaId);
+        tempChosenCinema.name = receivedCinemaInfo.name;
+        tempChosenCinema.city = receivedCinemaInfo.city;
         this.setState({
             cinemaList: tempCinemaList,
             chosenOperation: ''
         });
     }
-    
-    informWithMessage(message){
-        this.props.callBackInformWithMessage(message);
-    }
 
-    getCinemaList(){
+    getCinemaList = () =>{
         fetch('api/cinemas', {
             method: 'GET',
             headers:{
@@ -55,7 +45,8 @@ export default class Cinema extends Component{
                 'Content-Type': 'application/json',
                 'Authorization': `bearer ${this.props.token}`
             }
-        }).then(response => {
+        })
+        .then(response => {
             if (response.ok){
                 return response.json();
             }
@@ -72,20 +63,21 @@ export default class Cinema extends Component{
                     throw new Error(`Not found. ${err.details}`);
                 });
             }
-        }).then(parsedJson => {
-                this.setState({
-                    cinemaList: parsedJson.requestedData,
-                });
+        })
+        .then(parsedJson => {
+            this.setState({
+                cinemaList: parsedJson.requestedData,
+            });
+        })
+        .catch(error => this.props.callBackInformWithMessage(
+            { 
+                text: error.message,
+                isError: true
             })
-            .catch(error => this.informWithMessage(
-                { 
-                    text: error.message,
-                    isError: true
-                })
-            );
+        );
     }
 
-    getCinema(id){
+    getCinema = (id) =>{
         fetch(`api/cinemas/${id}`, {
             method: 'GET',
             headers:{
@@ -113,26 +105,26 @@ export default class Cinema extends Component{
             }
         })
         .then(parsedJson => {
-                let tempParsedJson = parsedJson.requestedData;
-                tempParsedJson.info.cinemaId = id;
-                this.setState({
-                    chosenCinemaInfo: tempParsedJson,
-                    chosenOperation: 'editCinema'
-                })
+            const tempParsedJson = parsedJson.requestedData;
+            tempParsedJson.info.cinemaId = id;
+            this.setState({
+                chosenCinemaInfo: tempParsedJson,
+                chosenOperation: 'editCinema'
             })
-            .catch(error => {
-                this.setState({
-                    chosenOperation:''
-                });
-                this.informWithMessage(
-                    { 
-                        text: error.message,
-                        isError: true
-                    });
+        })
+        .catch(error => {
+            this.setState({
+                chosenOperation:''
             });
+            this.props.callBackInformWithMessage(
+                { 
+                    text: error.message,
+                    isError: true
+                });
+        });
     }
 
-    createCinema(receivedCinemaInfo){
+    createCinema = (receivedCinemaInfo) =>{
         this.setState({
             chosenOperation: 'editCinemaLoading'
         });
@@ -180,7 +172,7 @@ export default class Cinema extends Component{
                     this.setState({
                         chosenOperation: ''
                     });
-                    this.informWithMessage(
+                    this.props.callBackInformWithMessage(
                     { 
                         text: error.message,
                         isError: true
@@ -188,20 +180,20 @@ export default class Cinema extends Component{
                 });
     }
 
-    handleChooseCreateCinemaAction(){
+    handleChooseCreateCinemaAction = () =>{
         this.setState({
             chosenOperation: 'createCinema',
         });
     }
 
-    handleChooseEditCinemaAction(cinemaId){
+    handleChooseEditCinemaAction = (cinemaId) =>{
         this.setState({
             chosenOperation: 'editCinemaLoading'
         });
         this.getCinema(cinemaId);
     }
 
-    renderActionsContent(){
+    renderActionsContent = () =>{
         return(
             <fieldset>
                 <h1>Cinema list</h1>
@@ -228,7 +220,7 @@ export default class Cinema extends Component{
         );
     }
 
-    renderContent(){
+    renderContent = () =>{
         switch(this.state.chosenOperation){
             case 'createCinema':
                 return (         
@@ -236,7 +228,7 @@ export default class Cinema extends Component{
                         token={this.props.token}
                         callBackReceiveCinemaInfo={this.createCinema}
                         callBackCancelCreateCinema={this.cancelCurrentAction}
-                        callBackInformWithMessage={this.informWithMessage}
+                        callBackInformWithMessage={this.props.callBackInformWithMessage}
                     />
                 );
             case 'editCinemaLoading':
@@ -252,7 +244,7 @@ export default class Cinema extends Component{
                             token={this.props.token}
                             cinema={this.state.chosenCinemaInfo}
                             callBackFormCinemaInfo={this.receiveFormCinemaInfo}
-                            callBackInformWithMessage={this.informWithMessage}
+                            callBackInformWithMessage={this.props.callBackInformWithMessage}
                         />
                     )
                 }

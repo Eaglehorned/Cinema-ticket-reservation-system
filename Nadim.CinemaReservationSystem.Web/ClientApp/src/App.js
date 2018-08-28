@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Alert } from 'react-bootstrap';
 import Header from './components/Header';
 import Body from './components/Body';
+import MyAlert from './components/MyAlert';
 
 export default class App extends Component {
     displayName = App.name
@@ -56,27 +56,16 @@ export default class App extends Component {
             role: userInfo.role,
             userId: userInfo.userId,
             shownRole: userInfo.role
-        })
+        });
     }
 
     renderAlertMessage = () =>{
         return(
-            <Alert
-                bsStyle={`${this.state.alertStyle} alert-bottom`}
-                onDismiss={() => this.setState({show: false})}
-            >
-                <div className="font-bold-x-large">
-                {
-                    this.state.alertStyle === 'danger'
-                    ? 'Error'
-                    : 'Success'
-                }
-                </div>
-                <div className="font-large">
-                    {this.state.infoMessage}
-                </div>
-
-            </Alert>
+            <MyAlert
+                alertStyle={this.state.alertStyle}
+                infoMessage={this.state.infoMessage}
+                callbackOnDismiss={() => this.setState({show: false})}
+            />
         )
     }
 

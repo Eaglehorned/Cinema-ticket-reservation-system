@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FormControl, Button } from 'react-bootstrap';
-import AuthenticationActions from '../../Actions/AuthenticationActions';
+import AuthenticationService from '../../Services/AuthenticationService';
 
 export default class Registration extends Component {
     displayName = Registration.name;
@@ -15,11 +15,6 @@ export default class Registration extends Component {
             error:'',
             userName:'',
         }
-    }
-
-    validateEmail = (email) =>{
-        const result = /^([\w-.]+)@((\[[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-        return result.test(String(email).toLowerCase());
     }
 
     handleEmailChange = (event) =>{
@@ -58,7 +53,7 @@ export default class Registration extends Component {
     }
 
     handleRegisterClick = () =>{
-        AuthenticationActions.registerUser({
+        AuthenticationService.registerUser({
             email: this.state.email,
             password: this.state.password,
             firstName: this.state.firstName,
@@ -107,7 +102,7 @@ export default class Registration extends Component {
                 <Button
                     bsStyle="primary"
                     onClick={this.handleRegisterClick} 
-                    disabled={!AuthenticationActions.allowRegisterClick(
+                    disabled={!AuthenticationService.allowRegisterClick(
                         this.state.email,
                         this.state.password,
                         this.state.lastName,

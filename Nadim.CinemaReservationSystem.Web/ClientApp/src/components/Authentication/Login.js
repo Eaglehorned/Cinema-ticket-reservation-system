@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { FormControl, FormGroup, Button } from 'react-bootstrap';
-import AuthenticationActions from '../../Actions/AuthenticationActions';
+import AuthenticationService from '../../Services/AuthenticationService';
 
 export default class Login extends Component {
     displayName = Login.name;
@@ -33,7 +33,7 @@ export default class Login extends Component {
         this.setState({
             error:'',
         });
-        AuthenticationActions.loginUser({
+        AuthenticationService.loginUser({
             email: this.state.email,
             password: this.state.password,
         })
@@ -72,7 +72,7 @@ export default class Login extends Component {
                     bsStyle="primary"
                     bsSize="small"
                     onClick={this.handleLoginClick} 
-                    disabled={!AuthenticationActions.allowLoginClick(this.state.email, this.state.password)}
+                    disabled={!AuthenticationService.allowLoginClick(this.state.email, this.state.password)}
                 >
                     Log in
                 </Button>

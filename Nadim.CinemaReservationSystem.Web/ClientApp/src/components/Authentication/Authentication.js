@@ -5,30 +5,25 @@ import Registration from './Registration';
 import Modal from 'react-modal';
 import '../../styles/Authentication.css';
 import Logout from './Logout';
-import AuthenticationActions from '../../Actions/AuthenticationActions';
 
 export default class Authentication extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalIsOpen: false,
-            username: this.props.username,
-            token: this.props.token,
-            role: this.props.role,
-            userId: this.props.userId
+            modalIsOpen: false
         }
     }
 
     openModal = () =>{
         this.setState({
             modalIsOpen: true,
-        })
+        });
     }
 
     closeModal = () =>{
         this.setState({
             modalIsOpen: false,
-        })
+        });
     }
 
     setUserInfo = (authenticationData) =>{
@@ -38,7 +33,7 @@ export default class Authentication extends Component {
             role: authenticationData.role,
             userId: authenticationData.userId,
             modalIsOpen: false
-        })
+        });
 
         localStorage.setItem('username', authenticationData.username);
         localStorage.setItem('token', authenticationData.token);
@@ -50,11 +45,11 @@ export default class Authentication extends Component {
             token: authenticationData.token,
             role: authenticationData.role,
             userId: authenticationData.userId
-        })  
+        });
     }
 
     handleAuthorization = (authenticationData) => {
-        this.setUserInfo(authenticationData)
+        this.setUserInfo(authenticationData);
     }
 
     handleLogout = () =>{
@@ -63,7 +58,7 @@ export default class Authentication extends Component {
             token: '',
             role: '',
             userId: ''
-        })
+        });
     }
 
     renderAuthenticationContent = () =>{
@@ -87,7 +82,9 @@ export default class Authentication extends Component {
                     ariaHideApp={false}
                     className="authentication-Modal"
                 >
-                    <Registration callBackFromParent={this.handleAuthorization}/>
+                    <Registration 
+                        callBackFromParent={this.handleAuthorization}
+                    />
                 </Modal>
             </React.Fragment>
         );
@@ -96,8 +93,8 @@ export default class Authentication extends Component {
     renderLogoutContent = () =>{
         return(
             <Logout
-                username={this.state.username}
-                role={this.state.role}
+                username={this.props.username}
+                role={this.props.role}
                 callBackHandleLogout={this.handleLogout}
                 callBackSetShownRole={this.props.callBackSetShownRole}
             />
@@ -105,7 +102,7 @@ export default class Authentication extends Component {
     }
 
     render(){
-        const content = this.state.username ? this.renderLogoutContent() : this.renderAuthenticationContent();
+        const content = this.props.username ? this.renderLogoutContent() : this.renderAuthenticationContent();
         return(
             <div className="authentication-container">
                 {content}
