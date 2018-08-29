@@ -12,7 +12,7 @@ const ListItem = (props) =>{
         >
             <div>
                 {
-                    props.params.map((el, index) =>{
+                    props.displayedParams.map((el, index) =>{
                         return <DisplayInfoBoxField
                             key={index}
                             label={el.label}

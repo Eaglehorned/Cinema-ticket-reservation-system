@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
-import { Button } from 'react-bootstrap';
 import FormCinema from './FormCinema';
 import CinemaService from '../../Services/CinemaService';
 import ApplicationService from '../../Services/ApplicationService';
-import ListItem from '../ListItem';
 import '../../styles/FontStyles.css';
 import '../../styles/Cinema.css';
 import '../../styles/ListStyles.css';
+import DisplayCinemaList from './DisplayCinemaList';
 
 export default class Cinema extends Component{
     displayName = Cinema.displayName;
@@ -28,15 +27,23 @@ export default class Cinema extends Component{
         });
     }
 
-    receiveFormCinemaInfo = (receivedCinemaInfo) =>{
-        const tempCinemaList = this.state.cinemaList;
-        const tempChosenCinema = tempCinemaList.find((el) => el.cinemaId === this.state.chosenCinemaInfo.info.cinemaId);
-        tempChosenCinema.name = receivedCinemaInfo.name;
-        tempChosenCinema.city = receivedCinemaInfo.city;
+    editCinema = (cinemaInfo) =>{
         this.setState({
-            cinemaList: tempCinemaList,
             chosenOperation: ''
         });
+        CinemaService.editCinema(cinemaInfo)
+        .then(() => {
+            const tempCinemaList = this.state.cinemaList;
+            const tempChosenCinema = tempCinemaList.find((el) => el.cinemaId === cinemaInfo.cinemaId);
+            tempChosenCinema.name = cinemaInfo.name;
+            tempChosenCinema.city = cinemaInfo.city;
+            this.setState({
+                cinemaList: tempCinemaList,
+                chosenOperation: ''
+            });
+            ApplicationService.informWithMessage('Cinema information edited.');
+        })
+        .catch(error => ApplicationService.informWithErrorMessage(error));
     }
 
     getCinemaList = () =>{
@@ -60,7 +67,6 @@ export default class Cinema extends Component{
             })
         })
         .catch(error => {
-            console.log(error);
             this.setState({
                 chosenOperation:''
             });
@@ -109,30 +115,11 @@ export default class Cinema extends Component{
         return(
             <fieldset>
                 <h1>Cinema list</h1>
-                <fieldset className="list-container">
-                    {
-                        this.state.cinemaList.map((el)=>
-                            <ListItem
-                                params={[
-                                    {label: "Name", value: el.name},
-                                    {label: "City", value: el.city}
-                                ]}
-                                callBackFromParent={this.handleChooseEditCinemaAction}
-                                id={el.cinemaId}
-                                key={el.cinemaId}
-                                mode="edit"
-                            />
-                        )
-                    }
-                    <div className="buttons-for-list"> 
-                        <Button
-                            bsStyle="primary"
-                            onClick={this.handleChooseCreateCinemaAction}
-                        >
-                            Create cinema
-                        </Button>
-                    </div>
-                </fieldset>
+                <DisplayCinemaList
+                    list={this.state.cinemaList}
+                    handleElementClick={this.handleChooseEditCinemaAction}
+                    handleListButtonClick={this.handleChooseCreateCinemaAction}
+                />
             </fieldset>
         );
     }
@@ -142,10 +129,8 @@ export default class Cinema extends Component{
             case 'createCinema':
                 return (         
                     <FormCinema
-                        token={this.props.token}
-                        callBackReceiveCinemaInfo={this.createCinema}
-                        callBackCancelCreateCinema={this.cancelCurrentAction}
-                        callBackInformWithMessage={this.props.callBackInformWithMessage}
+                        callBackCancelParentOperation={this.cancelCurrentAction}
+                        callBackFromParent={this.createCinema}
                     />
                 );
             case 'editCinemaLoading':
@@ -158,10 +143,9 @@ export default class Cinema extends Component{
                 if (this.state.chosenCinemaInfo){
                     return(         
                         <FormCinema
-                            token={this.props.token}
                             cinema={this.state.chosenCinemaInfo}
-                            callBackFormCinemaInfo={this.receiveFormCinemaInfo}
-                            callBackInformWithMessage={this.props.callBackInformWithMessage}
+                            callBackCancelParentOperation={this.cancelCurrentAction}
+                            callBackFromParent={this.editCinema}
                         />
                     )
                 }

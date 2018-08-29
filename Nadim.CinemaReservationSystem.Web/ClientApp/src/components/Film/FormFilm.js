@@ -16,19 +16,9 @@ export default class FormFilm extends Component{
             description: this.props.filmInfo ? this.props.filmInfo.description : '',
             showHint: false
         }
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleChangeStartDate = this.handleChangeStartDate.bind(this);
-        this.handleChangeEndDate = this.handleChangeEndDate.bind(this);
-        this.handleChangeDuration = this.handleChangeDuration.bind(this);
-        this.handleChangeDescription = this.handleChangeDescription.bind(this);
-        this.handleSubmitClick = this.handleSubmitClick.bind(this);
-        this.handleCancelClick = this.handleCancelClick.bind(this);
-        this.allowSubmitClick = this.allowSubmitClick.bind(this);
-        this.validateStartAndEndDates = this.validateStartAndEndDates.bind(this);
-        this.validateDuration = this.validateDuration.bind(this);
     }
 
-    generateDurationDate(duration){
+    generateDurationDate = (duration) =>{
         let temp = moment({
             hours: Math.trunc(duration / 3600),
             minutes: Math.trunc((duration % 3600) / 60),
@@ -37,37 +27,37 @@ export default class FormFilm extends Component{
         return temp;
     }
 
-    handleNameChange(event){
+    handleNameChange = (event) =>{
         this.setState({
             name: event.target.value
         })
     }
 
-    handleChangeStartDate(time){
+    handleChangeStartDate = (time) =>{
         this.setState({
             startDate: time
         })
     }
 
-    handleChangeEndDate(time){
+    handleChangeEndDate = (time) =>{
         this.setState({
             endDate: time
         })
     }
 
-    handleChangeDuration(time) {
+    handleChangeDuration = (time) =>{
         this.setState({
             duration: time
         })
     }
 
-    handleChangeDescription(event){
+    handleChangeDescription = (event) =>{
         this.setState({
             description: event.target.value
         })
     }
 
-    handleSubmitClick(){
+    handleSubmitClick = () =>{
         if (this.allowSubmitClick()){
             this.props.callBackReceiveFilmInfo({
                 name: this.state.name,
@@ -96,11 +86,11 @@ export default class FormFilm extends Component{
         })
     }
 
-    handleCancelClick(){
+    handleCancelClick = () =>{
         this.props.callBackCancel();
     }
 
-    allowSubmitClick(){
+    allowSubmitClick = () =>{
         if(this.state.name
         && this.state.description
         && this.state.endDate.isAfter(this.state.startDate)
@@ -112,18 +102,18 @@ export default class FormFilm extends Component{
         return false;
     }
 
-    validateDuration(){
+    validateDuration = () =>{
         return !this.state.showHint 
         || this.state.duration.hours() !== 0
         || this.state.duration.minutes() !== 0
         || this.state.duration.seconds() !== 0
     }
 
-    validateString(str){
+    validateString = (str) =>{
         return !this.state.showHint || str;
     }
 
-    validateStartAndEndDates(){
+    validateStartAndEndDates = () =>{
         return !this.state.showHint || this.state.endDate.isAfter(this.state.startDate);
     }
 

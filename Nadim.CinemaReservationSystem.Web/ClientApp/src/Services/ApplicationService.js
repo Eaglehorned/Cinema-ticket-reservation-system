@@ -51,4 +51,27 @@ export default class ApplicationService{
     static getIdFromResponse = (response) =>{
         return response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length);
     }
+
+    static needToInformAboutInvalidString(showHint, str){
+        return !showHint || str;
+    }
+
+    static needToInformAboutInvalidInt(showHint, number){
+        if (showHint){
+            return number
+            ?(this.validateIntNumber(number)
+                ? ''
+                :'Data not valid'
+            )
+            :'Data not entered';
+        }
+        else{
+            return '';
+        }
+    }
+
+    static validateIntNumber = (number) =>{
+        const result = /^\d+$/;
+        return result.test(String(number));
+    }
 }

@@ -42,7 +42,7 @@ export default class CinemaDataAccess{
     static createCinema = (cinemaInfo) =>{
         return CinemaDataAccess.createCinemaFetch(cinemaInfo)
         .then(ApplicationService.handleRequstError)
-        .then((response) => CinemaDataAccess.formFullCinemaRoom(cinemaInfo, CinemaDataAccess.getIdFromResponse(response)))
+        .then((response) => CinemaDataAccess.formFullCinemaRoom(cinemaInfo, ApplicationService.getIdFromResponse(response)))
     }
 
     static createCinemaFetch = (cinemaInfo) =>{
@@ -55,6 +55,23 @@ export default class CinemaDataAccess{
             },
             body: JSON.stringify(cinemaInfo)
         })
+    }
+
+    static editCinema = (cinemaInfo) =>{
+        return CinemaDataAccess.editCinemaFetch(cinemaInfo)
+        .then(ApplicationService.handleRequstError);
+    }
+
+    static editCinemaFetch = (cinemaInfo) =>{
+        return fetch(`api/cinemas/${cinemaInfo.cinemaId}/info`, {
+            method: 'PUT',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`
+            },
+            body: JSON.stringify(cinemaInfo)
+        });
     }
 
     static getCinemaRoom  = (cinemaid, cinemaRoomId) =>{
@@ -74,6 +91,49 @@ export default class CinemaDataAccess{
             }
         });
     }
+
+    static createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
+        return CinemaDataAccess.createCinemaRoomFetch(cinemaId, cinemaRoomInfo)
+        .then(ApplicationService.handleRequstError)
+        .then(response => CinemaDataAccess.formCinemaRoomInfo(cinemaRoomInfo.name, ApplicationService.getIdFromResponse(response)));
+    }
+
+    static createCinemaRoomFetch = (cinemaId, cinemaRoomInfo) =>{
+        return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
+            method:'POST',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`
+            },
+            body: JSON.stringify({
+                name: cinemaRoomInfo.name,
+                seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
+            })
+        })
+    }
+
+    static editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
+        return CinemaDataAccess.editCinemaRoomFetch(cinemaId, cinemaRoomId, cinemaRoomInfo)
+        .then(ApplicationService.handleRequstError);
+    }
+
+    static editCinemaRoomFetch = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
+        return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}`, {
+            method:'PUT',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`
+            },
+            body: JSON.stringify({
+                name: cinemaRoomInfo.name,
+                seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
+            })
+        });
+    }
+
+///////////////////////////////////////////////////////////////////////////////////
 
     static handleReceivedCinemaRoomInfo(cinemaRoomInfo, cinemaRoomId){
         let cinemaInfo = {};
@@ -133,27 +193,6 @@ export default class CinemaDataAccess{
     static compeleteCinemaInfoWithId = (requestedData, id) =>{
         requestedData.info.cinemaId = id;
         return requestedData;
-    }
-
-    static createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
-        return CinemaDataAccess.createCinemaRoomFetch(cinemaId, cinemaRoomInfo)
-        .then(ApplicationService.handleRequstError)
-        .then(response => CinemaDataAccess.formCinemaRoomInfo(cinemaRoomInfo.name, ApplicationService.getIdFromResponse(response)));
-    }
-
-    static createCinemaRoomFetch = (cinemaId, cinemaRoomInfo) =>{
-        return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
-            method:'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            },
-            body: JSON.stringify({
-                name: cinemaRoomInfo.name,
-                seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
-            })
-        })
     }
     
     static formCinemaRoomInfo = (name, cinemaRoomId) =>{

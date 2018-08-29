@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
-import DisplayInfoBoxField from '../DisplayInfoBoxField';
+import DisplayInfoBoxField from '../General/DisplayInfoBoxField';
 
 export default class SessionDisplayInfoBox extends Component{
     displayName = SessionDisplayInfoBox.displayName;

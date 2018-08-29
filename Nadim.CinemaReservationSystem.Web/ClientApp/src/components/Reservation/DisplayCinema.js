@@ -20,7 +20,7 @@ export default class DisplayCinema extends Component{
                                 key={el.sessionId}
                                 sessionInfo={el}
                                 callBackHandleSessionAction={this.props.callBackHandleSessionAction}
-                                mode={'reserve'}
+                                mode="reserve"
                             />
                         )
                     }

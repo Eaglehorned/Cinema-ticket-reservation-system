@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import { ButtonToolbar, DropdownButton, MenuItem, Button} from 'react-bootstrap';
+import { ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap';
+import SubmitCancelButtons from '../General/SubmitCancelButtons';
 
 export default class SeatTypeChange extends Component{
     displayName = SeatTypeChange.displayName;
@@ -9,23 +10,12 @@ export default class SeatTypeChange extends Component{
         this.state={
             chosenType: this.props.seatInfo.type
         }
-        this.handleTypeClick = this.handleTypeClick.bind(this);
-        this.handleSubmitClick = this.handleSubmitClick.bind(this);
-        this.handleCancelClick = this.handleCancelClick.bind(this);
     }
 
-    handleTypeClick(value){
+    handleTypeClick = (value) =>{
         this.setState({
             chosenType: value,
         });
-    }
-
-    handleSubmitClick(){
-        this.props.callBackSubmitSeatTypeChange(this.state.chosenType);
-    }
-
-    handleCancelClick(){
-        this.props.callBackCancelSeatTypeChange();
     }
 
     render(){
@@ -62,19 +52,10 @@ export default class SeatTypeChange extends Component{
                         </MenuItem>
                     </DropdownButton>
                 </ButtonToolbar>
-                <div>
-                    <Button 
-                        bsStyle="primary" 
-                        onClick={this.handleSubmitClick}
-                    > 
-                        Submit
-                    </Button>
-                    <Button 
-                        onClick={this.handleCancelClick}
-                    > 
-                        Cancel
-                    </Button>
-                </div>
+                <SubmitCancelButtons
+                    handleSubmitClick={() => this.props.callBackSubmitSeatTypeChange(this.state.chosenType)}
+                    handleCancelClick={this.props.callBackCancelSeatTypeChange}
+                />
             </fieldset>
         );
     }

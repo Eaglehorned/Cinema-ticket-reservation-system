@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
+import CinemaService from '../../Services/CinemaService';
+import InputStringFormGroup from '../General/InputStringFormGroup';
+import InputIntFormGroup from '../General/InputIntFromGroup';
 
 export default class FormCinemaRoomInfo extends Component{
     displayName = FormCinemaRoomInfo.displayName;
@@ -11,9 +14,9 @@ export default class FormCinemaRoomInfo extends Component{
             columns: this.props.cinemaRoomInfo ? this.props.cinemaRoomInfo.columns : '',
             name: this.props.cinemaRoomInfo ? this.props.cinemaRoomInfo.name : '',
             showHint: this.props.needToShowHint ? this.props.needToShowHint: false,
-            displayedComponents: this.props.displayedComponents ? 
-            this.props.displayedComponents : 
-            {
+            displayedComponents: this.props.displayedComponents 
+            ? this.props.displayedComponents 
+            : {
                 name: true,
                 rows: true, 
                 columns: true,
@@ -21,21 +24,14 @@ export default class FormCinemaRoomInfo extends Component{
                 cancel: true
             }
         }
-        this.validateString = this.validateString.bind(this);
-        this.validateInt = this.validateInt.bind(this);
-        this.handleSubmitClick = this.handleSubmitClick.bind(this);
-        this.handleCancelClick = this.handleCancelClick.bind(this);
-        this.handleRowsChange = this.handleRowsChange.bind(this);
-        this.handleColumnsChange = this.handleColumnsChange.bind(this);
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.allowSubmitClick = this.allowSubmitClick.bind(this);
     }
 
-    handleSubmitClick(){
+    handleSubmitClick = () =>{
         this.setState({
             showHint: true
         });
-        if (this.allowSubmitClick(
+        if (CinemaService.validateCinemaRoomInfo(
+            this.state.displayedComponents,
             this.state.rows,
             this.state.columns,
             this.state.name
@@ -48,174 +44,91 @@ export default class FormCinemaRoomInfo extends Component{
         }
     }
 
-    handleCancelClick(){
+    handleCancelClick = () =>{
         this.props.callBackCancel();
     }
 
-    validateIntNumber(number){
-        const result = /^\d+$/;
-        return result.test(String(number));
+    informParentAboutInfoChange = (rows, columns, name) =>{
+        this.props.callBackHandleChangeCinemaRoomInfo({
+            info: 
+            {
+                rows : rows,
+                columns: columns,
+                name: name
+            },
+            allowSubmit: CinemaService.validateCinemaRoomInfo(
+                this.state.displayedComponents,
+                rows,
+                columns,
+                name
+            ) 
+        });
     }
 
-    validateString(str){
-        return !this.state.showHint || str
-        ?''
-        :'Data not entered'
-    }
-
-    validateInt(num){
-        if (this.state.showHint){
-            return num
-            ?(this.validateIntNumber(num)
-                ? ''
-                :'Data not valid'
-            )
-            :'Data not entered';
-        }
-        else{
-            return '';
-        }
-    }
-
-    handleRowsChange(event){
+    handleRowsChange = (event) =>{
         this.setState({
             rows: event.target.value
         });
         if (this.props.callBackHandleChangeCinemaRoomInfo){
-            this.props.callBackHandleChangeCinemaRoomInfo({
-                info: 
-                {
-                    rows : event.target.value,
-                    columns: this.state.columns,
-                    name: this.state.name
-                },
-                allowSubmit: this.allowSubmitClick(
-                    event.target.value,
-                    this.state.columns,
-                    this.state.name
-                ) 
-            });
+            this.informParentAboutInfoChange(
+                event.target.value, 
+                this.state.columns,
+                this.state.name
+            );
         }
     }
     
-    handleColumnsChange(event){
+    handleColumnsChange = (event) =>{
         this.setState({
             columns: event.target.value
         });
         if (this.props.callBackHandleChangeCinemaRoomInfo){
-            this.props.callBackHandleChangeCinemaRoomInfo({
-                info: 
-                {
-                    rows : this.state.rows,
-                    columns: event.target.value,
-                    name: this.state.name
-                },
-                allowSubmit: this.allowSubmitClick(
-                    this.state.rows,
-                    event.target.value,
-                    this.state.name
-                ) 
-            });
+            this.informParentAboutInfoChange(
+                this.state.rows,
+                event.target.value, 
+                this.state.name
+            );
         }
     }
 
-    handleNameChange(event){
+    handleNameChange = (event) =>{
         this.setState({
             name: event.target.value
         });
         if (this.props.callBackHandleChangeCinemaRoomInfo){
-            this.props.callBackHandleChangeCinemaRoomInfo({
-                info: 
-                {
-                    rows : this.state.rows,
-                    columns: this.state.columns,
-                    name: event.target.value
-                },
-                allowSubmit: this.allowSubmitClick(
-                    this.state.rows,
-                    this.state.columns,
-                    event.target.value
-                )
-            });
+            this.informParentAboutInfoChange(
+                this.state.rows,
+                this.state.columns, 
+                event.target.value
+            );
         }
-    }
-
-    allowSubmitClick(rows, columns, name){
-        if (this.state.displayedComponents.rows && !this.validateIntNumber(rows)){
-            return false;
-        }
-        if (this.state.displayedComponents.columns && !this.validateIntNumber(columns)){
-            return false;
-        }
-        if (this.state.displayedComponents.name && !name){
-            return false;
-        }
-        return true;
     }
 
     render(){
         return(
             <fieldset>
-                <fieldset
-                    className={this.state.displayedComponents.name ? '' : 'hidden'}
-                >
-                    <label htmlFor="nameInput" className="font-bold-large">
-                        Cinema room name :
-                    </label> 
-                    <input
-                        type="text" 
-                        className="form-control form-control-sm"
-                        id="nameInput"
-                        value={this.state.name} 
-                        onChange={this.handleNameChange}
-                        placeholder="Name"
-                    />
-                    <p className="font-italic error-text">
-                        {
-                            this.validateString(this.state.name)
-                        }
-                    </p>
-                </fieldset>
-                <fieldset
-                    className={this.state.displayedComponents.rows ? '' : 'hidden'}
-                >
-                    <label htmlFor="rowsInput" className="font-bold-large">
-                        Number of rows : 
-                    </label> 
-                    <input 
-                        type="text" 
-                        className="form-control form-control-sm"
-                        id="rowsInput"
-                        value={this.state.rows} 
-                        onChange={this.handleRowsChange}
-                        placeholder="Rows"
-                    />
-                    <p className="font-italic error-text">
-                    {
-                        this.validateInt(this.state.rows)
-                    }
-                    </p>
-                </fieldset>
-                <fieldset
-                    className={this.state.displayedComponents.columns ? '' : 'hidden'}
-                >
-                <label htmlFor="columnsInput" className="font-bold-large">
-                    Number of places in row : 
-                </label> 
-                    <input
-                        type="text" 
-                        className="form-control form-control-sm"
-                        id="columnsInput"
-                        value={this.state.columns} 
-                        onChange={this.handleColumnsChange}
-                        placeholder="Columns"
-                    />
-                    <p className="font-italic error-text">
-                    {
-                        this.validateInt(this.state.columns)
-                    }
-                    </p>
-                </fieldset>
+                <InputStringFormGroup
+                    isShown={this.state.displayedComponents.name}
+                    label="Cinema room name"
+                    value={this.state.name}
+                    handleValueChange={this.handleNameChange}
+                    showHint={this.state.showHint}
+                />
+
+                <InputIntFormGroup
+                    isShown={this.state.displayedComponents.rows}
+                    label="Rows"
+                    value={this.state.rows}
+                    handleValueChange={this.handleRowsChange}
+                    showHint={this.state.showHint}
+                />
+                <InputIntFormGroup
+                    isShown={this.state.displayedComponents.columns}
+                    label="Columns"
+                    value={this.state.columns}
+                    handleValueChange={this.handleColumnsChange}
+                    showHint={this.state.showHint}
+                />
                 <Button 
                     className={this.state.displayedComponents.submit ? '' : 'hidden'}
                     onClick={this.handleSubmitClick}

@@ -15,7 +15,6 @@ export default class Film extends Component{
             chosenFilmInfo: undefined
         }
 
-        this.informWithMessage = this.informWithMessage.bind(this);
         this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
         this.renderContent = this.renderContent.bind(this);
         this.renderActionsContent = this.renderActionsContent.bind(this);

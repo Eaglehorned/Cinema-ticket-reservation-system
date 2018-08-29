@@ -10,14 +10,14 @@ export default class FormGeneralCinemaInfo extends Component{
             city: this.props.cinemaInfo ? this.props.cinemaInfo.city : '',
             name: this.props.cinemaInfo ? this.props.cinemaInfo.name : '',
             showHint: this.props.needToShowHint ? this.props.needToShowHint: false,
-            displayedComponents: this.props.displayedComponents ? 
-                                    this.props.displayedComponents : 
-                                    {
-                                        city: true,
-                                        name: true,
-                                        submit: true,
-                                        cancel: true
-                                    }
+            displayedComponents: this.props.displayedComponents 
+            ? this.props.displayedComponents 
+            : {
+                city: true,
+                name: true,
+                submit: true,
+                cancel: true
+            }
         }
         this.validateString = this.validateString.bind(this);
         this.handleCityChange = this.handleCityChange.bind(this);
@@ -25,11 +25,6 @@ export default class FormGeneralCinemaInfo extends Component{
         this.handleSubmitCinemaInfoClick = this.handleSubmitCinemaInfoClick.bind(this);
         this.handleCancelClick = this.handleCancelClick.bind(this);
         this.allowSubmitClick = this.allowSubmitClick.bind(this);
-    }
-
-    validateIntNumber(number){
-        const result = /^\d+$/;
-        return result.test(String(number));
     }
 
     validateString(str){
