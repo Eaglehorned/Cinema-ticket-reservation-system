@@ -1,33 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class SeatBox extends Component{
-    displayName = SeatBox.displayName;
-
-    constructor(props){
-        super(props);
-        this.handleOnSeatClick= this.handleOnSeatClick.bind(this);
-    }
-
-    handleOnSeatClick(){
-        this.props.callBackFromParent(this.props.seatInfo);
-    }
-
-    render(){
-        let styleName;
-        if(this.props.seatInfo.chosen){
-            styleName = `${this.props.seatInfo.type}-chosen`
+const SeatBox = (props) =>{
+    
+    const getSeatBoxClass = (seatInfo) =>{
+        if(seatInfo.chosen){
+            return `${seatInfo.type}-chosen`;
         }
-        else if(this.props.seatInfo.booked){
-            styleName = 'booked';
+        else if(seatInfo.booked){
+            return 'booked';
         }
         else{
-            styleName = this.props.seatInfo.type;
+            return seatInfo.type;
         }
-        return(
-            <div 
-                className={`seat-${styleName}`} 
-                onClick={this.handleOnSeatClick}
-            />
-        );
     }
+
+    return(
+        <div 
+            className={`seat-${getSeatBoxClass(props.seatInfo)}`}
+            onClick={() => props.callBackFromParent(props.seatInfo)}
+        />
+    );
 }
+
+export default SeatBox;

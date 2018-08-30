@@ -1,20 +1,16 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
-import ListItem from '../General/ListItem';
+import CinemaRoomListItem from './CinemaRoomListItem';
 
 const DisplayCinemaRoomsList = (props) =>{
     return(
         <div className="list-container">
             {
                 props.list.map((el)=>
-                    <ListItem
+                    <CinemaRoomListItem
                         key={el.cinemaRoomId}
-                        displayedParams={[
-                            {label: "Name", value: el.name}
-                        ]}
+                        cinemaRoom={el}
                         callBackFromParent={props.handleElementClick}
-                        id={el.cinemaRoomId}
-                        mode="edit"
                     />
                 )
             }

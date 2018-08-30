@@ -3,7 +3,9 @@ import { Button } from 'react-bootstrap';
 
 const SubmitCancelButtons = (props) =>{
     return(                
-        <div className="button-container">
+        <div 
+            className={props.isShown === undefined || props.isShown ? 'button-container' : 'hidden'}
+        >
             <Button
                 onClick={props.handleSubmitClick}
                 bsStyle="primary"

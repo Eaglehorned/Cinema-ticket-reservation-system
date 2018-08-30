@@ -327,6 +327,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     .FirstOrDefault()
             };
         }
+
         public GetResult<List<ResponseSeatTypesInCinemaRoomInfo>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId)
         {
             if (!CinemaExists(cinemaId)) {

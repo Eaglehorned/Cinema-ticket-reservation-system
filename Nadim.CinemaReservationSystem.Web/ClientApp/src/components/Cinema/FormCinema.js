@@ -165,8 +165,7 @@ export default class FormCinema extends Component{
                         displayedComponents={{
                             city: true,
                             name: true,
-                            submit: false,
-                            cancel: false
+                            buttons: false
                         }}
                         needToShowHint={true}
                     />

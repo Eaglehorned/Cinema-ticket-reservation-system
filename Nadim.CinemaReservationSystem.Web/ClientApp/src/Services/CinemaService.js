@@ -1,5 +1,5 @@
-import CinemaDataAccess from '../DataAccess/CinemaDataAccess'
-import ApplicationService from './ApplicationService';
+import CinemaDataAccess from '../DataAccess/CinemaDataAccess';
+import ValidationService from './ValidationService';
 
 export default class CinemaService{
 
@@ -47,13 +47,23 @@ export default class CinemaService{
     }
 
     static validateCinemaRoomInfo(displayedComponents, rows, columns, name){
-        if (displayedComponents.rows && !ApplicationService.validateIntNumber(rows)){
+        if (displayedComponents.rows && !ValidationService.validateIntNumber(rows)){
             return false;
         }
-        if (displayedComponents.columns && !ApplicationService.validateIntNumber(columns)){
+        if (displayedComponents.columns && !ValidationService.validateIntNumber(columns)){
             return false;
         }
-        if (displayedComponents.name && !name){
+        if (displayedComponents.name && !ValidationService.validateString(name)){
+            return false;
+        }
+        return true;
+    }
+
+    static validateCinemaInfo(displayedComponents, city, name){
+        if (displayedComponents.city && !ValidationService.validateString(city)){
+            return false;
+        }
+        if (displayedComponents.name && !ValidationService.validateString(name)){
             return false;
         }
         return true;

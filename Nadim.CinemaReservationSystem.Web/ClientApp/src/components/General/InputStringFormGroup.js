@@ -1,13 +1,13 @@
 import React from 'react';
 import { FormControl, ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
-import ApplicationService from '../../Services/ApplicationService';
+import ValidationService from '../../Services/ValidationService';
 
 const InputStringFormGroup = (props) =>{
     return(
         <FormGroup
             className={props.isShown ? '' : 'hidden'}
             controlId={`form${props.label}Text`}
-            validationState={ApplicationService.needToInformAboutInvalidString(props.showHint, props.value) ? null : 'error'}
+            validationState={ValidationService.showIsStringValid(props.showHint, props.value) ? null : 'error'}
         >
             <ControlLabel
                 className="font-bold-large"
@@ -21,7 +21,7 @@ const InputStringFormGroup = (props) =>{
                 onChange={props.handleValueChange}
             />
             {
-                ApplicationService.needToInformAboutInvalidString(props.showHint, props.value)
+                ValidationService.showIsStringValid(props.showHint, props.value)
                 ? ''
                 : <HelpBlock 
                     className="font-italic"

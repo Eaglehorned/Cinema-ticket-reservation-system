@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
 import CinemaService from '../../Services/CinemaService';
 import InputStringFormGroup from '../General/InputStringFormGroup';
 import InputIntFormGroup from '../General/InputIntFromGroup';
+import SubmitCancelButtons from '../General/SubmitCancelButtons';
 
 export default class FormCinemaRoomInfo extends Component{
     displayName = FormCinemaRoomInfo.displayName;
@@ -20,8 +20,7 @@ export default class FormCinemaRoomInfo extends Component{
                 name: true,
                 rows: true, 
                 columns: true,
-                submit: true,
-                cancel: true
+                buttons: true
             }
         }
     }
@@ -114,7 +113,6 @@ export default class FormCinemaRoomInfo extends Component{
                     handleValueChange={this.handleNameChange}
                     showHint={this.state.showHint}
                 />
-
                 <InputIntFormGroup
                     isShown={this.state.displayedComponents.rows}
                     label="Rows"
@@ -129,19 +127,11 @@ export default class FormCinemaRoomInfo extends Component{
                     handleValueChange={this.handleColumnsChange}
                     showHint={this.state.showHint}
                 />
-                <Button 
-                    className={this.state.displayedComponents.submit ? '' : 'hidden'}
-                    onClick={this.handleSubmitClick}
-                >
-                    Create
-                </Button>
-                <Button 
-                    className={this.state.displayedComponents.cancel ? '' : 'hidden'}
-                    bsStyle="default"
-                    onClick={this.handleCancelClick}
-                >
-                    Cancel
-                </Button>
+                <SubmitCancelButtons
+                    isShown={this.state.displayedComponents.buttons ? true : false}
+                    handleSubmitClick={this.handleSubmitClick}
+                    handleCancelClick={this.handleCancelClick}
+                />
             </fieldset>
         );
     }

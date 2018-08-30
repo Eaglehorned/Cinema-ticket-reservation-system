@@ -1,13 +1,13 @@
 import TokenService from '../Services/TokenService';
-import ApplicationService from '../Services/ApplicationService';
+import ReceivedDataProcessing from '../components/ReceivedDataProcessing';
 
 export default class CinemaDataAccess{
 
     static getCinemaList = () =>{
         return CinemaDataAccess.getCinemaListFetch()
-        .then(ApplicationService.handleRequstError)
-        .then(ApplicationService.parseJson)
-        .then(ApplicationService.getRequsetedData);
+        .then(ReceivedDataProcessing.handleRequstError)
+        .then(ReceivedDataProcessing.parseJson)
+        .then(ReceivedDataProcessing.getRequsetedData);
     }
 
     static getCinemaListFetch = () =>{
@@ -22,9 +22,9 @@ export default class CinemaDataAccess{
 
     static getCinema = (id) =>{
         return CinemaDataAccess.getCinemaFetch(id)
-        .then(ApplicationService.handleRequstError)
-        .then(ApplicationService.parseJson)
-        .then(ApplicationService.getRequsetedData)
+        .then(ReceivedDataProcessing.handleRequstError)
+        .then(ReceivedDataProcessing.parseJson)
+        .then(ReceivedDataProcessing.getRequsetedData)
         .then(requestedData => CinemaDataAccess.compeleteCinemaInfoWithId(requestedData, id))
     }
 
@@ -41,8 +41,8 @@ export default class CinemaDataAccess{
 
     static createCinema = (cinemaInfo) =>{
         return CinemaDataAccess.createCinemaFetch(cinemaInfo)
-        .then(ApplicationService.handleRequstError)
-        .then((response) => CinemaDataAccess.formFullCinemaRoom(cinemaInfo, ApplicationService.getIdFromResponse(response)))
+        .then(ReceivedDataProcessing.handleRequstError)
+        .then((response) => CinemaDataAccess.formFullCinemaRoom(cinemaInfo, ReceivedDataProcessing.getIdFromResponse(response)))
     }
 
     static createCinemaFetch = (cinemaInfo) =>{
@@ -59,7 +59,7 @@ export default class CinemaDataAccess{
 
     static editCinema = (cinemaInfo) =>{
         return CinemaDataAccess.editCinemaFetch(cinemaInfo)
-        .then(ApplicationService.handleRequstError);
+        .then(ReceivedDataProcessing.handleRequstError);
     }
 
     static editCinemaFetch = (cinemaInfo) =>{
@@ -76,8 +76,8 @@ export default class CinemaDataAccess{
 
     static getCinemaRoom  = (cinemaid, cinemaRoomId) =>{
         return CinemaDataAccess.getCinemaRoomFetch(cinemaid, cinemaRoomId)
-        .then(ApplicationService.handleRequstError)
-        .then(ApplicationService.parseJson)
+        .then(ReceivedDataProcessing.handleRequstError)
+        .then(ReceivedDataProcessing.parseJson)
         .then((cinemaInfo) => CinemaDataAccess.handleReceivedCinemaRoomInfo(cinemaInfo, cinemaRoomId));
     }
 
@@ -94,8 +94,8 @@ export default class CinemaDataAccess{
 
     static createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
         return CinemaDataAccess.createCinemaRoomFetch(cinemaId, cinemaRoomInfo)
-        .then(ApplicationService.handleRequstError)
-        .then(response => CinemaDataAccess.formCinemaRoomInfo(cinemaRoomInfo.name, ApplicationService.getIdFromResponse(response)));
+        .then(ReceivedDataProcessing.handleRequstError)
+        .then(response => CinemaDataAccess.formCinemaRoomInfo(cinemaRoomInfo.name, ReceivedDataProcessing.getIdFromResponse(response)));
     }
 
     static createCinemaRoomFetch = (cinemaId, cinemaRoomInfo) =>{
@@ -115,7 +115,7 @@ export default class CinemaDataAccess{
 
     static editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
         return CinemaDataAccess.editCinemaRoomFetch(cinemaId, cinemaRoomId, cinemaRoomInfo)
-        .then(ApplicationService.handleRequstError);
+        .then(ReceivedDataProcessing.handleRequstError);
     }
 
     static editCinemaRoomFetch = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
@@ -132,8 +132,6 @@ export default class CinemaDataAccess{
             })
         });
     }
-
-///////////////////////////////////////////////////////////////////////////////////
 
     static handleReceivedCinemaRoomInfo(cinemaRoomInfo, cinemaRoomId){
         let cinemaInfo = {};

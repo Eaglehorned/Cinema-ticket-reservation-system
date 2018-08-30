@@ -21,14 +21,12 @@ export default class SeatTypeChange extends Component{
     render(){
         return(
             <fieldset>
-                <h1 
-                    className="font-bold"
-                >
+                <h1 className="font-bold">
                     Switch seat type
                 </h1>
-                {this.state.chosenType === this.props.seatInfo.type ? 
-                    <p>Current type : {this.state.chosenType}</p> : 
-                    <p>Current type : <span className="font-bold font-italic">{this.state.chosenType}</span></p>
+                {this.state.chosenType === this.props.seatInfo.type 
+                    ? <p>Current type : {this.state.chosenType}</p>
+                    : <p>Current type : <span className="font-bold font-italic">{this.state.chosenType}</span></p>
                 }
                 <p>Seat row : {this.props.seatInfo.row + 1}</p>
                 <p>Seat column : {this.props.seatInfo.column + 1}</p> 

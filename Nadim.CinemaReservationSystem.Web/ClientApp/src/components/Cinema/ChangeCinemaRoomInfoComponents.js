@@ -2,6 +2,7 @@ import React from 'react';
 import { FormGroup } from 'react-bootstrap';
 import FormCinemaRoomInfo from './FormCinemaRoomInfo';
 import SeatsScheme from './SeatsScheme';
+import CreateCinemaRoomSeats from './CreateCinemaRoomSeats';
  
 const ChangeCinemaRoomInfoComponents = (props) =>{
     return(
@@ -21,15 +22,9 @@ const ChangeCinemaRoomInfoComponents = (props) =>{
             <legend>
                 Edit seats scheme name
             </legend>
-                <FormCinemaRoomInfo
+                <CreateCinemaRoomSeats
                     callBackReceiveCinemaRoomInfo={props.createSeatsArray}
-                    displayedComponents={{
-                        rows: true, 
-                        columns: true,
-                        submit: true
-                    }}
                     cinemaRoomInfo={props.cinemaRoomInfo}
-                    needToShowHint={true}
                 />
             </FormGroup>
             <FormGroup>

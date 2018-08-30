@@ -7,7 +7,8 @@ export default class MyAlert extends Component{
     render(){
         return(
             <Alert
-                bsStyle={`${this.props.alertStyle} alert-bottom`}
+                bsStyle={this.props.alertStyle}
+                className={`alert-bottom`}
                 onDismiss={this.props.callBackOnDismiss}
             >
                 <div className="font-bold-x-large">
