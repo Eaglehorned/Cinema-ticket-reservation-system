@@ -24,7 +24,8 @@ export default class FilmDataAccess{
         return FilmDataAccess.getFilmFetch(id)
         .then(ReceivedDataProcessingService.handleRequstError)
         .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
+        .then(ReceivedDataProcessingService.getRequsetedData)
+        .then((filmInfo) => FilmDataAccess.completeFilmInfoWithId(id, filmInfo));
     }
 
     static getFilmFetch = (id) =>{
@@ -71,5 +72,10 @@ export default class FilmDataAccess{
             },
             body: JSON.stringify(filmInfo)
         })
+    }
+
+    static completeFilmInfoWithId(filmId, filmInfo){
+        filmInfo.filmId = filmId;
+        return filmInfo;
     }
 }

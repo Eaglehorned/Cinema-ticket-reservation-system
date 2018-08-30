@@ -59,6 +59,7 @@ export default class CinemaService{
         return true;
     }
 
+    
     static validateCinemaInfo(displayedComponents, city, name){
         if (displayedComponents.city && !ValidationService.validateString(city)){
             return false;

@@ -11,7 +11,7 @@ export default class FormGeneralCinemaInfo extends Component{
         this.state = {
             city: this.props.cinemaInfo ? this.props.cinemaInfo.city : '',
             name: this.props.cinemaInfo ? this.props.cinemaInfo.name : '',
-            showHint: this.props.needToShowHint ? this.props.needToShowHint: false,
+            showHint: this.props.needToShowHint ? this.props.needToShowHint : false,
             displayedComponents: this.props.displayedComponents 
             ? this.props.displayedComponents 
             : {

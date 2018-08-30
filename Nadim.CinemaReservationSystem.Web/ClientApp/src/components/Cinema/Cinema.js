@@ -102,7 +102,7 @@ export default class Cinema extends Component{
         });
     }
 
-    handleChooseCreateCinemaAction = () =>{
+    handleChooseCreateCinemaOpeation = () =>{
         this.setState({
             chosenOperation: 'createCinema',
         });
@@ -122,7 +122,7 @@ export default class Cinema extends Component{
                 <DisplayCinemaList
                     list={this.state.cinemaList}
                     handleElementClick={this.handleChooseEditCinemaAction}
-                    handleListButtonClick={this.handleChooseCreateCinemaAction}
+                    handleListButtonClick={this.handleChooseCreateCinemaOpeation}
                 />
             </fieldset>
         );

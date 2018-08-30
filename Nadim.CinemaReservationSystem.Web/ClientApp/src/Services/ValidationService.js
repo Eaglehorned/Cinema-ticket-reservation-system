@@ -1,13 +1,13 @@
 export default class ValidationService{
 
     static showIsStringValid(showHint, str){
-        return !showHint || this.validateString(str);
+        return !showHint || ValidationService.validateString(str);
     }
 
     static intValidationErrorMessage(showHint, number){
         if (showHint){
             return number
-            ? (this.validateIntNumber(number)
+            ? (ValidationService.validateIntNumber(number)
                 ? ''
                 :'Data not valid'
             )
@@ -25,5 +25,23 @@ export default class ValidationService{
 
     static validateString = (str) =>{
         return str;
+    }
+
+    static validateStartAndEndDates = (startDate, endDate) =>{
+        return endDate.isAfter(startDate);
+    }
+
+    static showIsStartAndEndDatesValid = (showHint, startDate, endDate) =>{
+        return !showHint || ValidationService.validateStartAndEndDates(startDate, endDate);
+    }
+
+    static validateDuration = (duration) =>{
+        return duration.hours() !== 0
+        || duration.minutes() !== 0
+        || duration.seconds() !== 0;
+    }
+
+    static showIsDurationValid = (showHint, duration) =>{
+        return !showHint || ValidationService.validateDuration(duration);
     }
 }
