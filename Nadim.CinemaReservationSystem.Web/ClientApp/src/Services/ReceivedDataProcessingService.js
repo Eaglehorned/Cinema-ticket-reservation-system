@@ -1,4 +1,4 @@
-export default class ReceivedDataProcessing{
+export default class ReceivedDataProcessingService{
     static getRequsetedData = (parsedJson) =>{
         return (parsedJson.requestedData);
     }
@@ -32,6 +32,6 @@ export default class ReceivedDataProcessing{
     }
 
     static getIdFromResponse = (response) =>{
-        return response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length);
+        return parseInt(response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length), 10);
     }
 }

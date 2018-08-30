@@ -79,16 +79,20 @@ export default class Cinema extends Component{
             chosenOperation: 'editCinemaLoading'
         });
         CinemaService.createCinema(cinemaInfoForCreation)
-        .then(cinemaInfo => {
+        .then(cinemaId => {
             this.setState({
                 cinemaList: this.state.cinemaList.concat({
-                    name: cinemaInfo.info.name , 
-                    city: cinemaInfo.info.city, 
-                    cinemaId: cinemaInfo.info.cinemaId
+                    name: cinemaInfoForCreation.name , 
+                    city: cinemaInfoForCreation.city, 
+                    cinemaId: cinemaId
                 }),
-                chosenCinemaInfo: cinemaInfo,
+                chosenCinemaInfo: {
+                    info: {...cinemaInfoForCreation, cinemaId},
+                    cinemaRooms: []
+                },
                 chosenOperation: 'editCinema'
-            })
+            });
+            ApplicationService.informWithMessage('Cinema created.');
         })
         .catch(error => {
             this.setState({
