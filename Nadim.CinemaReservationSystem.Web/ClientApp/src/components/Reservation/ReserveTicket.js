@@ -113,7 +113,6 @@ export default class ReserveTicket extends Component{
                     });
                 }
             })
-
             this.setState({
                 seats: tempSeats,
                 lastTimeUpdated: new Date()
@@ -208,9 +207,7 @@ export default class ReserveTicket extends Component{
                     let tempSeatInfo = Object.assign({}, seatInfo);
                     tempSeatInfo.booked = true;
                     this.handleSeatClickFetch(tempSeatInfo)        
-                    .then(el =>{
-                        this.getUpdates();
-                    });
+                    .then(this.getUpdates);
                 }
             }
             else{
@@ -287,7 +284,7 @@ export default class ReserveTicket extends Component{
                         {this.props.session.info.cinema.name}
                     </div>
                     <div className="information-block">
-                        {this.props.session.info.beginTime.toLocaleString()}
+                        {new Date(this.props.session.info.beginTime).toLocaleString()}
                     </div>
                 </div>
                 {content}

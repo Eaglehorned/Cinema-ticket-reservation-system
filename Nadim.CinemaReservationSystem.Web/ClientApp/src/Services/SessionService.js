@@ -38,6 +38,16 @@ export default class SessionService{
         return tempSeatTypes;
     }
 
+    static completeSessionWithSeats = (session, seats) =>{
+        session.seats = seats;
+        return session;
+    }
+
+    static completeSessionWithInfo = (session, info) =>{
+        session.info = info;
+        return session;
+    }
+
     static validateSessionInfo = (
         chosenCinema, 
         chosenCinemaRoom, 
