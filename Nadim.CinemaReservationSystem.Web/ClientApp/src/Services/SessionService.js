@@ -22,6 +22,10 @@ export default class SessionService{
         return SessionDataAccess.getSessionSeats(sessionId);
     }
 
+    static getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
+        return SessionDataAccess.getSessionSeatsUpdates(sessionId, lastTimeUpdated);
+    }
+
     static updateSessionList = (sessionList, changedSessionId, changedSessionInfo) =>{
         const tempSessionList = sessionList;
         const tempSessionChangedElement = tempSessionList.find( el => el.sessionId === changedSessionId);
@@ -46,6 +50,42 @@ export default class SessionService{
     static completeSessionWithInfo = (session, info) =>{
         session.info = info;
         return session;
+    }
+
+    static updateSessionSeats = (seats, chosenSeats, updates) =>{
+        const updatesNotChosenHere = updates.filter(el =>{
+            return !chosenSeats.find(ch => ch.sessionSeatId === el.sessionSeatId);
+        })
+
+        updatesNotChosenHere.forEach(el => {
+            seats[el.row][el.column].booked = el.booked;
+        });
+
+        const updatesChosenHere = updates.filter(el =>{
+            return chosenSeats.find(ch => ch.sessionSeatId === el.sessionSeatId);
+        });
+
+        updatesChosenHere.forEach(el =>{
+            if (el.booked === false){
+                seats[el.row][el.column].chosen = false;
+            }
+        });
+
+        return seats;
+    }
+
+    static updateChosenSessionSeats = (chosenSeats, updates) =>{
+        const updatesChosenHere = updates.filter(el =>{
+            return chosenSeats.find(ch => ch.sessionSeatId === el.sessionSeatId);
+        })
+
+        updatesChosenHere.forEach(el =>{
+            if (el.booked === false){
+                chosenSeats = chosenSeats.splice(chosenSeats.findIndex(ch => ch.sessionSeatId === el.sessionSeatId), 1);
+            }
+        });
+
+        return chosenSeats;
     }
 
     static validateSessionInfo = (

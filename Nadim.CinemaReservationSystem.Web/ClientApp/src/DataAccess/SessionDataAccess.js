@@ -100,6 +100,25 @@ export default class SessionDataAccess{
         });
     }
 
+    static getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
+        return SessionDataAccess.getSessionSeatsUpdatesFetch(sessionId, lastTimeUpdated)
+        .then(ReceivedDataProcessingService.handleRequstError)
+        .then(ReceivedDataProcessingService.parseJson)
+        .then(ReceivedDataProcessingService.getRequsetedData);
+    }
+
+    static getSessionSeatsUpdatesFetch = (sessionId, lastTimeUpdated) =>{
+        return fetch(`api/sessions/${sessionId}/seats`,{
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`,
+                'If-Modified-Since': lastTimeUpdated.toUTCString()
+            }
+        });
+    }
+
     static formSessionInfoForRequest = (sessionInfo) =>{
         return new Promise ((resolve) => {
             resolve({

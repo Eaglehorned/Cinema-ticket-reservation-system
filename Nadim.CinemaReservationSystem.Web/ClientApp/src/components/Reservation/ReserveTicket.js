@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import ChooseSeats from './ChooseSeats';
 import ConfirmReservation from './ConfirmReservation';
 import moment from 'moment';
+import SessionService from '../../Services/SessionService';
+import ApplicationService from '../../Services/ApplicationService';
 
 export default class ReserveTicket extends Component{
     displayName = ReserveTicket.displayName;
@@ -61,72 +63,22 @@ export default class ReserveTicket extends Component{
     }
 
     getUpdates = () =>{
-        fetch(`api/sessions/${this.props.session.info.sessionId}/seats`,{
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`,
-                'If-Modified-Since': this.state.lastTimeUpdated.toUTCString()
-            }
-        })
-        .then(response =>{
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(parsedJson =>{
-            const updatesNotChosenHere = parsedJson.requestedData.filter(el =>{
-                return !this.state.chosenSeats.find(ch => ch.sessionSeatId === el.sessionSeatId);
-            })
-            let tempSeats = this.state.seats;
-
-            updatesNotChosenHere.forEach(el => {
-                tempSeats[el.row][el.column].booked = el.booked;
-            })
-            
-            const updatesChosenHere = parsedJson.requestedData.filter(el =>{
-                return this.state.chosenSeats.find(ch => ch.sessionSeatId === el.sessionSeatId);
-            })
-
-            let tempChosenSeats = this.state.chosenSeats;
-
-            updatesChosenHere.forEach(el =>{
-                if (el.booked === false){
-                    tempSeats[el.row][el.column].chosen = false;
-                    tempChosenSeats.splice(tempChosenSeats.findIndex(ch => ch.sessionSeatId === el.sessionSeatId), 1);
-                    this.setState({
-                        chosenSeats: tempChosenSeats
-                    });
-                }
-            })
+        SessionService.getSessionSeatsUpdates(this.props.session.info.sessionId, this.state.lastTimeUpdated)
+        .then(sessionSeatsUpdates =>{
             this.setState({
-                seats: tempSeats,
+                seats: SessionService.updateSessionSeats(
+                    this.state.seats,
+                    this.state.chosenSeats,
+                    sessionSeatsUpdates
+                ),
+                chosenSeats: SessionService.updateChosenSessionSeats(
+                    this.state.chosenSeats,
+                    sessionSeatsUpdates
+                ),
                 lastTimeUpdated: new Date()
             })
         })
-        .catch(error => {
-            this.setState({
-                chosenOperation: ''
-            });
-            this.props.callBackInformWithMessage({ 
-                text: error.message,
-                isError: true
-            });
-        });
+        .catch(error => ApplicationService.informWithErrorMessage(error));
     }
 
     handleSeatClickFetch = (seatInfo) =>{
