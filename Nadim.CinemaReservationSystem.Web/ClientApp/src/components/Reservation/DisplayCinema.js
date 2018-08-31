@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SessionDisplayInfoBox from '../Session/SessionDisplayInfoBox';
+import SessionListItem from '../Session/SessionListItem';
 
 export default class DisplayCinema extends Component{
     displayName = DisplayCinema.displayName;
@@ -11,15 +11,15 @@ export default class DisplayCinema extends Component{
                 <div className="list-container">
                     {
                         this.props.sessions.map((el)=>
-                            <SessionDisplayInfoBox
+                            <SessionListItem
                                 displayedComponents={{
                                     cinemaRoom: true,
                                     film: true,
                                     beginTime: true
                                 }}
                                 key={el.sessionId}
-                                sessionInfo={el}
-                                callBackHandleSessionAction={this.props.callBackHandleSessionAction}
+                                session={el}
+                                callBackFromParent={this.props.callBackHandleSessionAction}
                                 mode="reserve"
                             />
                         )

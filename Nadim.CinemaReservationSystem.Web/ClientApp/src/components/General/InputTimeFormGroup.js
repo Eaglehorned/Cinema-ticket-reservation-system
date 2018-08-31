@@ -1,14 +1,15 @@
 import React from 'react';
 import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
-import { DatePicker } from 'antd';
+import { TimePicker } from 'antd';
+import ValidationService from '../../Services/ValidationService';
 
-const InputDateFormGroup = (props) =>{
+const InputTimeFormGroup = (props) =>{
     return(
         <FormGroup
-            controlId={`form${props.label}Text`}
-            validationState={!props.showHint || props.isValid
+            validationState={ValidationService.showIsTimeValid(props.showHint, props.value)
                 ? null 
                 : 'error'}
+            controlId={`form${props.label}Text`}
         >
             <ControlLabel
                 className="font-bold-large"
@@ -16,21 +17,21 @@ const InputDateFormGroup = (props) =>{
                 {`${props.label} :`}
             </ControlLabel>
             <br/>
-            <DatePicker
+            <TimePicker
                 value={props.value}
                 onChange={props.handleValueChange}
             />
             { 
-                !props.showHint || props.isValid
+                ValidationService.showIsTimeValid(props.showHint, props.value)
                 ? ''
                 : <HelpBlock 
                     className="font-italic"
                 >
-                    {props.errorString}
+                    Time must be entered.
                 </HelpBlock> 
             }
-        </FormGroup>    
+        </FormGroup>
     );
 }
 
-export default InputDateFormGroup;
+export default InputTimeFormGroup;

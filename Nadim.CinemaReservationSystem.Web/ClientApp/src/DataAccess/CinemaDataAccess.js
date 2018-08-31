@@ -74,7 +74,43 @@ export default class CinemaDataAccess{
         });
     }
 
-    static getCinemaRoom  = (cinemaid, cinemaRoomId) =>{
+    static getCinemaRoomList = (cinemaId) =>{
+        return CinemaDataAccess.getCinemaRoomListFetch(cinemaId)
+        .then(ReceivedDataProcessingService.handleRequstError)
+        .then(ReceivedDataProcessingService.parseJson)
+        .then(ReceivedDataProcessingService.getRequsetedData)
+    }
+
+    static getCinemaRoomListFetch = (cinemaId) =>{
+        return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
+            method: 'GET',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`
+            }
+        });
+    }
+
+    static getCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
+        return CinemaDataAccess.getCinemaRoomSeatTypesFetch(cinemaId, cinemaRoomId)
+        .then(ReceivedDataProcessingService.handleRequstError)
+        .then(ReceivedDataProcessingService.parseJson)
+        .then(ReceivedDataProcessingService.getRequsetedData);
+    }
+
+    static getCinemaRoomSeatTypesFetch = (cinemaId, cinemaRoomId) =>{
+        return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}/seatTypes`, {
+            method: 'GET',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`
+            }
+        });
+    }
+
+    static getCinemaRoom = (cinemaid, cinemaRoomId) =>{
         return CinemaDataAccess.getCinemaRoomFetch(cinemaid, cinemaRoomId)
         .then(ReceivedDataProcessingService.handleRequstError)
         .then(ReceivedDataProcessingService.parseJson)
@@ -175,9 +211,9 @@ export default class CinemaDataAccess{
         return seatsArray;
     } 
 
-    static compeleteCinemaInfoWithId = (requestedData, id) =>{
-        requestedData.info.cinemaId = id;
-        return requestedData;
+    static compeleteCinemaInfoWithId = (cinemaInfo, id) =>{
+        cinemaInfo.info.cinemaId = id;
+        return cinemaInfo;
     }
     
     static formCinemaRoomInfo = (name, cinemaRoomId) =>{

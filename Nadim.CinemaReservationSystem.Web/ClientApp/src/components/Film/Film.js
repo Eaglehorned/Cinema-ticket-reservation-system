@@ -81,10 +81,12 @@ export default class Film extends Component{
         });
         FilmService.editFilm(this.state.chosenFilmInfo.filmId, filmInfo)
         .then(() => {
-            let tempFilmList = this.state.filmList;
-            tempFilmList.find((el) => el.filmId === this.state.chosenFilmInfo.filmId).name = filmInfo.name;
             this.setState({
-                filmList: tempFilmList
+                filmList: FilmService.updateFilmList(
+                    this.state.filmList, 
+                    this.state.chosenFilmInfo.filmId,
+                    filmInfo
+                )
             })
             ApplicationService.informWithMessage('Film information edited.');
         })

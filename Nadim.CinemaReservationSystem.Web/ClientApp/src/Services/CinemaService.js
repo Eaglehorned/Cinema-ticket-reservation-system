@@ -31,6 +31,14 @@ export default class CinemaService{
         return CinemaDataAccess.editCinemaRoom(cinemaId, cinemaRoomId, cinemaRoomInfo);
     }
 
+    static getCinemaRoomList = (cinemaId) =>{
+        return CinemaDataAccess.getCinemaRoomList(cinemaId);
+    }
+
+    static getCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
+        return CinemaDataAccess.getCinemaRoomSeatTypes(cinemaId, cinemaRoomId);
+    }
+
     static createSeatsArray(rows, columns){
         let seatsArray = [];
         for (let i = 0; i < rows; i++){
@@ -59,7 +67,6 @@ export default class CinemaService{
         return true;
     }
 
-    
     static validateCinemaInfo(displayedComponents, city, name){
         if (displayedComponents.city && !ValidationService.validateString(city)){
             return false;
@@ -68,5 +75,19 @@ export default class CinemaService{
             return false;
         }
         return true;
+    }
+
+    static updateCinemaList = (cinemaList, changedCinemaInfo) =>{
+        const tempCinemaList = cinemaList;
+        const tempChosenCinema = tempCinemaList.find((el) => el.cinemaId === changedCinemaInfo.cinemaId);
+        tempChosenCinema.name = changedCinemaInfo.name;
+        tempChosenCinema.city = changedCinemaInfo.city;
+        return tempCinemaList;
+    }
+
+    static updateCinemaRoomList = (cinemaRoomList, changedCinemaRoomId, changedCinemaRoomInfo) =>{
+        const tempCinemaRooms = cinemaRoomList;
+        tempCinemaRooms.find((el) => el.cinemaRoomId === changedCinemaRoomId).name = changedCinemaRoomInfo.name;
+        return tempCinemaRooms;
     }
 }

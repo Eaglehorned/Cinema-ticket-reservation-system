@@ -18,7 +18,7 @@ const InputDurationFormGroup = (props) =>{
             </ControlLabel>
             <br/>
             <TimePicker
-                defaultValue={props.value}
+                value={props.value}
                 onChange={props.handleValueChange}
             />
             { 

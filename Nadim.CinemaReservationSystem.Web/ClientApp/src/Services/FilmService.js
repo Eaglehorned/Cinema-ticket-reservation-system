@@ -50,4 +50,10 @@ export default class FilmService{
         && ValidationService.validateStartAndEndDates(startDate, endDate)
         && ValidationService.validateDuration(duration);
     }
+
+    static updateFilmList = (filmList, changedFilmId, changedFilmInfo) =>{
+        let tempFilmList = filmList;
+        tempFilmList.find((el) => el.filmId === changedFilmId).name = changedFilmInfo.name;
+        return tempFilmList;
+    }
 }

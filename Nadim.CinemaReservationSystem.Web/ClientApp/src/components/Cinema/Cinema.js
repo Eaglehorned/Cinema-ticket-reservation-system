@@ -33,12 +33,11 @@ export default class Cinema extends Component{
         });
         CinemaService.editCinema(cinemaInfo)
         .then(() => {
-            const tempCinemaList = this.state.cinemaList;
-            const tempChosenCinema = tempCinemaList.find((el) => el.cinemaId === cinemaInfo.cinemaId);
-            tempChosenCinema.name = cinemaInfo.name;
-            tempChosenCinema.city = cinemaInfo.city;
             this.setState({
-                cinemaList: tempCinemaList,
+                cinemaList: CinemaService.updateCinemaList(
+                    this.state.cinemaList,
+                    cinemaInfo
+                ),
                 chosenOperation: ''
             });
             ApplicationService.informWithMessage('Cinema information edited.');
@@ -117,14 +116,14 @@ export default class Cinema extends Component{
 
     renderActionsContent = () =>{
         return(
-            <fieldset>
+            <React.Fragment>
                 <h1>Cinema list</h1>
                 <DisplayCinemaList
                     list={this.state.cinemaList}
                     handleElementClick={this.handleChooseEditCinemaAction}
                     handleListButtonClick={this.handleChooseCreateCinemaOpeation}
                 />
-            </fieldset>
+            </React.Fragment>
         );
     }
 

@@ -56,10 +56,12 @@ export default class FormCinema extends Component{
         });
         CinemaService.editCinemaRoom(this.state.cinemaInfo.cinemaId, this.state.chosenCinemaRoomInfo.info.cinemaRoomId, cinemaRoomInfo)
         .then(() => {
-            const tempCinemaRooms = this.state.cinemaRooms;
-            tempCinemaRooms.find((el) => el.cinemaRoomId === this.state.chosenCinemaRoomInfo.info.cinemaRoomId).name = cinemaRoomInfo.name;
             this.setState({
-                cinemaRooms: tempCinemaRooms
+                cinemaRooms: CinemaService.updateCinemaRoomList(
+                    this.state.cinemaRooms,
+                    this.state.chosenCinemaRoomInfo.info.cinemaRoomId,
+                    cinemaRoomInfo
+                )
             });
             ApplicationService.informWithMessage('Cinema room edited.');
         })

@@ -1,12 +1,13 @@
 import React from 'react';
 import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
 import { DatePicker } from 'antd';
+import ValidationService from '../../Services/ValidationService';
 
-const InputDateFormGroup = (props) =>{
+const InputFutureDateFormGroup = (props) =>{
     return(
         <FormGroup
             controlId={`form${props.label}Text`}
-            validationState={!props.showHint || props.isValid
+            validationState={ValidationService.showIsFutureDateValid(props.showHint, props.value)
                 ? null 
                 : 'error'}
         >
@@ -21,16 +22,14 @@ const InputDateFormGroup = (props) =>{
                 onChange={props.handleValueChange}
             />
             { 
-                !props.showHint || props.isValid
-                ? ''
-                : <HelpBlock 
+                <HelpBlock 
                     className="font-italic"
                 >
-                    {props.errorString}
+                    {ValidationService.futureDateValidationErrorMessage(props.showHint, props.value)}
                 </HelpBlock> 
             }
         </FormGroup>    
     );
 }
 
-export default InputDateFormGroup;
+export default InputFutureDateFormGroup;

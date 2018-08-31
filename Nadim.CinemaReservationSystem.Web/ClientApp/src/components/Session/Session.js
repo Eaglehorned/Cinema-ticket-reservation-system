@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import FormSession from './FormSession';
-import { Button } from 'react-bootstrap';
-import SessionDisplayInfoBox from './SessionDisplayInfoBox';
+import SessionService from '../../Services/SessionService';
+import ApplicationService from '../../Services/ApplicationService';
+import DisplaySessionList from './DisplaySessionList';
 
 export default class Session extends Component{
     displayName = Session.displayName;
@@ -12,7 +13,6 @@ export default class Session extends Component{
             sessionList: [],
             chosenSessionInfo: undefined,
         }
-
         this.getSessionList();
     }
     
@@ -22,141 +22,46 @@ export default class Session extends Component{
         });
     }
 
-    getSessionList = () =>{
-        fetch('api/sessions', {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 500){
-                return response.json().then((err) => {
-                    throw new Error(`${err.details}`);
-                });
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(parsedJson => {
-            this.setState({
-                sessionList: parsedJson.requestedData,
-            });
-        })
-        .catch(error => this.props.callBackInformWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            })
-        );
+    handleChooseCreateCinemaOpeation = () =>{
+        this.setState({
+            chosenOperation: 'createSession',
+        });
     }
 
-    createSession = (receivedSessionInfo) =>{
+    getSessionList = () =>{
+        SessionService.getSessionList()
+        .then(requestedData => {
+            this.setState({
+                sessionList: requestedData,
+            });
+        })
+        .catch(error => ApplicationService.informWithErrorMessage(error));
+    }
+
+    createSession = (sessionInfoForCreation) =>{
         this.setState({
             chosenOperation: ''
-        })
-        fetch('api/sessions', {
-            method: 'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            },
-            body: JSON.stringify({
-                cinemaRoomId: receivedSessionInfo.cinemaRoom.cinemaRoomId,
-                filmId: receivedSessionInfo.film.filmId,
-                beginTime: receivedSessionInfo.beginTime,
-                sessionSeatTypePrices: receivedSessionInfo.sessionSeatTypePrices
-            })
-        })
-        .then(response => {
-            if (response.ok){
-                return response;
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(response => {
-            this.setState({
-                sessionList: this.state.sessionList.concat({
-                    cinema: receivedSessionInfo.cinema,
-                    cinemaRoom: receivedSessionInfo.cinemaRoom,
-                    film: receivedSessionInfo.film,
-                    beginTime: receivedSessionInfo.beginTime,
-                    sessionId: parseInt(response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length), 10)
-                })
-            });
-            this.props.callBackInformWithMessage('Session created.');
-        })
-        .catch(error => {
-            this.props.callBackInformWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            });
         });
+        SessionService.createSession(sessionInfoForCreation)
+        .then(sessionInfo => {
+            this.setState({
+                sessionList: this.state.sessionList.concat(
+                    sessionInfo
+                )
+            });
+            ApplicationService.informWithMessage('Session created.');
+        })
+        .catch(error => ApplicationService.informWithErrorMessage(error));
     }
 
     getSession = (sessionId) =>{
         this.setState({
             chosenOperation: 'editSessionLoading'
         });
-        fetch(`api/sessions/${sessionId}`,{
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }  
-        })
-        .then(parsedJson => {
+        SessionService.getSession(sessionId)
+        .then(requestedData => {
             this.setState({
-                chosenSessionInfo: parsedJson.requestedData,
+                chosenSessionInfo: requestedData,
                 chosenOperation: 'editSession'
             })
         })
@@ -164,92 +69,37 @@ export default class Session extends Component{
             this.setState({
                 chosenOperation: ''
             });
-            this.props.callBackInformWithMessage({ 
-                text: error.message,
-                isError: true
-            });
+            ApplicationService.informWithErrorMessage(error);
         });
     }
 
-    editSession = (receivedSessionInfo) =>{
+    editSession = (sessionInfo) =>{
         this.setState({
             chosenOperation: ''
-        })
-        fetch(`api/sessions/${this.state.chosenSessionInfo.sessionId}`, {
-            method: 'PUT',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            },
-            body: JSON.stringify({
-                cinemaRoomId: receivedSessionInfo.cinemaRoom.cinemaRoomId,
-                filmId: receivedSessionInfo.film.filmId,
-                beginTime: receivedSessionInfo.beginTime,
-                sessionSeatTypePrices: receivedSessionInfo.sessionSeatTypePrices
-            })
-        })
-        .then(response => {
-            if (response.ok){
-                return response;
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(response => {
-            const tempSessionList = this.state.sessionList;
-            const tempSessionChangedElement = tempSessionList.find( el => el.sessionId === this.state.chosenSessionInfo.sessionId);
-            tempSessionChangedElement.cinemaName = receivedSessionInfo.cinema.name;
-            tempSessionChangedElement.cinemaCity = receivedSessionInfo.cinema.city;
-            tempSessionChangedElement.cinemaRoomName = receivedSessionInfo.cinemaRoom.name;
-            tempSessionChangedElement.filmName = receivedSessionInfo.film.name;
-            tempSessionChangedElement.beginTime = receivedSessionInfo.beginTime;
-            this.setState({
-                sessionList: tempSessionList
-            });
-            this.props.callBackInformWithMessage('Session edited.');
-        })
-        .catch(error => {
-            this.props.callBackInformWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            });
         });
+        SessionService.editSession(this.state.chosenSessionInfo.sessionId, sessionInfo)
+        .then(() => {
+            this.setState({
+                sessionList: SessionService.updateSessionList(
+                    this.state.sessionList,
+                    this.state.chosenSessionInfo.sessionId,
+                    sessionInfo
+                )
+            });
+            ApplicationService.informWithMessage('Session edited.');
+        })
+        .catch(error => ApplicationService.informWithErrorMessage(error));
     }
 
-    renderActionsContent(){
+    renderSessionList = () =>{
         return(
             <React.Fragment>
                 <h1>Session list</h1>
-                <div className="list-container">
-                    {
-                        this.state.sessionList.map((el)=>
-                            <SessionDisplayInfoBox
-                                key={el.sessionId}
-                                sessionInfo={el}
-                                callBackHandleSessionAction={this.getSession}
-                            />
-                        )
-                    }
-                <Button
-                    bsStyle="primary"
-                    onClick={ () => this.setState({ chosenOperation: 'createSession' })}
-                >
-                    Create session
-                </Button>
-                </div>
+                <DisplaySessionList
+                    list={this.state.sessionList}
+                    handleElementClick={this.getSession}
+                    handleListButtonClick={this.handleChooseCreateCinemaOpeation}
+                />
             </React.Fragment>
         );
     }
@@ -282,7 +132,7 @@ export default class Session extends Component{
                     />
                 );
             default:
-                return this.renderActionsContent();
+                return this.renderSessionList();
         }
     }
 

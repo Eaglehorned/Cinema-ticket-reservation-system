@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
-import { Button, DropdownButton, MenuItem, FormGroup, ControlLabel, HelpBlock } from 'react-bootstrap';
-import { DatePicker, TimePicker } from 'antd';
-import SeatTypePrice from './SeatTypePriceBox';
+import CinemaService from '../../Services/CinemaService';
+import ApplicationService from '../../Services/ApplicationService';
+import FilmService from '../../Services/FilmService';
 import moment from 'moment';
+import SessionService from '../../Services/SessionService';
+import InputFutureDateFormGroup from '../General/InputFutureDateFormGroup';
+import InputTimeFormGroup from '../General/InputTimeFormGroup';
+import ChooseCinemaWithDropDown from '../Cinema/ChooseCinemaWithDropDown';
+import SubmitCancelButtons from '../General/SubmitCancelButtons';
+import ChooseCinemaRoomWithDropDown from '../Cinema/ChooseCinemaRoomWithDropDown';
+import ChooseFilmWithDropDown from '../Film/ChooseFilmWithDropDown';
+import DisplaySeatTypesList from './DisplaySeatTypesList';
 import '../../styles/Session.css';
 
 export default class FormSession extends Component{
@@ -24,128 +32,30 @@ export default class FormSession extends Component{
             showHint: this.props.sessionInfo ? true : false
         }
         
-        this.getCinemaList();
+        this.getCinemaList()
+        .then(() =>{
+            if (this.props.sessionInfo){
+                this.getCinemaRoomList(this.props.sessionInfo.cinema.cinemaId);
+            }
+        });
         this.getFilmList();
-
-        if (this.props.sessionInfo){
-            this.getCinemaRoomList(this.props.sessionInfo.cinema.cinemaId);
-        }
     }
 
-    validateDoubleNumber(number){
-        const result = /^\d+([.,]\d+)?$/;
-        return result.test(String(number));
-    }
-
-    informWithMessage = (message) =>{
-        this.props.callBackInformWithMessage(message);
-    }
-
-    validateSeatTypePrices = () =>{
-        let result = true;
-        this.state.seatTypes.forEach(el => result = result && this.validateDoubleNumber(el.price));
-        return result;
-    }
-
-    generateBeginTimeHelpBlock = () =>{
-        let message = '';
-        if (this.state.showHint){
-            if (!this.state.beginTime){
-                message = 'Begin time not entered.';
-            }
-            if (this.state.beginTime.date() <= moment().date()){
-                message = 'Begin date cant be today or in the past.';
-            }
-        }
-        return(
-            <HelpBlock 
-                className="font-italic"
-            >
-                {message}
-            </HelpBlock> 
-        );
-    }
-
-    allowSubmit = () =>{
-        if (this.state.chosenCinema
-        && this.state.chosenCinemaRoom
-        && this.state.chosenFilm
-        && this.state.beginTime
-        && this.validateSeatTypePrices()
-        && this.state.beginTime.date() > moment().date()){
-            return true;
-        }
-        return false;
-    }
-
-    getCinemaList = () =>{
-        fetch('api/cinemas', {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        }).then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        }).then(parsedJson => {
-                this.setState({
-                    cinemaList: parsedJson.requestedData
-                });
-            })
-            .catch(error => this.informWithMessage(
-                { 
-                    text: error.message,
-                    isError: true
-                })
-            );
+    getCinemaList = () =>{ 
+        return CinemaService.getCinemaList()
+        .then(requestedData => {
+            this.setState({
+                cinemaList: requestedData
+            });
+        })
+        .catch(error => ApplicationService.informWithErrorMessage(error));
     }
 
     getCinemaRoomList = (cinemaId) =>{
-        fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(parsedJson => {
+        CinemaService.getCinemaRoomList(cinemaId)
+        .then(requestedData => {
             this.setState({
-                chosenCinemaRoomsList: parsedJson.requestedData
+                chosenCinemaRoomsList: requestedData
             });
         })
         .catch(error => this.informWithMessage(
@@ -157,84 +67,26 @@ export default class FormSession extends Component{
     }
 
     getFilmList = () => {
-        fetch('api/films', {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        }).then(response => {
-                if (response.ok){
-                    return response.json();
-                }
-                if (response.status === 400){
-                    return response.json().then((err) => {
-                        throw new Error(`Bad request. ${err.details}`);
-                    });
-                }
-                if (response.status === 401){
-                    throw new Error('You need to authorize to do that action.');
-                }
-                if (response.status === 404){
-                    return response.json().then((err) => {
-                        throw new Error(`Not found. ${err.details}`);
-                    });
-                }
-            }).then(parsedJson => {
-                    this.setState({
-                        filmList: parsedJson.requestedData,
-                    });
-                })
-                .catch(error => this.informWithMessage(
-                    { 
-                        text: error.message,
-                        isError: true
-                    })
-                );
+        FilmService.getFilmList()
+        .then(requestedData => {
+            this.setState({
+                filmList: requestedData,
+            });
+        })
+        .catch(error => ApplicationService.informWithErrorMessage(error));
     }
 
     getSeatTypes = (cinemaRoomId) => {
-        fetch(`api/cinemas/${this.state.chosenCinema.cinemaId}/cinemaRooms/${cinemaRoomId}/seatTypes`, {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(parsedJson => {
+        CinemaService.getCinemaRoomSeatTypes(this.state.chosenCinema.cinemaId, cinemaRoomId)
+        .then(requestedData => {
             this.setState({
-                seatTypes: parsedJson.requestedData.map((el) => {
+                seatTypes: requestedData.map((el) => {
                      el.price = ''; 
                      return el;
-                    }),
+                    })
             });
         })
-        .catch(error => this.informWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            })
-        );
+        .catch(error => ApplicationService.informWithErrorMessage(error));
     }
 
     handleSelectCinema = (eventKey) =>{
@@ -270,15 +122,21 @@ export default class FormSession extends Component{
     }
 
     handleChangePrice = (seatTypeInfo) =>{
-        let tempSeatTypes = this.state.seatTypes;
-        tempSeatTypes.find((el) => el.seatTypeId === seatTypeInfo.seatTypeId).price = seatTypeInfo.price;
         this.setState({
-            seatTypes: tempSeatTypes
+            seatTypes: SessionService.updateSeatTypesList(this.state.seatTypes, seatTypeInfo)
         });
     }
 
     handleSubmitClick = () =>{
-        if (this.allowSubmit()){
+        if (
+            SessionService.validateSessionInfo(
+                this.state.chosenCinema,
+                this.state.chosenCinemaRoom,
+                this.state.chosenFilm,
+                this.state.beginTime,
+                this.state.seatTypes
+            )
+        ){
             this.props.callBackReceiveSessionInfo({
                 cinema: this.state.chosenCinema,
                 cinemaRoom: this.state.chosenCinemaRoom,
@@ -296,199 +154,39 @@ export default class FormSession extends Component{
         this.props.callBackCancel();
     }
 
-
-    renderChooseCinemaDropDown = () =>{
-        return(
-            <React.Fragment>
-                <DropdownButton
-                    bsStyle="default"
-                    title="Choose cinema"
-                    id={"choose-cinema-dropdown"}
-                >
-                    {
-                        this.state.cinemaList.map((el, i) => 
-                            <MenuItem
-                                key={i}
-                                eventKey={i}
-                                onSelect={this.handleSelectCinema}
-                            >
-                                {`${el.name}, ${el.city}`}
-                            </MenuItem>
-                        )
-                    }
-                </DropdownButton>
-            </React.Fragment>
-        );
-    }
-
-    renderChooseCinemaRoomDropDown = () =>{
-        return(
-            <React.Fragment>
-                <DropdownButton
-                    bsStyle="default"
-                    title="Choose cinema room"
-                    id={"choose-cinema-room-dropdown"}
-                    disabled={this.state.chosenCinemaRoomsList.length === 0}
-                >
-                    {
-                        this.state.chosenCinemaRoomsList.map((el, i) => 
-                            <MenuItem
-                                key={i}
-                                eventKey={i}
-                                onSelect={this.handleSelectCinemaRoom}
-                            >
-                                {` ${el.name}`}
-                            </MenuItem>
-                        )
-                    }
-                </DropdownButton>
-            </React.Fragment>   
-        );
-    }
-
-    renderChooseFilmDropDown = () =>{
-        return(
-            <React.Fragment>
-                <DropdownButton
-                    bsStyle="default"
-                    title="Choose film"
-                    id={"choose-film-dropdown"}
-                    disabled={this.state.filmList.length === 0}
-                >
-                    {
-                        this.state.filmList.map((el, i) => 
-                            <MenuItem
-                                key={i}
-                                eventKey={i}
-                                onSelect={this.handleSelectFilm}
-                            >
-                                {` ${el.name}`}
-                            </MenuItem>
-                        )
-                    }
-                </DropdownButton>
-            </React.Fragment>   
-        );
-    }
-
     renderGeneralInfoInputContent = () =>{
         return(
             <fieldset>
-                <FormGroup
-                    controlId="formChooseCinema"
-                    validationState={!this.state.showHint || this.state.chosenCinema ? null : 'error'}
-                >
-                    <div>
-                        <ControlLabel
-                            className="font-large"
-                        >
-                            Cinema :
-                            {
-                                this.state.chosenCinema 
-                                ? ` ${this.state.chosenCinema.name}, ${this.state.chosenCinema.city}`
-                                : ''
-                            }
-                        </ControlLabel>
-                    </div>
-                    {this.renderChooseCinemaDropDown()}
-                    {
-                        !this.state.showHint || this.state.chosenCinema
-                        ? ''
-                        : <HelpBlock 
-                            className="font-italic"
-                        >
-                            Cinema not chosen.
-                        </HelpBlock> 
-                    }
-                </FormGroup>
-                <FormGroup
-                    controlId="formChooseCinemaRoom"
-                    validationState={!this.state.showHint || this.state.chosenCinemaRoom ? null : 'error'}
-                >
-                    <div>
-                        <ControlLabel
-                            className="font-large"
-                        >
-                            Cinema room : 
-                            {
-                                this.state.chosenCinemaRoom 
-                                ? ` ${this.state.chosenCinemaRoom.name}`
-                                : ''
-                            }
-                        </ControlLabel>
-                    </div>
-                    {this.renderChooseCinemaRoomDropDown()}
-                    {
-                        !this.state.showHint || this.state.chosenCinemaRoom
-                        ? ''
-                        : <HelpBlock 
-                            className="font-italic"
-                        >
-                            Cinema room not chosen.
-                        </HelpBlock> 
-                    }
-                </FormGroup>
-                <FormGroup
-                    controlId="formChooseFilm"
-                    validationState={!this.state.showHint || this.state.chosenFilm ? null : 'error'}
-                >
-                    <div>
-                        <ControlLabel
-                            className="font-large"
-                        >
-                            Film : 
-                            {
-                                this.state.chosenFilm 
-                                ? ` ${this.state.chosenFilm.name}`
-                                : ''
-                            }
-                        </ControlLabel>
-                    </div>
-                    {this.renderChooseFilmDropDown()}
-                    {
-                        !this.state.showHint || this.state.chosenFilm
-                        ? ''
-                        : <HelpBlock 
-                            className="font-italic"
-                        >
-                            Cinema not chosen.
-                        </HelpBlock> 
-                    }
-                </FormGroup>
-                <FormGroup
-                    controlId="formBeginDate"
-                    validationState={!this.state.showHint 
-                        || (this.state.beginTime
-                        && this.state.beginTime.date() > moment().date())
-                        ? null 
-                        : 'error'}
-                >
-                    <ControlLabel
-                        className="font-bold-large"
-                    >
-                        Date :
-                    </ControlLabel>
-                    <br/>
-                    <DatePicker
-                        onChange={this.handleChangeBeginTime}
-                        value={this.state.beginTime}
-                    />
-                    {this.generateBeginTimeHelpBlock()}
-                </FormGroup>
-                <FormGroup
-                    controlId="formBeginTime"
-                >
-                    <ControlLabel
-                        className="font-bold-large"
-                    >
-                        Time :
-                    </ControlLabel>
-                    <br/>
-                    <TimePicker
-                        onChange={this.handleChangeBeginTime}
-                        value={this.state.beginTime}
-                    />
-                </FormGroup>
+                <ChooseCinemaWithDropDown
+                    showHint={this.state.showHint}
+                    chosenCinema={this.state.chosenCinema}
+                    list={this.state.cinemaList}
+                    handleElementSelect={this.handleSelectCinema}
+                />
+                <ChooseCinemaRoomWithDropDown
+                    showHint={this.state.showHint}
+                    chosenCinemaRoom={this.state.chosenCinemaRoom}
+                    list={this.state.chosenCinemaRoomsList}
+                    handleElementSelect={this.handleSelectCinemaRoom}
+                />
+                <ChooseFilmWithDropDown
+                    showHint={this.state.showHint}
+                    chosenFilm={this.state.chosenFilm}
+                    list={this.state.filmList}
+                    handleElementSelect={this.handleSelectFilm}
+                />
+                <InputFutureDateFormGroup
+                    label="Begin date"
+                    value={this.state.beginTime}
+                    handleValueChange={this.handleChangeBeginTime}
+                    showHint={this.state.showHint}
+                />
+                <InputTimeFormGroup
+                    label="Time"
+                    value={this.state.beginTime}
+                    handleValueChange={this.handleChangeBeginTime}
+                    showHint={this.state.showHint}
+                />
             </fieldset>
         );
     }
@@ -496,18 +194,11 @@ export default class FormSession extends Component{
     renderSetSeatTypePrices = () =>{
         return(
             <React.Fragment>
-                <div className="list-container">
-                    {
-                        this.state.seatTypes.map((el)=>
-                            <SeatTypePrice
-                                key={el.seatTypeId}
-                                showHint={this.state.showHint}
-                                seatType={el}
-                                callBackChangePrice={this.handleChangePrice}
-                            />
-                        )
-                    }
-                </div>
+                <DisplaySeatTypesList
+                    showHint={this.state.showHint}
+                    handleElementChange={this.handleChangePrice}
+                    list={this.state.seatTypes}
+                />
             </React.Fragment>
         );
     }
@@ -526,19 +217,10 @@ export default class FormSession extends Component{
                         {this.renderSetSeatTypePrices()}
                     </div>
                 </div>
-                <div className="button-container">
-                    <Button
-                        onClick={this.handleSubmitClick}
-                        bsStyle="primary"
-                    >
-                        Submit
-                    </Button>
-                    <Button
-                        onClick={this.handleCancelClick}
-                    >
-                        Cancel
-                    </Button>
-                </div>
+                <SubmitCancelButtons
+                    handleSubmitClick={this.handleSubmitClick}
+                    handleCancelClick={this.handleCancelClick}
+                />
             </React.Fragment>
         );
     }
