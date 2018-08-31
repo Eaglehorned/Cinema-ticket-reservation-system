@@ -18,6 +18,10 @@ export default class SessionService{
         return SessionDataAccess.editSession(id, sessionInfo);
     }
 
+    static getSessionSeats = (sessionId) =>{
+        return SessionDataAccess.getSessionSeats(sessionId);
+    }
+
     static updateSessionList = (sessionList, changedSessionId, changedSessionInfo) =>{
         const tempSessionList = sessionList;
         const tempSessionChangedElement = tempSessionList.find( el => el.sessionId === changedSessionId);

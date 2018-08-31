@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import SearchBar from './SearchBar';
 import ReserveTicket from './ReserveTicket';
 import DisplaySessions from './DisplaySessions';
+import SessionService from '../../Services/SessionService';
+import ApplicationService from '../../Services/ApplicationService';
 import '../../styles/Reservation.css';
 
 export default class Reservation extends Component{
@@ -69,67 +71,69 @@ export default class Reservation extends Component{
     }
 
     getSessionSeats = (sessionId) =>{
-        fetch(`api/sessions/${sessionId}/seats`,{
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(parsedJson => {
-            let tempSession = this.state.session;
-            tempSession.seats = parsedJson.requestedData;
+        // fetch(`api/sessions/${sessionId}/seats`,{
+        //     method: 'GET',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //         'Authorization': `bearer ${this.props.token}`
+        //     }
+        // })
+        // .then(response => {
+        //     if (response.ok){
+        //         return response.json();
+        //     }
+        //     if (response.status === 400){
+        //         return response.json().then((err) => {
+        //             throw new Error(`Bad request. ${err.details}`);
+        //         });
+        //     }
+        //     if (response.status === 401){
+        //         throw new Error('You need to authorize to do that action.');
+        //     }
+        //     if (response.status === 404){
+        //         return response.json().then((err) => {
+        //             throw new Error(`Not found. ${err.details}`);
+        //         });
+        //     }
+        // })
+        SessionService.getSessionSeats(sessionId)
+        .then(requestedData => {
+            console.log(requestedData);
+            // let tempSession = this.state.session;
+            // tempSession.seats = parsedJson.requestedData;
 
-            tempSession.seats.sort((a, b) => {
-                if (a.row === b.row){
-                    if (a.column > b.column){
-                        return 1;
-                    }
-                    if (a.column < b.column){
-                        return -1;
-                    } 
-                    return 0;
-                }
-                if (a.row > b.row){
-                    return 1;
-                }
-                return -1;
-            });
+            // tempSession.seats.sort((a, b) => {
+            //     if (a.row === b.row){
+            //         if (a.column > b.column){
+            //             return 1;
+            //         }
+            //         if (a.column < b.column){
+            //             return -1;
+            //         } 
+            //         return 0;
+            //     }
+            //     if (a.row > b.row){
+            //         return 1;
+            //     }
+            //     return -1;
+            // });
 
-            let rows = tempSession.seats[tempSession.seats.length - 1].row + 1;
-            let columns = tempSession.seats[tempSession.seats.length - 1].column + 1;
+            // let rows = tempSession.seats[tempSession.seats.length - 1].row + 1;
+            // let columns = tempSession.seats[tempSession.seats.length - 1].column + 1;
 
-            let seatsArray = [];
-            for (let i = 0; i < rows; i++){
-                seatsArray[i] = [];
-                for (let j = 0; j < columns; j++) {
-                    seatsArray[i].push(tempSession.seats[i * columns + j]);
-                }
-            }
+            // let seatsArray = [];
+            // for (let i = 0; i < rows; i++){
+            //     seatsArray[i] = [];
+            //     for (let j = 0; j < columns; j++) {
+            //         seatsArray[i].push(tempSession.seats[i * columns + j]);
+            //     }
+            // }
 
-            tempSession.seats = seatsArray;
+            // tempSession.seats = seatsArray;
 
             this.setState({
-                session : tempSession,
+                session : requestedData,
                 chosenOperation: 'reservation'
             })
         })
@@ -137,10 +141,7 @@ export default class Reservation extends Component{
             this.setState({
                 chosenOperation: ''
             });
-            this.props.callBackInformWithMessage({ 
-                text: error.message,
-                isError: true
-            });
+            ApplicationService.informWithErrorMessage(error);
         });
     }
 

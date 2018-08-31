@@ -76,6 +76,30 @@ export default class SessionDataAccess{
         });
     }
 
+    static getSessionSeats = (sessionId) =>{
+        return SessionDataAccess.getSessionSeatsFetch(sessionId)
+        .then(ReceivedDataProcessingService.handleRequstError)
+        .then(ReceivedDataProcessingService.parseJson)
+        .then(ReceivedDataProcessingService.getRequsetedData)
+        .then(ReceivedDataProcessingService.sortSeats)
+        .then((seats) => ReceivedDataProcessingService.convertSeatsArray(
+            seats,
+            ReceivedDataProcessingService.getSeatsRowsNumber(seats),
+            ReceivedDataProcessingService.getSeatsColumnsNumber(seats)
+        ));
+    }
+
+    static getSessionSeatsFetch = (sessionId) =>{
+        return fetch(`api/sessions/${sessionId}/seats`,{
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`
+            }
+        });
+    }
+
     static formSessionInfoForRequest = (sessionInfo) =>{
         return new Promise ((resolve) => {
             resolve({

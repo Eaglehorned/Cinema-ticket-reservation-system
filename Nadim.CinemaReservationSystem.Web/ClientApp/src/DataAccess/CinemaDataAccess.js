@@ -176,40 +176,15 @@ export default class CinemaDataAccess{
         cinemaInfo.info.cinemaRoomId = cinemaRoomId;
         cinemaInfo.seats = cinemaRoomInfo.requestedData.seats;
 
-        cinemaInfo.seats.sort((a, b) => {
-            if (a.row === b.row){
-                if (a.column > b.column){
-                    return 1;
-                }
-                if (a.column < b.column){
-                    return -1;
-                } 
-                return 0;
-            }
-            if (a.row > b.row){
-                return 1;
-            }
-            return -1;
-        });
+        cinemaInfo.seats = ReceivedDataProcessingService.sortSeats(cinemaRoomInfo.requestedData.seats);
 
-        cinemaInfo.info.rows = cinemaInfo.seats[cinemaInfo.seats.length - 1].row + 1;
-        cinemaInfo.info.columns = cinemaInfo.seats[cinemaInfo.seats.length - 1].column + 1;
+        cinemaInfo.info.rows = ReceivedDataProcessingService.getSeatsRowsNumber(cinemaInfo.seats);
+        cinemaInfo.info.columns = ReceivedDataProcessingService.getSeatsColumnsNumber(cinemaInfo.seats);
 
-        cinemaInfo.seats = CinemaDataAccess.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
+        cinemaInfo.seats = ReceivedDataProcessingService.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
 
         return cinemaInfo;
     }
-
-    static convertSeatsArray(seats, rows, columns){
-        let seatsArray = [];
-        for (let i = 0; i < rows; i++){
-            seatsArray[i] = [];
-            for (let j = 0; j < columns; j++) {
-                seatsArray[i].push(seats[i * columns + j]);
-            }
-        }
-        return seatsArray;
-    } 
 
     static compeleteCinemaInfoWithId = (cinemaInfo, id) =>{
         cinemaInfo.info.cinemaId = id;
