@@ -24,8 +24,7 @@ export default class CinemaDataAccess{
         return CinemaDataAccess.getCinemaFetch(id)
         .then(ReceivedDataProcessingService.handleRequstError)
         .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData)
-        .then(requestedData => CinemaDataAccess.compeleteCinemaInfoWithId(requestedData, id))
+        .then(ReceivedDataProcessingService.getRequsetedData);
     }
 
     static getCinemaFetch = (id) =>{
@@ -114,7 +113,8 @@ export default class CinemaDataAccess{
         return CinemaDataAccess.getCinemaRoomFetch(cinemaid, cinemaRoomId)
         .then(ReceivedDataProcessingService.handleRequstError)
         .then(ReceivedDataProcessingService.parseJson)
-        .then((cinemaInfo) => CinemaDataAccess.handleReceivedCinemaRoomInfo(cinemaInfo, cinemaRoomId));
+        .then(ReceivedDataProcessingService.getRequsetedData)
+        .then(CinemaDataAccess.handleReceivedCinemaRoomInfo);
     }
 
     static getCinemaRoomFetch = (cinemaId, cinemaRoomId) =>{
@@ -169,25 +169,20 @@ export default class CinemaDataAccess{
         });
     }
 
-    static handleReceivedCinemaRoomInfo(cinemaRoomInfo, cinemaRoomId){
+    static handleReceivedCinemaRoomInfo(requestedData){
         let cinemaInfo = {};
         cinemaInfo.info = {};
-        cinemaInfo.info.name = cinemaRoomInfo.requestedData.name;
-        cinemaInfo.info.cinemaRoomId = cinemaRoomId;
-        cinemaInfo.seats = cinemaRoomInfo.requestedData.seats;
+        cinemaInfo.info.name = requestedData.name;
+        cinemaInfo.info.cinemaRoomId = requestedData.cinemaRoomId;
+        cinemaInfo.seats = requestedData.seats;
 
-        cinemaInfo.seats = ReceivedDataProcessingService.sortSeats(cinemaRoomInfo.requestedData.seats);
+        cinemaInfo.seats = ReceivedDataProcessingService.sortSeats(requestedData.seats);
 
         cinemaInfo.info.rows = ReceivedDataProcessingService.getSeatsRowsNumber(cinemaInfo.seats);
         cinemaInfo.info.columns = ReceivedDataProcessingService.getSeatsColumnsNumber(cinemaInfo.seats);
 
         cinemaInfo.seats = ReceivedDataProcessingService.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
 
-        return cinemaInfo;
-    }
-
-    static compeleteCinemaInfoWithId = (cinemaInfo, id) =>{
-        cinemaInfo.info.cinemaId = id;
         return cinemaInfo;
     }
     

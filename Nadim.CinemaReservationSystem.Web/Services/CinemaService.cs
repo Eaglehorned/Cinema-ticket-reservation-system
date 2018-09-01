@@ -177,8 +177,9 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     .Where(c => c.CinemaId == id)
                     .Select( c => new ResponseCinemaFullInfo
                     {
-                        Info = new CinemaInfo
+                        Info = new ResponseCinemaInfo
                         {
+                            CinemaId = c.CinemaId,
                             Name = c.Name,
                             City = c.City,
                         },
@@ -289,11 +290,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public GetResult<ResponseCinemaRoomFullInfo> GetCinemaRoom(int cinemaId, int cinemaRoomId)
+        public GetResult<ResponseCinemaRoomInfo> GetCinemaRoom(int cinemaId, int cinemaRoomId)
         {
             if (!CinemaExists(cinemaId))
             {
-                return new GetResult<ResponseCinemaRoomFullInfo>
+                return new GetResult<ResponseCinemaRoomInfo>
                 {
                     ResultOk = false,
                     Details = "Such cinema does not exist."
@@ -302,20 +303,21 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             if (!CinemaRoomExists(cinemaRoomId))
             {
-                return new GetResult<ResponseCinemaRoomFullInfo>
+                return new GetResult<ResponseCinemaRoomInfo>
                 {
                     ResultOk = false,
                     Details = "Such cinema room does no exist."
                 };
             }
 
-            return new GetResult<ResponseCinemaRoomFullInfo>
+            return new GetResult<ResponseCinemaRoomInfo>
             {
                 ResultOk = true,
                 RequestedData = dbContext.CinemaRooms
                     .Where( r => r.CinemaRoomId == cinemaRoomId)
-                    .Select( r => new ResponseCinemaRoomFullInfo
+                    .Select( r => new ResponseCinemaRoomInfo
                         {
+                            CinemaRoomId = r.CinemaRoomId,
                             Name = r.Name,
                             Seats = r.Seats
                                 .Select( s => new SeatInfo {

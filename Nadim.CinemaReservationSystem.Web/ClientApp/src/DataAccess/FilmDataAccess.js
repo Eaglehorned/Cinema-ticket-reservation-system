@@ -2,6 +2,7 @@ import TokenService from '../Services/TokenService';
 import ReceivedDataProcessingService from '../Services/ReceivedDataProcessingService';
 
 export default class FilmDataAccess{
+
     static getFilmList = () =>{
         return FilmDataAccess.getFilmListFetch()
         .then(ReceivedDataProcessingService.handleRequstError)
@@ -24,8 +25,7 @@ export default class FilmDataAccess{
         return FilmDataAccess.getFilmFetch(id)
         .then(ReceivedDataProcessingService.handleRequstError)
         .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData)
-        .then((filmInfo) => FilmDataAccess.completeFilmInfoWithId(id, filmInfo));
+        .then(ReceivedDataProcessingService.getRequsetedData);
     }
 
     static getFilmFetch = (id) =>{
@@ -72,10 +72,5 @@ export default class FilmDataAccess{
             },
             body: JSON.stringify(filmInfo)
         })
-    }
-
-    static completeFilmInfoWithId(filmId, filmInfo){
-        filmInfo.filmId = filmId;
-        return filmInfo;
     }
 }
