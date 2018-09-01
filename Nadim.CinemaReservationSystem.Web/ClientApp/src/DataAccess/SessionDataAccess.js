@@ -1,5 +1,6 @@
 import TokenService from "../Services/TokenService";
 import ReceivedDataProcessingService from "../Services/ReceivedDataProcessingService";
+import moment from 'moment';
 
 export default class SessionDataAccess{
     static getSessionList = () =>{
@@ -116,6 +117,26 @@ export default class SessionDataAccess{
                 'Authorization': `bearer ${TokenService.getToken()}`,
                 'If-Modified-Since': lastTimeUpdated.toUTCString()
             }
+        });
+    }
+
+    static editSessionSeat = (sessionId, sessionSeatId, booked) =>{
+        return SessionDataAccess.editSessionSeatFetch(sessionId, sessionSeatId, booked)
+        .then(ReceivedDataProcessingService.handleRequstError);
+    }
+
+    static editSessionSeatFetch = (sessionId, sessionSeatId, booked) =>{
+        return fetch(`api/sessions/${sessionId}/seats/${sessionSeatId}`,{
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `bearer ${TokenService.getToken()}`
+            },
+            body: JSON.stringify({
+                booked: booked,
+                lastTimeUpdated: moment().format()
+            })
         });
     }
 

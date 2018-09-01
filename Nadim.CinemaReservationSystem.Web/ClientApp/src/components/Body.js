@@ -49,53 +49,16 @@ export default class Body extends Component{
         });
     }
 
-    renderCinemaContent = () => {
-        return(
-            <Cinema
-                token={this.props.token}
-                callBackInformWithMessage={this.informWithMessage}
-            />
-        );
-    }
-
-    renderFilmContent = () => {
-        return(
-            <Film
-                token={this.props.token}
-                callBackInformWithMessage={this.informWithMessage}
-            />
-        );
-    }
-
-    renderSessionContent = () => {
-        return(
-            <Session
-                token={this.props.token}
-                callBackInformWithMessage={this.informWithMessage}
-            />
-        );
-    }
-
-    renderReservationContent = () =>{
-        return(
-            <Reservation
-                token={this.props.token}
-                callBackInformWithMessage={this.props.callBackInformWithMessage}
-                userId={this.props.userId}
-            />
-        );
-    }
-
     renderContent = () => {
         switch(this.state.chosenOperation){
             case 'cinema': 
-                return this.renderCinemaContent();
+                return <Cinema/>;
             case 'film':
-                return this.renderFilmContent();
+                return <Film/>;
             case 'session': 
-                return this.renderSessionContent();
+                return <Session/>;
             case 'reservation':
-                return this.renderReservationContent();
+                return <Reservation userId={this.props.userId}/>;
             default: 
                 return '';
         }

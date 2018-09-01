@@ -88,8 +88,6 @@ export default class App extends Component {
                 />
                 <Body
                     role={this.state.shownRole}
-                    token={TokenService.getToken()}
-                    callBackInformWithMessage={this.informWithMessage}
                     userId={this.state.userId}
                 />
             </React.Fragment>

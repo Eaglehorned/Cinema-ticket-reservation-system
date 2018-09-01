@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import ChooseSeats from './ChooseSeats';
 import ConfirmReservation from './ConfirmReservation';
-import moment from 'moment';
 import SessionService from '../../Services/SessionService';
 import ApplicationService from '../../Services/ApplicationService';
+import ReservationServise from '../../Services/ReservationService';
 
 export default class ReserveTicket extends Component{
     displayName = ReserveTicket.displayName;
@@ -19,47 +19,15 @@ export default class ReserveTicket extends Component{
     }
 
     createOrder = () =>{
-        fetch('api/orders/', {
-            method: 'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            },
-            body: JSON.stringify({
-                userId: this.props.userId,
-                sessionId: this.props.session.info.sessionId,
-                sessionSeats: this.state.chosenSeats.map(el => el.sessionSeatId)
-            })
+        ReservationServise.createOrder(
+                this.props.userId,
+                this.props.session.info.sessionId,
+                this.state.chosenSeats
+        )
+        .then(() => {
+            ApplicationService.informWithMessage('You have successfully booked seats.')
         })
-        .then(response => {
-            if (response.ok){
-                return response;
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(response => {
-            this.props.callBackInformWithMessage('You have successfully booked seats.')
-        })
-        .catch(error => {
-            this.props.callBackInformWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            });
-        });
+        .catch(error => ApplicationService.informWithErrorMessage(error));
     }
 
     getUpdates = () =>{
@@ -82,93 +50,27 @@ export default class ReserveTicket extends Component{
     }
 
     handleSeatClickFetch = (seatInfo) =>{
-        return fetch(`api/sessions/${this.props.session.info.sessionId}/seats/${seatInfo.sessionSeatId}`,{
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            },
-            body: JSON.stringify({
-                booked: seatInfo.booked,
-                lastTimeUpdated: moment().format()
-            })
-        })
-        .then(response =>{
-            if (response.ok){
-                return response;
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(response =>{
-            if(seatInfo.booked){
-                this.LockSessionSeat(seatInfo);   
-            }
-            else{
-                this.UnlockSessionSeat(seatInfo)
-            }
-            return;
-        })
-        .catch(error => {
+        return SessionService.editSessionSeat(this.props.session.info.sessionId, seatInfo.sessionSeatId, seatInfo.booked)
+        .then(() =>{
             this.setState({
-                chosenOperation: ''
+                seats: SessionService.updateSessionSeatInSeatsArray(seatInfo, this.state.seats),
+                chosenSeats: SessionService.updateSessionSeatInChosenSeatsArray(seatInfo, this.state.chosenSeats)
             });
-            this.props.callBackInformWithMessage({ 
-                text: error.message,
-                isError: true
-            });
-        })        
-    }
-
-    LockSessionSeat = (seatInfo) =>{
-        let tempSeats = this.state.seats;
-        tempSeats[seatInfo.row][seatInfo.column].chosen = true;
-        this.setState({
-            seats: tempSeats,
-            chosenSeats: this.state.chosenSeats.concat(tempSeats[seatInfo.row][seatInfo.column])
-        });
-    }
-
-    UnlockSessionSeat = (seatInfo) =>{
-        let tempSeats = this.state.seats;
-        tempSeats[seatInfo.row][seatInfo.column].chosen = false;
-        let tempChosenSeats = this.state.chosenSeats;
-        tempChosenSeats.splice(tempChosenSeats.findIndex( el => el.sessionSeatId === seatInfo.sessionSeatId), 1);
-        this.setState({
-            seats: tempSeats,
-            chosenSeats: tempChosenSeats
-        });
+        })
+        .catch(error => ApplicationService.informWithErrorMessage(error));
     }
 
     handleSeatClick = (seatInfo) =>{
         if(!this.state.seats[seatInfo.row][seatInfo.column].booked){
             if(!this.state.chosenSeats.find(el => el.sessionSeatId === seatInfo.sessionSeatId)){
                 if(this.state.chosenSeats.length < 10){
-                    let tempSeatInfo = Object.assign({}, seatInfo);
-                    tempSeatInfo.booked = true;
-                    this.handleSeatClickFetch(tempSeatInfo)        
+                    this.handleSeatClickFetch(SessionService.formSeatInfo(seatInfo))        
                     .then(this.getUpdates);
                 }
             }
             else{
-                let tempSeatInfo = Object.assign({}, seatInfo);
-                tempSeatInfo.booked = false;
-                this.handleSeatClickFetch(tempSeatInfo)
-                .then(el =>{
-                    this.getUpdates();
-                });
+                this.handleSeatClickFetch(SessionService.formSeatInfo(seatInfo))
+                .then(this.getUpdates);
             }
         }
     }

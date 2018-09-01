@@ -26,6 +26,10 @@ export default class SessionService{
         return SessionDataAccess.getSessionSeatsUpdates(sessionId, lastTimeUpdated);
     }
 
+    static editSessionSeat = (sessionId, sessionSeatId, booked) =>{
+        return SessionDataAccess.editSessionSeat(sessionId, sessionSeatId, booked);
+    }
+
     static updateSessionList = (sessionList, changedSessionId, changedSessionInfo) =>{
         const tempSessionList = sessionList;
         const tempSessionChangedElement = tempSessionList.find( el => el.sessionId === changedSessionId);
@@ -50,6 +54,27 @@ export default class SessionService{
     static completeSessionWithInfo = (session, info) =>{
         session.info = info;
         return session;
+    }
+
+    static updateSessionSeatInSeatsArray = (seatInfo, seats) =>{
+        seats[seatInfo.row][seatInfo.column].chosen = seatInfo.booked;
+        return seats;
+    }
+
+    static updateSessionSeatInChosenSeatsArray = (seatInfo, chosenSeats) =>{
+        if(!seatInfo.booked){
+            chosenSeats.splice(chosenSeats.findIndex( el => el.sessionSeatId === seatInfo.sessionSeatId), 1);
+        }
+        else{
+            chosenSeats = chosenSeats.concat(seatInfo);
+        }
+        return chosenSeats ;
+    }
+
+    static formSeatInfo = (seatInfo) =>{
+       const tempSeatInfo = Object.assign({}, seatInfo);
+       tempSeatInfo.booked = !seatInfo.chosen;
+       return tempSeatInfo; 
     }
 
     static updateSessionSeats = (seats, chosenSeats, updates) =>{
