@@ -29,12 +29,15 @@ INSERT [dbo].[Users] ([UserId], [Email], [Password], [FirstName], [LastName], [R
 SET IDENTITY_INSERT [dbo].[Users] OFF
 SET IDENTITY_INSERT [dbo].[Sessions] ON
 
-INSERT [dbo].[Sessions] ([SessionId], [CinemaRoomId], [FilmId], [BeginTime]) VALUES (1, 1, 1, '2018-08-31T17:00:00')
+INSERT [dbo].[Sessions] ([SessionId], [CinemaRoomId], [FilmId], [BeginTime]) VALUES (1, 1, 1, '2018-08-29T17:00:00')
+INSERT [dbo].[Sessions] ([SessionId], [CinemaRoomId], [FilmId], [BeginTime]) VALUES (2, 1, 1, '2018-08-31T17:00:00')
 SET IDENTITY_INSERT [dbo].[Sessions] OFF
 SET IDENTITY_INSERT [dbo].[SessionSeatTypePrices] ON
 
 INSERT [dbo].[SessionSeatTypePrices] ([SessionSeatTypePriceId], [SessionId], [SeatTypeId], [Price]) VALUES(1, 1, 1, 5)
 INSERT [dbo].[SessionSeatTypePrices] ([SessionSeatTypePriceId], [SessionId], [SeatTypeId], [Price]) VALUES(2, 1, 2, 3)
+INSERT [dbo].[SessionSeatTypePrices] ([SessionSeatTypePriceId], [SessionId], [SeatTypeId], [Price]) VALUES(3, 2, 1, 4)
+INSERT [dbo].[SessionSeatTypePrices] ([SessionSeatTypePriceId], [SessionId], [SeatTypeId], [Price]) VALUES(4, 2, 2, 2)
 SET IDENTITY_INSERT [dbo].[SessionSeatTypePrices] OFF
 SET IDENTITY_INSERT [dbo].[SessionSeats]  ON
 
@@ -42,4 +45,8 @@ INSERT [dbo].[SessionSeats] ([SessionSeatId], [SessionId], [SeatId], [Booked], [
 INSERT [dbo].[SessionSeats] ([SessionSeatId], [SessionId], [SeatId], [Booked], [LastTimeUpdated], [OrderId]) VALUES(2, 1, 2, 0, '2018-08-22T14:43:02', NULL)
 INSERT [dbo].[SessionSeats] ([SessionSeatId], [SessionId], [SeatId], [Booked], [LastTimeUpdated], [OrderId]) VALUES(3, 1, 3, 0, '2018-08-22T14:43:02', NULL)
 INSERT [dbo].[SessionSeats] ([SessionSeatId], [SessionId], [SeatId], [Booked], [LastTimeUpdated], [OrderId]) VALUES(4, 1, 4, 0, '2018-08-22T14:43:02', NULL)
+INSERT [dbo].[SessionSeats] ([SessionSeatId], [SessionId], [SeatId], [Booked], [LastTimeUpdated], [OrderId]) VALUES(5, 2, 1, 0, '2018-08-22T14:43:02', NULL)
+INSERT [dbo].[SessionSeats] ([SessionSeatId], [SessionId], [SeatId], [Booked], [LastTimeUpdated], [OrderId]) VALUES(6, 2, 2, 0, '2018-08-22T14:43:02', NULL)
+INSERT [dbo].[SessionSeats] ([SessionSeatId], [SessionId], [SeatId], [Booked], [LastTimeUpdated], [OrderId]) VALUES(7, 2, 3, 0, '2018-08-22T14:43:02', NULL)
+INSERT [dbo].[SessionSeats] ([SessionSeatId], [SessionId], [SeatId], [Booked], [LastTimeUpdated], [OrderId]) VALUES(8, 2, 4, 0, '2018-08-22T14:43:02', NULL)
 SET IDENTITY_INSERT [dbo].[SessionSeats]  OFF
