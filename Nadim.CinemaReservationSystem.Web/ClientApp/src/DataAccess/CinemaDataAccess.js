@@ -1,13 +1,13 @@
 import TokenService from '../Services/TokenService';
-import ReceivedDataProcessingService from '../Services/ReceivedDataProcessingService';
+import ReceivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
 export default class CinemaDataAccess{
 
     static getCinemaList = () =>{
         return CinemaDataAccess.getCinemaListFetch()
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData);
     }
 
     static getCinemaListFetch = () =>{
@@ -22,9 +22,9 @@ export default class CinemaDataAccess{
 
     static getCinema = (id) =>{
         return CinemaDataAccess.getCinemaFetch(id)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData)
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData)
         .then(requestedData => CinemaDataAccess.compeleteCinemaInfoWithId(requestedData, id))
     }
 
@@ -41,8 +41,8 @@ export default class CinemaDataAccess{
 
     static createCinema = (cinemaInfo) =>{
         return CinemaDataAccess.createCinemaFetch(cinemaInfo)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.getIdFromResponse)
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.getIdFromResponse)
     }
 
     static createCinemaFetch = (cinemaInfo) =>{
@@ -59,7 +59,7 @@ export default class CinemaDataAccess{
 
     static editCinema = (cinemaInfo) =>{
         return CinemaDataAccess.editCinemaFetch(cinemaInfo)
-        .then(ReceivedDataProcessingService.handleRequstError);
+        .then(ReceivedDataProcessingHelper.handleRequstError);
     }
 
     static editCinemaFetch = (cinemaInfo) =>{
@@ -76,9 +76,9 @@ export default class CinemaDataAccess{
 
     static getCinemaRoomList = (cinemaId) =>{
         return CinemaDataAccess.getCinemaRoomListFetch(cinemaId)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData)
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData)
     }
 
     static getCinemaRoomListFetch = (cinemaId) =>{
@@ -94,9 +94,9 @@ export default class CinemaDataAccess{
 
     static getCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
         return CinemaDataAccess.getCinemaRoomSeatTypesFetch(cinemaId, cinemaRoomId)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData);
     }
 
     static getCinemaRoomSeatTypesFetch = (cinemaId, cinemaRoomId) =>{
@@ -112,8 +112,8 @@ export default class CinemaDataAccess{
 
     static getCinemaRoom = (cinemaid, cinemaRoomId) =>{
         return CinemaDataAccess.getCinemaRoomFetch(cinemaid, cinemaRoomId)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
         .then((cinemaInfo) => CinemaDataAccess.handleReceivedCinemaRoomInfo(cinemaInfo, cinemaRoomId));
     }
 
@@ -130,8 +130,8 @@ export default class CinemaDataAccess{
 
     static createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
         return CinemaDataAccess.createCinemaRoomFetch(cinemaId, cinemaRoomInfo)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(response => CinemaDataAccess.formCinemaRoomInfo(cinemaRoomInfo.name, ReceivedDataProcessingService.getIdFromResponse(response)));
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(response => CinemaDataAccess.formCinemaRoomInfo(cinemaRoomInfo.name, ReceivedDataProcessingHelper.getIdFromResponse(response)));
     }
 
     static createCinemaRoomFetch = (cinemaId, cinemaRoomInfo) =>{
@@ -151,7 +151,7 @@ export default class CinemaDataAccess{
 
     static editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
         return CinemaDataAccess.editCinemaRoomFetch(cinemaId, cinemaRoomId, cinemaRoomInfo)
-        .then(ReceivedDataProcessingService.handleRequstError);
+        .then(ReceivedDataProcessingHelper.handleRequstError);
     }
 
     static editCinemaRoomFetch = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
@@ -176,12 +176,12 @@ export default class CinemaDataAccess{
         cinemaInfo.info.cinemaRoomId = cinemaRoomId;
         cinemaInfo.seats = cinemaRoomInfo.requestedData.seats;
 
-        cinemaInfo.seats = ReceivedDataProcessingService.sortSeats(cinemaRoomInfo.requestedData.seats);
+        cinemaInfo.seats = ReceivedDataProcessingHelper.sortSeats(cinemaRoomInfo.requestedData.seats);
 
-        cinemaInfo.info.rows = ReceivedDataProcessingService.getSeatsRowsNumber(cinemaInfo.seats);
-        cinemaInfo.info.columns = ReceivedDataProcessingService.getSeatsColumnsNumber(cinemaInfo.seats);
+        cinemaInfo.info.rows = ReceivedDataProcessingHelper.getSeatsRowsNumber(cinemaInfo.seats);
+        cinemaInfo.info.columns = ReceivedDataProcessingHelper.getSeatsColumnsNumber(cinemaInfo.seats);
 
-        cinemaInfo.seats = ReceivedDataProcessingService.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
+        cinemaInfo.seats = ReceivedDataProcessingHelper.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
 
         return cinemaInfo;
     }

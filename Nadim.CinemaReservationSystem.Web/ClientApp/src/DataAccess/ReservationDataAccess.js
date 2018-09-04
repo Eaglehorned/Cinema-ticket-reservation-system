@@ -1,11 +1,11 @@
 import TokenService from "../Services/TokenService";
-import ReceivedDataProcessingService from "../Services/ReceivedDataProcessingService";
+import ReceivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper";
 
 export default class ReservationDataAccess{
     static createOrder = (userId, sessionId, chosenSessionSeats) =>{
         return ReservationDataAccess.createOrderFetch(userId, sessionId, chosenSessionSeats)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.getIdFromResponse);
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.getIdFromResponse);
     }
 
     static createOrderFetch = (userId, sessionId, chosenSessionSeats) =>{

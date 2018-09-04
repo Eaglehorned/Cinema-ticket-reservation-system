@@ -1,4 +1,4 @@
-export default class ReceivedDataProcessingService{
+export default class ReceivedDataProcessingHelper{
     static getRequsetedData = (parsedJson) =>{
         return (parsedJson.requestedData);
     }

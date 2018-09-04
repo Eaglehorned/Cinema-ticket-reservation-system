@@ -1,12 +1,12 @@
 import TokenService from '../Services/TokenService';
-import ReceivedDataProcessingService from '../Services/ReceivedDataProcessingService';
+import ReceivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
 export default class FilmDataAccess{
     static getFilmList = () =>{
         return FilmDataAccess.getFilmListFetch()
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData);
     }
 
     static getFilmListFetch = () =>{
@@ -22,9 +22,9 @@ export default class FilmDataAccess{
 
     static getFilm = (id) =>{
         return FilmDataAccess.getFilmFetch(id)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData)
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData)
         .then((filmInfo) => FilmDataAccess.completeFilmInfoWithId(id, filmInfo));
     }
 
@@ -41,8 +41,8 @@ export default class FilmDataAccess{
 
     static createFilm = (filmInfo) =>{
         return FilmDataAccess.createFilmFetch(filmInfo)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.getIdFromResponse);
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.getIdFromResponse);
     }
 
     static createFilmFetch = (filmInfo) =>{
@@ -59,7 +59,7 @@ export default class FilmDataAccess{
 
     static editFilm = (filmId, filmInfo) =>{
         return FilmDataAccess.editFilmFetch(filmId, filmInfo)
-        .then(ReceivedDataProcessingService.handleRequstError);
+        .then(ReceivedDataProcessingHelper.handleRequstError);
     }
 
     static editFilmFetch = (filmId, filmInfo) =>{

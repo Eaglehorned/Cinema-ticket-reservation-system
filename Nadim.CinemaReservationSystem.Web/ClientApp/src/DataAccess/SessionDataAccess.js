@@ -1,13 +1,13 @@
 import TokenService from "../Services/TokenService";
-import ReceivedDataProcessingService from "../Services/ReceivedDataProcessingService";
+import ReceivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper";
 import moment from 'moment';
 
 export default class SessionDataAccess{
     static getSessionList = () =>{
         return SessionDataAccess.getSessionListFetch()
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData);
     }
 
     static getSessionListFetch = () =>{
@@ -24,8 +24,8 @@ export default class SessionDataAccess{
     static createSession = (sessionInfo) =>{
         return SessionDataAccess.formSessionInfoForRequest(sessionInfo)
         .then(SessionDataAccess.createSessionFetch)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.getIdFromResponse)
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.getIdFromResponse)
         .then(id => SessionDataAccess.completeSessionInfoWithId(sessionInfo, id))
     }
 
@@ -43,9 +43,9 @@ export default class SessionDataAccess{
 
     static getSession = (id) =>{
         return SessionDataAccess.getSessionFetch(id)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData);
     }
 
     static getSessionFetch = (id) =>{
@@ -62,7 +62,7 @@ export default class SessionDataAccess{
     static editSession = (id, sessionInfo) =>{
         return SessionDataAccess.formSessionInfoForRequest(sessionInfo) 
         .then(sessionInfoForRequest => SessionDataAccess.editSessionFetch(id, sessionInfoForRequest))
-        .then(ReceivedDataProcessingService.handleRequstError);
+        .then(ReceivedDataProcessingHelper.handleRequstError);
     }
 
     static editSessionFetch = (id, sessionInfo) =>{
@@ -79,14 +79,14 @@ export default class SessionDataAccess{
 
     static getSessionSeats = (sessionId) =>{
         return SessionDataAccess.getSessionSeatsFetch(sessionId)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData)
-        .then(ReceivedDataProcessingService.sortSeats)
-        .then((seats) => ReceivedDataProcessingService.convertSeatsArray(
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData)
+        .then(ReceivedDataProcessingHelper.sortSeats)
+        .then((seats) => ReceivedDataProcessingHelper.convertSeatsArray(
             seats,
-            ReceivedDataProcessingService.getSeatsRowsNumber(seats),
-            ReceivedDataProcessingService.getSeatsColumnsNumber(seats)
+            ReceivedDataProcessingHelper.getSeatsRowsNumber(seats),
+            ReceivedDataProcessingHelper.getSeatsColumnsNumber(seats)
         ));
     }
 
@@ -103,9 +103,9 @@ export default class SessionDataAccess{
 
     static getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
         return SessionDataAccess.getSessionSeatsUpdatesFetch(sessionId, lastTimeUpdated)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
+        .then(ReceivedDataProcessingHelper.handleRequstError)
+        .then(ReceivedDataProcessingHelper.parseJson)
+        .then(ReceivedDataProcessingHelper.getRequsetedData);
     }
 
     static getSessionSeatsUpdatesFetch = (sessionId, lastTimeUpdated) =>{
@@ -122,7 +122,7 @@ export default class SessionDataAccess{
 
     static editSessionSeat = (sessionId, sessionSeatId, booked) =>{
         return SessionDataAccess.editSessionSeatFetch(sessionId, sessionSeatId, booked)
-        .then(ReceivedDataProcessingService.handleRequstError);
+        .then(ReceivedDataProcessingHelper.handleRequstError);
     }
 
     static editSessionSeatFetch = (sessionId, sessionSeatId, booked) =>{
