@@ -20,7 +20,6 @@ export default class ReserveTicket extends Component{
 
     createOrder = () =>{
         ReservationServise.createOrder(
-                this.props.userId,
                 this.props.session.info.sessionId,
                 this.state.chosenSeats
         )

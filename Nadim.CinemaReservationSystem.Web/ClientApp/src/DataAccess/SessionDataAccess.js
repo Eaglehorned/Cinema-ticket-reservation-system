@@ -1,4 +1,4 @@
-import TokenService from "../Services/TokenService";
+import authorizationService from "../Services/AuthorizationService";
 import ReceivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper";
 import moment from 'moment';
 import SeatsHelper from "../Helper/SeatsHelper";
@@ -17,7 +17,7 @@ export default class SessionDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             }
         });
     }
@@ -36,7 +36,7 @@ export default class SessionDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             },
             body: JSON.stringify(sessionInfo)
         })
@@ -55,7 +55,7 @@ export default class SessionDataAccess{
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             }
         });
     }
@@ -72,7 +72,7 @@ export default class SessionDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             },
             body: JSON.stringify(sessionInfo)
         });
@@ -97,7 +97,7 @@ export default class SessionDataAccess{
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             }
         });
     }
@@ -115,7 +115,7 @@ export default class SessionDataAccess{
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`,
+                'Authorization': `bearer ${authorizationService.getToken()}`,
                 'If-Modified-Since': lastTimeUpdated.toUTCString()
             }
         });
@@ -132,7 +132,7 @@ export default class SessionDataAccess{
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             },
             body: JSON.stringify({
                 booked: booked,

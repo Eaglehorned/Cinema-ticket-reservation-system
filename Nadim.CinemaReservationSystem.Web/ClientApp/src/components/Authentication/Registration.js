@@ -60,8 +60,8 @@ export default class Registration extends Component {
             lastName: this.state.lastName,
             userName: this.state.userName,
         })
-        .then(responseUserInfo =>
-            this.props.callBackFromParent(responseUserInfo)
+        .then(() =>
+            this.props.callBackFromParent()
         )
         .catch(error =>{
             this.setState({

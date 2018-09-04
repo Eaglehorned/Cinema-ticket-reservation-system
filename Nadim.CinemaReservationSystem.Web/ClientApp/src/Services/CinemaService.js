@@ -39,21 +39,6 @@ export default class CinemaService{
         return CinemaDataAccess.getCinemaRoomSeatTypes(cinemaId, cinemaRoomId);
     }
 
-    static createSeatsArray(rows, columns){
-        let seatsArray = [];
-        for (let i = 0; i < rows; i++){
-            seatsArray[i] = [];
-            for (let j = 0; j < columns; j++) {
-                seatsArray[i].push({
-                    row: i,
-                    column: j,
-                    type:'default'
-                });
-            }
-        }
-        return seatsArray;
-    }
-
     static validateCinemaRoomInfo(displayedComponents, rows, columns, name){
         if (displayedComponents.rows && !ValidationService.validateIntNumber(rows)){
             return false;

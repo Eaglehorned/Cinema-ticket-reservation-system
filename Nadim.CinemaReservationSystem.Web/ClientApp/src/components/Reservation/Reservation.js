@@ -92,7 +92,6 @@ export default class Reservation extends Component{
                         callBackInformWithMessage={this.props.callBackInformWithMessage}
                         session={this.state.session}
                         callBackCancelReservation={this.handleCancelOperation}
-                        userId={this.props.userId}
                     />
                 );
             case 'reservationLoading':

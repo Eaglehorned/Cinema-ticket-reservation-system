@@ -1,4 +1,4 @@
-import TokenService from '../Services/TokenService';
+import authorizationService from '../Services/AuthorizationService';
 import ReceivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 import SeatsHelper from '../Helper/SeatsHelper';
 
@@ -35,7 +35,7 @@ export default class CinemaDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             }
         });
     }
@@ -52,7 +52,7 @@ export default class CinemaDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             },
             body: JSON.stringify(cinemaInfo)
         })
@@ -69,7 +69,7 @@ export default class CinemaDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             },
             body: JSON.stringify(cinemaInfo)
         });
@@ -88,7 +88,7 @@ export default class CinemaDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             }
         });
     }
@@ -106,7 +106,7 @@ export default class CinemaDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             }
         });
     }
@@ -124,7 +124,7 @@ export default class CinemaDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             }
         });
     }
@@ -141,7 +141,7 @@ export default class CinemaDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             },
             body: JSON.stringify({
                 name: cinemaRoomInfo.name,
@@ -161,7 +161,7 @@ export default class CinemaDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             },
             body: JSON.stringify({
                 name: cinemaRoomInfo.name,

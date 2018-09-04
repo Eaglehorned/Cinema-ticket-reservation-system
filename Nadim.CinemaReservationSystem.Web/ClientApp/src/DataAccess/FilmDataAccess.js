@@ -1,4 +1,4 @@
-import TokenService from '../Services/TokenService';
+import authorizationService from '../Services/AuthorizationService';
 import ReceivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
 export default class FilmDataAccess{
@@ -15,7 +15,7 @@ export default class FilmDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             }
         });
     }
@@ -34,7 +34,7 @@ export default class FilmDataAccess{
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             }
         });
     }
@@ -51,7 +51,7 @@ export default class FilmDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             },
             body: JSON.stringify(filmInfo)
         });
@@ -68,7 +68,7 @@ export default class FilmDataAccess{
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
+                'Authorization': `bearer ${authorizationService.getToken()}`
             },
             body: JSON.stringify(filmInfo)
         })

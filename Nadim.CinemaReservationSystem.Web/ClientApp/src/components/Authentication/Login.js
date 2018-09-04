@@ -10,7 +10,6 @@ export default class Login extends Component {
         this.state = {
             email: '',
             password:'',
-            username:'',
             error:''
         }
     }
@@ -37,8 +36,8 @@ export default class Login extends Component {
             email: this.state.email,
             password: this.state.password,
         })
-        .then(responseUserInfo =>
-            this.props.callBackFromParent(responseUserInfo)
+        .then(() =>
+            this.props.callBackFromParent()
         )
         .catch(error =>{
             this.setState({

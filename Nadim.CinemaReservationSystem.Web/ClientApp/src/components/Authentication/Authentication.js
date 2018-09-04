@@ -5,13 +5,14 @@ import Registration from './Registration';
 import Modal from 'react-modal';
 import '../../styles/Authentication.css';
 import Logout from './Logout';
-import TokenService from '../../Services/TokenService';
+import authorizationService from '../../Services/AuthorizationService';
 
 export default class Authentication extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalIsOpen: false
+            modalIsOpen: false,
+            userAuthorized: authorizationService.getToken() ? true : false
         }
     }
 
@@ -27,36 +28,12 @@ export default class Authentication extends Component {
         });
     }
 
-    setUserInfo = (authenticationData) =>{
-        this.setState({
-            username: authenticationData.username,
-            role: authenticationData.role,
-            userId: authenticationData.userId,
-            modalIsOpen: false
-        });
-
-        localStorage.setItem('username', authenticationData.username);
-        localStorage.setItem('role', authenticationData.role);
-        localStorage.setItem('userId', authenticationData.userId);
-
-        this.props.callBackSetUserInfo({
-            username: authenticationData.username,
-            role: authenticationData.role,
-            userId: authenticationData.userId
-        });
-    }
-
-    handleAuthorization = (authenticationData) => {
-        this.setUserInfo(authenticationData);
+    handleAuthorization = () => {
+        this.setState({ userAuthorized: true });
     }
 
     handleLogout = () =>{
-        this.setUserInfo({
-            username: '',
-            role: '',
-            userId: ''
-        });
-        TokenService.setToken('')
+        this.setState({ userAuthorized: false });
     }
 
     renderAuthenticationContent = () =>{
@@ -91,16 +68,20 @@ export default class Authentication extends Component {
     renderLogoutContent = () =>{
         return(
             <Logout
-                username={this.props.username}
-                role={this.props.role}
                 callBackHandleLogout={this.handleLogout}
                 callBackSetShownRole={this.props.callBackSetShownRole}
             />
         );
     }
 
+    renderContent = () =>{
+        return this.state.userAuthorized
+        ? this.renderLogoutContent() 
+        : this.renderAuthenticationContent();
+    }
+
     render(){
-        const content = this.props.username ? this.renderLogoutContent() : this.renderAuthenticationContent();
+        const content = this.renderContent();
         return(
             <div className="authentication-container">
                 {content}

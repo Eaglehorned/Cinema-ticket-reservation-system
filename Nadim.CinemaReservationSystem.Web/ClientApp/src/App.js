@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import TokenService from './Services/TokenService';
 import ApplicationService from './Services/ApplicationService';
 import Header from './components/Header';
 import Body from './components/Body';
@@ -11,15 +10,10 @@ export default class App extends Component {
     constructor(){
         super();
         this.state={
-            username: localStorage.getItem('username'),
-            role: localStorage.getItem('role'),
-            shownRole: localStorage.getItem('role'),
-            userId: localStorage.getItem('userId'),
             show: false,
             infoMessage:'',
             alertStyle:'info'
         }
-        TokenService.setToken(localStorage.getItem('token'));
         ApplicationService.setInformWithMessage(this.informWithMessage);
     }
 
@@ -52,15 +46,6 @@ export default class App extends Component {
             }),4000);
     }
 
-    setUserInfo = (userInfo) =>{
-        this.setState({
-            username: userInfo.username,
-            role: userInfo.role,
-            userId: userInfo.userId,
-            shownRole: userInfo.role
-        });
-    }
-
     renderAlertMessage = () =>{
         return(
             <MyAlert
@@ -81,9 +66,6 @@ export default class App extends Component {
                     }
                 </div>
                 <Header
-                    username={this.state.username}
-                    role={this.state.role}
-                    callBackSetUserInfo={this.setUserInfo}
                     callBackSetShownRole={this.setShownRole}
                 />
                 <Body

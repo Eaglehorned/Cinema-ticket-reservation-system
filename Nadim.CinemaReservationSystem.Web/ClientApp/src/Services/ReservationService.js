@@ -2,8 +2,8 @@ import ReservationDataAccess from "../DataAccess/ReservationDataAccess";
 
 export default class ReservationServise{
     
-    static createOrder = (userId, sessionId, chosenSessionSeats) =>{
-        return ReservationDataAccess.createOrder(userId, sessionId, chosenSessionSeats);
+    static createOrder = (sessionId, chosenSessionSeats) =>{
+        return ReservationDataAccess.createOrder(sessionId, chosenSessionSeats);
     }
 
     static countUpTotalPrice = (chosenSeats, sessionSeatTypePrices) =>{

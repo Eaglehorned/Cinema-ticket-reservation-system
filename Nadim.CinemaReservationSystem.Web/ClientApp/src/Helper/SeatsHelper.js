@@ -35,4 +35,19 @@ export default class SeatsHelper{
     static getSeatsColumnsNumber = (seats) =>{
         return seats[seats.length - 1].column + 1;
     }
+
+    static createSeatsArray(rows, columns){
+        let seatsArray = [];
+        for (let i = 0; i < rows; i++){
+            seatsArray[i] = [];
+            for (let j = 0; j < columns; j++) {
+                seatsArray[i].push({
+                    row: i,
+                    column: j,
+                    type:'default'
+                });
+            }
+        }
+        return seatsArray;
+    }
 }

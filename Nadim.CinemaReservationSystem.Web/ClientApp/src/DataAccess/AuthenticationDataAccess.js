@@ -1,4 +1,4 @@
-import TokenService from '../Services/TokenService';
+import authorizationService from '../Services/AuthorizationService';
 
 export default class AuthenticationDataAccess{
     
@@ -6,7 +6,8 @@ export default class AuthenticationDataAccess{
         return AuthenticationDataAccess.loginUserFetch(userInfo)  
         .then(AuthenticationDataAccess.handleRequstError)
         .then(AuthenticationDataAccess.formUserInfo)
-        .then(AuthenticationDataAccess.setToken);
+        //.then(AuthenticationDataAccess.setToken);
+        .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
     }
 
     static registerUser = (userInfo) =>{
@@ -14,7 +15,8 @@ export default class AuthenticationDataAccess{
         .then(AuthenticationDataAccess.handleRequstError)
         .then(parsedJson => AuthenticationDataAccess.completeUserInfoWithoutUsername(parsedJson, userInfo.userName))
         .then(AuthenticationDataAccess.formUserInfo)
-        .then(AuthenticationDataAccess.setToken);
+        .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
+        // .then(AuthenticationDataAccess.setToken);
     }
 
     static loginUserFetch = (userInfo) =>{
@@ -77,7 +79,7 @@ export default class AuthenticationDataAccess{
     }
 
     static setToken = (userInfo) =>{
-        TokenService.setToken(userInfo.token);
+        authorizationService.setToken(userInfo.token);
         return userInfo;
     }
 
