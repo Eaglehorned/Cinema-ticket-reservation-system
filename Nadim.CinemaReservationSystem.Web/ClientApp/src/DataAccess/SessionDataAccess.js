@@ -1,6 +1,7 @@
 import TokenService from "../Services/TokenService";
 import ReceivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper";
 import moment from 'moment';
+import SeatsHelper from "../Helper/SeatsHelper";
 
 export default class SessionDataAccess{
     static getSessionList = () =>{
@@ -82,11 +83,11 @@ export default class SessionDataAccess{
         .then(ReceivedDataProcessingHelper.handleRequstError)
         .then(ReceivedDataProcessingHelper.parseJson)
         .then(ReceivedDataProcessingHelper.getRequsetedData)
-        .then(ReceivedDataProcessingHelper.sortSeats)
-        .then((seats) => ReceivedDataProcessingHelper.convertSeatsArray(
+        .then(SeatsHelper.sortSeats)
+        .then((seats) => SeatsHelper.convertSeatsArray(
             seats,
-            ReceivedDataProcessingHelper.getSeatsRowsNumber(seats),
-            ReceivedDataProcessingHelper.getSeatsColumnsNumber(seats)
+            SeatsHelper.getSeatsRowsNumber(seats),
+            SeatsHelper.getSeatsColumnsNumber(seats)
         ));
     }
 

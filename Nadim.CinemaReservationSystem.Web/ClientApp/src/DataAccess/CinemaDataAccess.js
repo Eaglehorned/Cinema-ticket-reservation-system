@@ -1,5 +1,6 @@
 import TokenService from '../Services/TokenService';
 import ReceivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
+import SeatsHelper from '../Helper/SeatsHelper';
 
 export default class CinemaDataAccess{
 
@@ -176,12 +177,12 @@ export default class CinemaDataAccess{
         cinemaInfo.info.cinemaRoomId = cinemaRoomId;
         cinemaInfo.seats = cinemaRoomInfo.requestedData.seats;
 
-        cinemaInfo.seats = ReceivedDataProcessingHelper.sortSeats(cinemaRoomInfo.requestedData.seats);
+        cinemaInfo.seats = SeatsHelper.sortSeats(cinemaRoomInfo.requestedData.seats);
 
-        cinemaInfo.info.rows = ReceivedDataProcessingHelper.getSeatsRowsNumber(cinemaInfo.seats);
-        cinemaInfo.info.columns = ReceivedDataProcessingHelper.getSeatsColumnsNumber(cinemaInfo.seats);
+        cinemaInfo.info.rows = SeatsHelper.getSeatsRowsNumber(cinemaInfo.seats);
+        cinemaInfo.info.columns = SeatsHelper.getSeatsColumnsNumber(cinemaInfo.seats);
 
-        cinemaInfo.seats = ReceivedDataProcessingHelper.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
+        cinemaInfo.seats = SeatsHelper.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
 
         return cinemaInfo;
     }
