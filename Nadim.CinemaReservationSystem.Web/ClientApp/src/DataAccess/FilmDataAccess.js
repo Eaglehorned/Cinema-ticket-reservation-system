@@ -24,11 +24,6 @@ const getFilmFetch = (id) =>{
     });
 }
 
-const completeFilmInfoWithId = (filmId, filmInfo) =>{
-    filmInfo.filmId = filmId;
-    return filmInfo;
-}
-
 const createFilmFetch = (filmInfo) =>{
     return fetch('api/films', {
         method: 'POST',
@@ -65,8 +60,7 @@ class FilmDataAccess{
         return getFilmFetch(id)
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData)
-        .then((filmInfo) => completeFilmInfoWithId(id, filmInfo));
+        .then(receivedDataProcessingHelper.getRequsetedData);
     }
 
     createFilm = (filmInfo) =>{
