@@ -74,6 +74,13 @@ export default class ReserveTicket extends Component{
         }
     }
 
+    cancelReservation = () =>{
+        this.state.chosenSeats.forEach(el=>{
+            this.handleSeatClick(this.state.seats[el.row][el.column]);
+        });
+        this.props.callBackCancelParentOperation();
+    }
+
     handleSeatsChoice = () =>{
         this.setState({
             seatsChosen: true
@@ -88,7 +95,7 @@ export default class ReserveTicket extends Component{
 
     handleConfirmReservation = () =>{
         this.createOrder();
-        this.props.callBackCancelReservation();
+        this.props.callBackCancelParentOperation();
     }
 
     renderChooseSeatsContent(){
@@ -99,7 +106,7 @@ export default class ReserveTicket extends Component{
                 sessionSeatTypePrices={this.props.session.info.sessionSeatTypePrices}
                 callBackHandleSeatClick={this.handleSeatClick}
                 callBackHandleSeatsChoice={this.handleSeatsChoice}
-                callBackCancelReservation={this.props.callBackCancelReservation}
+                callBackCancelReservation={this.cancelReservation}
             />
         );
     }
