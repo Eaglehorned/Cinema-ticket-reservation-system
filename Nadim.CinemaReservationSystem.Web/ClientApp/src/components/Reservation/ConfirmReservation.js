@@ -1,65 +1,53 @@
-import React, { Component } from 'react';
-import ChosenSeatInfoBox from './ChosenSeatInfoBox';
+import React from 'react';
 import { Button } from 'react-bootstrap';
+import DisplayChosenSeats from './DisplayChosenSeats';
+import reservationServise from '../../Services/ReservationService';
 
-export default class ConfirmReservation extends Component{
-    displayName = ConfirmReservation.displayName;
+const ConfirmReservation = (props) =>{
 
-    render(){
-        return(
-            <div className="confirm-reservation-container">
-                <div className="chosen-seats-container">
-                    <div className="font-bold-x-large">
-                        My tickets
-                    </div>
-                    <div className="seat-info-list-container">
-                        {
-                            this.props.chosenSeats.map((el)=>
-                                <ChosenSeatInfoBox
-                                    key={el.sessionSeatId}
-                                    seatInfo={el}
-                                    price={this.props.sessionSeatTypePrices.find((typePrice) => 
-                                        typePrice.typeName === el.type
-                                    ).price}
-                                />
-                            )
-                        }
-                    </div>
+    return(
+        <div className="confirm-reservation-container">
+            <div className="chosen-seats-container">
+                <div className="font-bold-x-large">
+                    My tickets
                 </div>
-                <div className="confirm-content-container">
-                    <div className="confirm-components-block font-large">
-                        <div className="font-bold-x-large">
-                            Total check
-                        </div>       
-                        <div>
-                            Total : 
-                            <span className="font-x-large font-bold">         
-                            {
-                                this.props.chosenSeats.reduce((acc, current) => 
-                                acc + this.props.sessionSeatTypePrices.find((typePrice) =>
-                                    typePrice.typeName === current.type
-                                ).price, 0)
-                            }
-                            </span>
-                        </div>
-                        <div>
-                            <Button
-                                bsStyle="primary"
-                                onClick={this.props.callBackConfirmReservation}
-                            >
-                                Book tickets
-                            </Button>
-                        </div>
-                        <div>
-                            <Button
-                                onClick={this.props.callBackCancelConfirm}
-                            >
-                                Back
-                            </Button>
-                        </div>
+                <DisplayChosenSeats
+                    chosenSeats={props.chosenSeats}
+                    sessionSeatTypePrices={props.sessionSeatTypePrices}
+                />
+            </div>
+            <div className="confirm-content-container">
+                <div className="confirm-components-block font-large">
+                    <div className="font-bold-x-large">
+                        Total check
+                    </div>       
+                    <div>
+                        Total : 
+                        <span className="font-x-large font-bold">         
+                        {
+                            reservationServise.countUpTotalPrice(props.chosenSeats, props.sessionSeatTypePrices)
+                        }
+                        </span>
+                    </div>
+                    <div>
+                        <Button
+                            bsStyle="primary"
+                            onClick={props.callBackConfirmReservation}
+                        >
+                            Book tickets
+                        </Button>
+                    </div>
+                    <div>
+                        <Button
+                            onClick={props.callBackCancelConfirm}
+                        >
+                            Back
+                        </Button>
                     </div>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
+
+export default ConfirmReservation;

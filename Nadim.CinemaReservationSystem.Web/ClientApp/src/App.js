@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Alert } from 'react-bootstrap';
+import applicationService from './Services/ApplicationService';
 import Header from './components/Header';
 import Body from './components/Body';
+import MyAlert from './components/MyAlert';
 
 export default class App extends Component {
     displayName = App.name
@@ -9,18 +10,11 @@ export default class App extends Component {
     constructor(){
         super();
         this.state={
-            username: localStorage.getItem('username'),
-            token: localStorage.getItem('token'),
-            role: localStorage.getItem('role'),
-            shownRole: localStorage.getItem('role'),
-            userId: localStorage.getItem('userId'),
             show: false,
             infoMessage:'',
             alertStyle:'info'
         }
-        this.setUserInfo = this.setUserInfo.bind(this);
-        this.informWithMessage = this.informWithMessage.bind(this);
-        this.renderAlertMessage = this.renderAlertMessage.bind(this);
+        applicationService.setInformWithMessage(this.informWithMessage);
     }
 
     setShownRole = (role) =>{
@@ -29,7 +23,7 @@ export default class App extends Component {
         })
     }
 
-    informWithMessage(message){
+    informWithMessage = (message) =>{
         if (message.isError){
             this.setState({
                 show: true,
@@ -52,34 +46,13 @@ export default class App extends Component {
             }),4000);
     }
 
-    setUserInfo(userInfo){
-        this.setState({
-            username: userInfo.username,
-            token: userInfo.token,
-            role: userInfo.role,
-            userId: userInfo.userId,
-            shownRole: userInfo.role
-        })
-    }
-
-    renderAlertMessage(){
+    renderAlertMessage = () =>{
         return(
-            <Alert
-                bsStyle={`${this.state.alertStyle} alert-bottom`}
-                onDismiss={() => this.setState({show: false})}
-            >
-                <div className="font-bold-x-large">
-                {
-                    this.state.alertStyle === 'danger'
-                    ? 'Error'
-                    : 'Success'
-                }
-                </div>
-                <div className="font-large">
-                    {this.state.infoMessage}
-                </div>
-
-            </Alert>
+            <MyAlert
+                alertStyle={this.state.alertStyle}
+                infoMessage={this.state.infoMessage}
+                callbackOnDismiss={() => this.setState({show: false})}
+            />
         )
     }
 
@@ -93,15 +66,10 @@ export default class App extends Component {
                     }
                 </div>
                 <Header
-                    username={this.state.username}
-                    role={this.state.role}
-                    callBackSetUserInfo={this.setUserInfo}
                     callBackSetShownRole={this.setShownRole}
                 />
                 <Body
                     role={this.state.shownRole}
-                    token={this.state.token}
-                    callBackInformWithMessage={this.informWithMessage}
                     userId={this.state.userId}
                 />
             </React.Fragment>

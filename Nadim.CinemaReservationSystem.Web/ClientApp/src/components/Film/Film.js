@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import FormFilm from './FormFilm';
-import { Button } from 'react-bootstrap';
-import FilmDisplayInfoBox from './FilmDisplayInfoBox';
+import filmService from '../../Services/FilmService';
+import applicationService from '../../Services/ApplicationService';
+import DisplayFilmList from './DisplayFilmList';
 
 export default class Film extends Component{
     displayName = Film.displayName;
@@ -13,242 +14,99 @@ export default class Film extends Component{
             chosenOperation: '',
             chosenFilmInfo: undefined
         }
-
-        this.informWithMessage = this.informWithMessage.bind(this);
-        this.cancelCurrentOperation = this.cancelCurrentOperation.bind(this);
-        this.renderContent = this.renderContent.bind(this);
-        this.renderActionsContent = this.renderActionsContent.bind(this);
-        this.createFilm = this.createFilm.bind(this);
-        this.getFilmList = this.getFilmList.bind(this);
-        this.getFilm = this.getFilm.bind(this);
-        this.editFilm = this.editFilm.bind(this);
-
         this.getFilmList();
     }
 
-    informWithMessage(message){
-        this.props.callBackInformWithMessage(message);
-    }
-
-    cancelCurrentOperation(){
+    cancelCurrentOperation = () =>{
         this.setState({
             chosenOperation: ''
         });
     }
 
-    getFilmList(){
-        fetch('api/films', {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        }).then(response => {
-                if (response.ok){
-                    return response.json();
-                }
-                if (response.status === 400){
-                    return response.json().then((err) => {
-                        throw new Error(`Bad request. ${err.details}`);
-                    });
-                }
-                if (response.status === 401){
-                    throw new Error('You need to authorize to do that action.');
-                }
-                if (response.status === 404){
-                    return response.json().then((err) => {
-                        throw new Error(`Not found. ${err.details}`);
-                    });
-                }
-            }).then(parsedJson => {
-                    this.setState({
-                        filmList: parsedJson.requestedData,
-                    });
-                })
-                .catch(error => this.informWithMessage(
-                    { 
-                        text: error.message,
-                        isError: true
-                    })
-                );
+    handleChooseCreateFilmOperation = () =>{
+        this.setState({
+            chosenOperation: 'createFilm'
+        });
     }
 
-    getFilm(filmId){
+    getFilmList = () =>{
+        filmService.getFilmList()
+        .then(requestedData => {
+            this.setState({
+                filmList: requestedData,
+            });
+        })
+        .catch(error => applicationService.informWithErrorMessage(error));
+    }
+
+    getFilm = (filmId) =>{
         this.setState({
             chosenOperation: 'editFilmLoading'
         });
-        fetch(`api/films/${filmId}`,{
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }  
-        })
-        .then(parsedJson => {
-            let tempParsedJson = parsedJson.requestedData;
-            tempParsedJson.filmId = filmId;
+        filmService.getFilm(filmId)
+        .then(requestedData => {
             this.setState({
-                chosenFilmInfo: tempParsedJson,
+                chosenFilmInfo: requestedData,
                 chosenOperation: 'editFilm'
             })
         })
         .catch(error => {
+            applicationService.informWithErrorMessage(error);
             this.setState({
                 chosenOperation: ''
             });
-            this.informWithMessage({ 
-                text: error.message,
-                isError: true
-            });
         });
     }
 
-    createFilm(receivedFilmInfo){
+    createFilm = (cinemaInfo) =>{
         this.setState({
             chosenOperation: ''
         });
-        fetch('api/films', {
-            method: 'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            },
-            body: JSON.stringify(receivedFilmInfo)
-        })
-        .then(response => {
-            if (response.ok){
-                return response;
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(response => {
+        filmService.createFilm(cinemaInfo)
+        .then(filmId => {
             this.setState({
                 filmList: this.state.filmList.concat({
-                    name: receivedFilmInfo.name,
-                    filmId: response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length)
+                    name: cinemaInfo.name,
+                    filmId: filmId
                 })
             });
-            this.informWithMessage('Film created.');
+            applicationService.informWithMessage('Film created.');
         })
-        .catch(error => {
-            this.informWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            });
-        });
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
-    editFilm(receivedFilmInfo){
+    editFilm = (filmInfo) =>{
         this.setState({
             chosenOperation: ''
         });
-        fetch(`api/films/${this.state.chosenFilmInfo.filmId}`, {
-            method: 'PUT',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            },
-            body: JSON.stringify(receivedFilmInfo)
-        })
-        .then(response => {
-            if (response.ok){
-                return response;
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(parsedJson => {
-            let tempFilmList = this.state.filmList;
-            tempFilmList.find((el) => el.filmId === this.state.chosenFilmInfo.filmId).name = receivedFilmInfo.name;
+        filmService.editFilm(this.state.chosenFilmInfo.filmId, filmInfo)
+        .then(() => {
             this.setState({
-                filmList: tempFilmList
+                filmList: filmService.updateFilmList(
+                    this.state.filmList, 
+                    this.state.chosenFilmInfo.filmId,
+                    filmInfo
+                )
             })
-            this.informWithMessage('Flm information edited.');
+            applicationService.informWithMessage('Film information edited.');
         })
-        .catch(error => this.informWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            })
-        );
-
-        this.setState({
-            chosenOperation: ''
-        });
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
-    renderActionsContent(){
+    renderActionsContent = () =>{
         return(
             <React.Fragment>
                 <h1>Film list</h1>
-                <div className="list-container">
-                    {
-                        this.state.filmList.map((el)=>
-                            <FilmDisplayInfoBox
-                                key={el.filmId}
-                                filmInfo={el}
-                                callBackEditFilm={this.getFilm}
-                            />
-                        )
-                    }
-                    <Button
-                        bsStyle="primary"
-                        onClick={ () => this.setState({ chosenOperation: 'createFilm' })}
-                    >
-                        Create film
-                    </Button>
-                </div>
+                <DisplayFilmList
+                    list={this.state.filmList}
+                    handleElementClick={this.getFilm}
+                    handleListButtonClick={this.handleChooseCreateFilmOperation}
+                />
             </React.Fragment>
         );
     }
 
-    renderContent(){
+    renderContent = () =>{
         switch(this.state.chosenOperation){
             case 'createFilm':
                 return( 
@@ -266,6 +124,7 @@ export default class Film extends Component{
             case 'editFilm': 
                 return(
                     <FormFilm
+                        showHint={true}
                         filmInfo={this.state.chosenFilmInfo}
                         callBackReceiveFilmInfo={this.editFilm}
                         callBackCancel={this.cancelCurrentOperation}

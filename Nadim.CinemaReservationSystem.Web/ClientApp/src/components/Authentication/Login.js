@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { FormControl, FormGroup, Button } from 'react-bootstrap';
+import authenticationService from '../../Services/AuthenticationService';
 
 export default class Login extends Component {
     displayName = Login.name;
@@ -9,86 +10,40 @@ export default class Login extends Component {
         this.state = {
             email: '',
             password:'',
-            username:'',
             error:''
         }
-        this.handleEmailChange = this.handleEmailChange.bind(this);
-        this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.handleLoginClick = this.handleLoginClick.bind(this);
     }
 
-    parseJwt(token) {
-        let base64Url = token.split('.')[1];
-        let base64 = base64Url.replace('-', '+').replace('_', '/');
-        return JSON.parse(window.atob(base64));
-    }
-
-    validateEmail(email) {
-        const result = /^([\w-.]+)@((\[[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-        return result.test(String(email).toLowerCase());
-    }
-
-    handleEmailChange(event){
+    handleEmailChange = (event) =>{
         this.setState({
             email: event.target.value,
             error:'',
         })
     }
 
-    handlePasswordChange(event){
+    handlePasswordChange = (event) =>{
         this.setState({
             password: event.target.value,
             error:'',
         });
     }
 
-    handleLoginClick(event){
+    handleLoginClick = () =>{
         this.setState({
             error:'',
+        });
+        authenticationService.loginUser({
+            email: this.state.email,
+            password: this.state.password,
         })
-        event.preventDefault();
-        fetch('api/Authentication/Login', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                Email: this.state.email,
-                Password: this.state.password,
+        .then(() =>
+            this.props.callBackFromParent()
+        )
+        .catch(error =>{
+            this.setState({
+                error: error.message,
             })
-        }).then(response => response.json())
-            .then(parsedJson => {
-                if (parsedJson.resultOk === true) {
-                    let role;
-                    let userId;
-                    for (let key in this.parseJwt(parsedJson.token)){
-                        if (key.indexOf('role') !== -1){
-                            role = this.parseJwt(parsedJson.token)[key];
-                            continue;
-                        }
-                        if (key.indexOf('nameidentifier') !== -1){
-                            userId = this.parseJwt(parsedJson.token)[key];
-                            continue;
-                        }
-                    }
-                    localStorage.setItem('token', parsedJson.token);
-                    localStorage.setItem('username', parsedJson.fullUserName);
-                    localStorage.setItem('role', role);
-                    localStorage.setItem('userId', userId);
-                    this.props.callBackFromParent({
-                        username: parsedJson.fullUserName,
-                        token: parsedJson.token,
-                        role: role,
-                        userId: userId
-                    });
-                }
-                else{
-                   this.setState({
-                       error: parsedJson.details,
-                   });
-                }
-            });
+        });
     }
 
     render() {
@@ -116,7 +71,7 @@ export default class Login extends Component {
                     bsStyle="primary"
                     bsSize="small"
                     onClick={this.handleLoginClick} 
-                    disabled={!(this.validateEmail(this.state.email) && this.state.password)}
+                    disabled={!authenticationService.allowLoginClick(this.state.email, this.state.password)}
                 >
                     Log in
                 </Button>

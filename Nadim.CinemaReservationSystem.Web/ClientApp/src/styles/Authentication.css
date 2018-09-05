@@ -2,14 +2,18 @@
     text-align: center;
 }
 
-.login{
+.login, .logout{
     padding: 5px;
     border-left: groove 1px black;
     margin-left: calc(100% - 400px); 
-    background-color: rgb(235, 254, 255);
+    background-color: rgb(235, 235, 235);
     position: relative;
     height: 183px;
     width: 400px;
+}
+
+.logout{
+    padding-top: 20px;
 }
 
 .authentication-container button{

@@ -5,5 +5,5 @@
     top: 0;
     border: groove 1px black;
     z-index: 1;
-    background-color: rgb(235, 254, 255);
+    background-color: rgba(235, 235, 235);
 }
