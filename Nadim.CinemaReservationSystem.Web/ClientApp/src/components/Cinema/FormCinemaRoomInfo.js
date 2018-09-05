@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CinemaService from '../../Services/CinemaService';
+import cinemaService from '../../Services/CinemaService';
 import InputStringFormGroup from '../General/InputStringFormGroup';
 import InputIntFormGroup from '../General/InputIntFromGroup';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
@@ -29,7 +29,7 @@ export default class FormCinemaRoomInfo extends Component{
         this.setState({
             showHint: true
         });
-        if (CinemaService.validateCinemaRoomInfo(
+        if (cinemaService.validateCinemaRoomInfo(
             this.state.displayedComponents,
             this.state.rows,
             this.state.columns,
@@ -55,7 +55,7 @@ export default class FormCinemaRoomInfo extends Component{
                 columns: columns,
                 name: name
             },
-            allowSubmit: CinemaService.validateCinemaRoomInfo(
+            allowSubmit: cinemaService.validateCinemaRoomInfo(
                 this.state.displayedComponents,
                 rows,
                 columns,

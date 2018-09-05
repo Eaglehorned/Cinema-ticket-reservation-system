@@ -1,26 +1,30 @@
-import TokenService from "../Services/TokenService";
-import ReceivedDataProcessingService from "../Services/ReceivedDataProcessingService";
+import authorizationService from "../Services/AuthorizationService";
+import receivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper";
 
-export default class ReservationDataAccess{
-    static createOrder = (userId, sessionId, chosenSessionSeats) =>{
-        return ReservationDataAccess.createOrderFetch(userId, sessionId, chosenSessionSeats)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.getIdFromResponse);
-    }
+const createOrderFetch = (sessionId, chosenSessionSeats) =>{
+    return fetch('api/orders/', {
+        method: 'POST',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify({
+            userId: authorizationService.getUserId(),
+            sessionId: sessionId,
+            sessionSeats: chosenSessionSeats.map(el => el.sessionSeatId)
+        })
+    });
+}
 
-    static createOrderFetch = (userId, sessionId, chosenSessionSeats) =>{
-        return fetch('api/orders/', {
-            method: 'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            },
-            body: JSON.stringify({
-                userId: userId,
-                sessionId: sessionId,
-                sessionSeats: chosenSessionSeats.map(el => el.sessionSeatId)
-            })
-        });
+class ReservationDataAccess{
+    createOrder = (sessionId, chosenSessionSeats) =>{
+        return createOrderFetch(sessionId, chosenSessionSeats)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.getIdFromResponse);
     }
 }
+
+const reservationDataAccess = new ReservationDataAccess();
+
+export default reservationDataAccess;

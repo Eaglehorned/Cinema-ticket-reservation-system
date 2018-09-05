@@ -1,6 +1,6 @@
 import React from 'react';
 import { ControlLabel, FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
-import ValidationService from '../../Services/ValidationService';
+import validationService from '../../Services/ValidationService';
 
 const SeatTypePrice = (props) =>{
 
@@ -14,7 +14,7 @@ const SeatTypePrice = (props) =>{
     return(
         <div className="list-box-container">
             <FormGroup
-                validationState={ValidationService.showIsDoubleNumberValid(props.showHint, props.seatType.price) ? null : 'error'}
+                validationState={validationService.showIsDoubleNumberValid(props.showHint, props.seatType.price) ? null : 'error'}
             >
                 <ControlLabel
                     className="font-large"
@@ -28,7 +28,7 @@ const SeatTypePrice = (props) =>{
                 <HelpBlock 
                     className="font-italic"
                 >
-                    {ValidationService.doubleValidationErrorMessage(props.showHint, props.seatType.price)}
+                    {validationService.doubleValidationErrorMessage(props.showHint, props.seatType.price)}
                 </HelpBlock>
             </FormGroup>
         </div>

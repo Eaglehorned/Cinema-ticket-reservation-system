@@ -1,12 +1,12 @@
 import React from 'react';
 import { ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
 import { TimePicker } from 'antd';
-import ValidationService from '../../Services/ValidationService';
+import validationService from '../../Services/ValidationService';
 
 const InputTimeFormGroup = (props) =>{
     return(
         <FormGroup
-            validationState={ValidationService.showIsTimeValid(props.showHint, props.value)
+            validationState={validationService.showIsTimeValid(props.showHint, props.value)
                 ? null 
                 : 'error'}
             controlId={`form${props.label}Text`}
@@ -22,7 +22,7 @@ const InputTimeFormGroup = (props) =>{
                 onChange={props.handleValueChange}
             />
             { 
-                ValidationService.showIsTimeValid(props.showHint, props.value)
+                validationService.showIsTimeValid(props.showHint, props.value)
                 ? ''
                 : <HelpBlock 
                     className="font-italic"

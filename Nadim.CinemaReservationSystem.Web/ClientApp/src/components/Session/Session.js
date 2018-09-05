@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import FormSession from './FormSession';
-import SessionService from '../../Services/SessionService';
-import ApplicationService from '../../Services/ApplicationService';
+import sessionService from '../../Services/SessionService';
+import applicationService from '../../Services/ApplicationService';
 import DisplaySessionList from './DisplaySessionList';
 
 export default class Session extends Component{
@@ -29,36 +29,36 @@ export default class Session extends Component{
     }
 
     getSessionList = () =>{
-        SessionService.getSessionList()
+        sessionService.getSessionList()
         .then(requestedData => {
             this.setState({
                 sessionList: requestedData,
             });
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     createSession = (sessionInfoForCreation) =>{
         this.setState({
             chosenOperation: ''
         });
-        SessionService.createSession(sessionInfoForCreation)
+        sessionService.createSession(sessionInfoForCreation)
         .then(sessionInfo => {
             this.setState({
                 sessionList: this.state.sessionList.concat(
                     sessionInfo
                 )
             });
-            ApplicationService.informWithMessage('Session created.');
+            applicationService.informWithMessage('Session created.');
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     getSession = (sessionId) =>{
         this.setState({
             chosenOperation: 'editSessionLoading'
         });
-        SessionService.getSession(sessionId)
+        sessionService.getSession(sessionId)
         .then(requestedData => {
             this.setState({
                 chosenSessionInfo: requestedData,
@@ -69,7 +69,7 @@ export default class Session extends Component{
             this.setState({
                 chosenOperation: ''
             });
-            ApplicationService.informWithErrorMessage(error);
+            applicationService.informWithErrorMessage(error);
         });
     }
 
@@ -77,18 +77,18 @@ export default class Session extends Component{
         this.setState({
             chosenOperation: ''
         });
-        SessionService.editSession(this.state.chosenSessionInfo.sessionId, sessionInfo)
+        sessionService.editSession(this.state.chosenSessionInfo.sessionId, sessionInfo)
         .then(() => {
             this.setState({
-                sessionList: SessionService.updateSessionList(
+                sessionList: sessionService.updateSessionList(
                     this.state.sessionList,
                     this.state.chosenSessionInfo.sessionId,
                     sessionInfo
                 )
             });
-            ApplicationService.informWithMessage('Session edited.');
+            applicationService.informWithMessage('Session edited.');
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     renderSessionList = () =>{

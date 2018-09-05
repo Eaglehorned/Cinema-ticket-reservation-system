@@ -1,158 +1,163 @@
-import TokenService from "../Services/TokenService";
-import ReceivedDataProcessingService from "../Services/ReceivedDataProcessingService";
+import authorizationService from "../Services/AuthorizationService";
+import receivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper";
 import moment from 'moment';
+import seatsHelper from "../Helper/SeatsHelper";
 
-export default class SessionDataAccess{
-    static getSessionList = () =>{
-        return SessionDataAccess.getSessionListFetch()
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
-    }
+const getSessionListFetch = () =>{
+    return fetch('api/sessions', {
+        method: 'GET',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        }
+    });
+}
 
-    static getSessionListFetch = () =>{
-        return fetch('api/sessions', {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            }
-        });
-    }
+const formSessionInfoForRequest = (sessionInfo) =>{
+    return new Promise ((resolve) => {
+        resolve({
+            cinemaRoomId: sessionInfo.cinemaRoom.cinemaRoomId,
+            filmId: sessionInfo.film.filmId,
+            beginTime: sessionInfo.beginTime,
+            sessionSeatTypePrices: sessionInfo.sessionSeatTypePrices
+        });}
+    );
+}
 
-    static createSession = (sessionInfo) =>{
-        return SessionDataAccess.formSessionInfoForRequest(sessionInfo)
-        .then(SessionDataAccess.createSessionFetch)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.getIdFromResponse)
-        .then(id => SessionDataAccess.completeSessionInfoWithId(sessionInfo, id))
-    }
+const createSessionFetch = (sessionInfo) =>{
+    return fetch('api/sessions', {
+        method: 'POST',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify(sessionInfo)
+    })
+}
 
-    static createSessionFetch = (sessionInfo) =>{
-        return fetch('api/sessions', {
-            method: 'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            },
-            body: JSON.stringify(sessionInfo)
+const completeSessionInfoWithId = (sessionInfo, id) =>{
+    sessionInfo.sessionId = id;
+    return sessionInfo;
+}
+
+const getSessionFetch = (id) =>{
+    return fetch(`api/sessions/${id}`,{
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        }
+    });
+}
+
+const editSessionFetch = (id, sessionInfo) =>{
+    return fetch(`api/sessions/${id}`, {
+        method: 'PUT',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify(sessionInfo)
+    });
+}
+
+const getSessionSeatsFetch = (sessionId) =>{
+    return fetch(`api/sessions/${sessionId}/seats`,{
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        }
+    });
+}
+
+const getSessionSeatsUpdatesFetch = (sessionId, lastTimeUpdated) =>{
+    return fetch(`api/sessions/${sessionId}/seats`,{
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`,
+            'If-Modified-Since': lastTimeUpdated.toUTCString()
+        }
+    });
+}
+
+const editSessionSeatFetch = (sessionId, sessionSeatId, booked) =>{
+    return fetch(`api/sessions/${sessionId}/seats/${sessionSeatId}`,{
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify({
+            booked: booked,
+            lastTimeUpdated: moment().format()
         })
+    });
+}
+
+class SessionDataAccess{
+    getSessionList = () =>{
+        return getSessionListFetch()
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData);
     }
 
-    static getSession = (id) =>{
-        return SessionDataAccess.getSessionFetch(id)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
+    createSession = (sessionInfo) =>{
+        return formSessionInfoForRequest(sessionInfo)
+        .then(createSessionFetch)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.getIdFromResponse)
+        .then(id => completeSessionInfoWithId(sessionInfo, id))
     }
 
-    static getSessionFetch = (id) =>{
-        return fetch(`api/sessions/${id}`,{
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            }
-        });
+    getSession = (id) =>{
+        return getSessionFetch(id)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData);
     }
 
-    static editSession = (id, sessionInfo) =>{
-        return SessionDataAccess.formSessionInfoForRequest(sessionInfo) 
-        .then(sessionInfoForRequest => SessionDataAccess.editSessionFetch(id, sessionInfoForRequest))
-        .then(ReceivedDataProcessingService.handleRequstError);
+    editSession = (id, sessionInfo) =>{
+        return formSessionInfoForRequest(sessionInfo) 
+        .then(sessionInfoForRequest => editSessionFetch(id, sessionInfoForRequest))
+        .then(receivedDataProcessingHelper.handleRequstError);
     }
 
-    static editSessionFetch = (id, sessionInfo) =>{
-        return fetch(`api/sessions/${id}`, {
-            method: 'PUT',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            },
-            body: JSON.stringify(sessionInfo)
-        });
-    }
-
-    static getSessionSeats = (sessionId) =>{
-        return SessionDataAccess.getSessionSeatsFetch(sessionId)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData)
-        .then(ReceivedDataProcessingService.sortSeats)
-        .then((seats) => ReceivedDataProcessingService.convertSeatsArray(
+    getSessionSeats = (sessionId) =>{
+        return getSessionSeatsFetch(sessionId)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData)
+        .then(seatsHelper.sortSeats)
+        .then((seats) => seatsHelper.convertSeatsArray(
             seats,
-            ReceivedDataProcessingService.getSeatsRowsNumber(seats),
-            ReceivedDataProcessingService.getSeatsColumnsNumber(seats)
+            seatsHelper.getSeatsRowsNumber(seats),
+            seatsHelper.getSeatsColumnsNumber(seats)
         ));
     }
 
-    static getSessionSeatsFetch = (sessionId) =>{
-        return fetch(`api/sessions/${sessionId}/seats`,{
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            }
-        });
+    getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
+        return getSessionSeatsUpdatesFetch(sessionId, lastTimeUpdated)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData);
     }
 
-    static getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
-        return SessionDataAccess.getSessionSeatsUpdatesFetch(sessionId, lastTimeUpdated)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
-    }
-
-    static getSessionSeatsUpdatesFetch = (sessionId, lastTimeUpdated) =>{
-        return fetch(`api/sessions/${sessionId}/seats`,{
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`,
-                'If-Modified-Since': lastTimeUpdated.toUTCString()
-            }
-        });
-    }
-
-    static editSessionSeat = (sessionId, sessionSeatId, booked) =>{
-        return SessionDataAccess.editSessionSeatFetch(sessionId, sessionSeatId, booked)
-        .then(ReceivedDataProcessingService.handleRequstError);
-    }
-
-    static editSessionSeatFetch = (sessionId, sessionSeatId, booked) =>{
-        return fetch(`api/sessions/${sessionId}/seats/${sessionSeatId}`,{
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            },
-            body: JSON.stringify({
-                booked: booked,
-                lastTimeUpdated: moment().format()
-            })
-        });
-    }
-
-    static formSessionInfoForRequest = (sessionInfo) =>{
-        return new Promise ((resolve) => {
-            resolve({
-                cinemaRoomId: sessionInfo.cinemaRoom.cinemaRoomId,
-                filmId: sessionInfo.film.filmId,
-                beginTime: sessionInfo.beginTime,
-                sessionSeatTypePrices: sessionInfo.sessionSeatTypePrices
-            });}
-        );
-    }
-
-    static completeSessionInfoWithId = (sessionInfo, id) =>{
-        sessionInfo.sessionId = id;
-        return sessionInfo;
+    editSessionSeat = (sessionId, sessionSeatId, booked) =>{
+        return editSessionSeatFetch(sessionId, sessionSeatId, booked)
+        .then(receivedDataProcessingHelper.handleRequstError);
     }
 }
+
+const sessionDataAccess = new SessionDataAccess();
+
+export default sessionDataAccess;

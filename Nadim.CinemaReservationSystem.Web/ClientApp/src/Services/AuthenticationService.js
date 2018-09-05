@@ -1,24 +1,28 @@
-import AuthenticationDataAccess from '../DataAccess/AuthenticationDataAccess';
+import authenticationDataAccess from '../DataAccess/AuthenticationDataAccess';
 
-export default class AuthenticationService{
-    static validateEmail = (email) =>{
+class AuthenticationService{
+    validateEmail = (email) =>{
         const result = /^([\w-.]+)@((\[[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
         return result.test(String(email).toLowerCase());
     }
 
-    static loginUser = (userInfo) =>{
-        return AuthenticationDataAccess.loginUser(userInfo);
+    loginUser = (userInfo) =>{
+        return authenticationDataAccess.loginUser(userInfo);
     }
 
-    static registerUser = (userInfo) =>{
-        return AuthenticationDataAccess.registerUser(userInfo);
+    registerUser = (userInfo) =>{
+        return authenticationDataAccess.registerUser(userInfo);
     }
 
-    static allowRegisterClick = (email, password, lastName, firstName) =>{
-        return AuthenticationService.validateEmail(email) && password && lastName && firstName;
+    allowRegisterClick = (email, password, lastName, firstName) =>{
+        return authenticationService.validateEmail(email) && password && lastName && firstName;
     }
 
-    static allowLoginClick = (email, password) =>{
-        return AuthenticationService.validateEmail(email) && password;
+    allowLoginClick = (email, password) =>{
+        return authenticationService.validateEmail(email) && password;
     }
 }
+
+const authenticationService = new AuthenticationService();
+
+export default authenticationService;

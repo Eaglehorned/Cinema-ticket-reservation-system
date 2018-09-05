@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import CinemaService from '../../Services/CinemaService';
-import ApplicationService from '../../Services/ApplicationService';
+import applicationService from '../../Services/ApplicationService';
 import FilmService from '../../Services/FilmService';
 import moment from 'moment';
-import SessionService from '../../Services/SessionService';
+import sessionService from '../../Services/SessionService';
 import InputFutureDateFormGroup from '../General/InputFutureDateFormGroup';
 import InputTimeFormGroup from '../General/InputTimeFormGroup';
 import ChooseCinemaWithDropDown from '../Cinema/ChooseCinemaWithDropDown';
@@ -48,7 +48,7 @@ export default class FormSession extends Component{
                 cinemaList: requestedData
             });
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     getCinemaRoomList = (cinemaId) =>{
@@ -73,7 +73,7 @@ export default class FormSession extends Component{
                 filmList: requestedData,
             });
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     getSeatTypes = (cinemaRoomId) => {
@@ -86,7 +86,7 @@ export default class FormSession extends Component{
                     })
             });
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     handleSelectCinema = (eventKey) =>{
@@ -123,13 +123,13 @@ export default class FormSession extends Component{
 
     handleChangePrice = (seatTypeInfo) =>{
         this.setState({
-            seatTypes: SessionService.updateSeatTypesList(this.state.seatTypes, seatTypeInfo)
+            seatTypes: sessionService.updateSeatTypesList(this.state.seatTypes, seatTypeInfo)
         });
     }
 
     handleSubmitClick = () =>{
         if (
-            SessionService.validateSessionInfo(
+            sessionService.validateSessionInfo(
                 this.state.chosenCinema,
                 this.state.chosenCinemaRoom,
                 this.state.chosenFilm,
