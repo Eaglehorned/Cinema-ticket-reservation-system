@@ -1,7 +1,7 @@
 import authorizationService from '../Services/AuthorizationService';
 import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
-const loginUserFetch = (userInfo) =>{
+const sendRequestToLoginUser = (userInfo) =>{
     return fetch('api/Authentication/Login', {
         method: 'POST',
         headers: {
@@ -15,7 +15,7 @@ const loginUserFetch = (userInfo) =>{
     });
 }
 
-const registerUserFetch = (userInfo) =>{
+const sendRequestToRegisterUser = (userInfo) =>{
     return fetch('api/Authentication/Register', {
         method: 'POST',
         headers:{
@@ -71,7 +71,7 @@ const completeUserInfoWithoutUsername = (almostCompleteUserInfo, username) =>{
 
 class AuthenticationDataAccess{  
     loginUser = (userInfo) =>{
-        return loginUserFetch(userInfo)  
+        return sendRequestToLoginUser(userInfo)  
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(formUserInfo)
@@ -79,7 +79,7 @@ class AuthenticationDataAccess{
     }
 
     registerUser = (userInfo) =>{
-        return registerUserFetch(userInfo)
+        return sendRequestToRegisterUser(userInfo)
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(parsedJson => completeUserInfoWithoutUsername(parsedJson, userInfo.userName))
