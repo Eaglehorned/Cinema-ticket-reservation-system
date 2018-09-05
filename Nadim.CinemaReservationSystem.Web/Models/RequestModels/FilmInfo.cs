@@ -7,6 +7,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
 {
     public class FilmInfo
     {
+        public int FilmId { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

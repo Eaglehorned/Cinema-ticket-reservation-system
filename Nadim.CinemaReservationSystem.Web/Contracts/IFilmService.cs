@@ -12,7 +12,7 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
 
         GetResult<List<ResponseFilmDisplayInfo>> GetFilmList();
 
-        GetResult<ResponseFilmInfo> GetFilm(int filmId);
+        GetResult<FilmInfo> GetFilm(int filmId);
 
         Result EditFilm(int filmId, FilmInfo filmInfo);
 

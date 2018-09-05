@@ -177,7 +177,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     .Where(c => c.CinemaId == id)
                     .Select( c => new ResponseCinemaFullInfo
                     {
-                        Info = new ResponseCinemaInfo
+                        Info = new CinemaInfo
                         {
                             CinemaId = c.CinemaId,
                             Name = c.Name,

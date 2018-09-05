@@ -86,23 +86,23 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public GetResult<ResponseFilmInfo> GetFilm(int filmId)
+        public GetResult<FilmInfo> GetFilm(int filmId)
         {
             if (!FilmExists(filmId))
             {
-                return new GetResult<ResponseFilmInfo>
+                return new GetResult<FilmInfo>
                 {
                     ResultOk = false,
                     Details = "Such film does not exist."
                 };
             }
 
-            return new GetResult<ResponseFilmInfo>
+            return new GetResult<FilmInfo>
             {
                 ResultOk = true,
                 RequestedData = dbContext.Films
                     .Where(f => f.FilmId == filmId)
-                    .Select(f => new ResponseFilmInfo
+                    .Select(f => new FilmInfo
                     {
                         FilmId = f.FilmId,
                         Name = f.Name,
