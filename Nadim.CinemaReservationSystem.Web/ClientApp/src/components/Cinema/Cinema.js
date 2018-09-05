@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import FormCinema from './FormCinema';
-import CinemaService from '../../Services/CinemaService';
-import ApplicationService from '../../Services/ApplicationService';
+import cinemaService from '../../Services/CinemaService';
+import applicationService from '../../Services/ApplicationService';
 import '../../styles/FontStyles.css';
 import '../../styles/Cinema.css';
 import '../../styles/ListStyles.css';
@@ -31,34 +31,34 @@ export default class Cinema extends Component{
         this.setState({
             chosenOperation: ''
         });
-        CinemaService.editCinema(cinemaInfo)
+        cinemaService.editCinema(cinemaInfo)
         .then(() => {
             this.setState({
-                cinemaList: CinemaService.updateCinemaList(
+                cinemaList: cinemaService.updateCinemaList(
                     this.state.cinemaList,
                     cinemaInfo
                 ),
                 chosenOperation: ''
             });
-            ApplicationService.informWithMessage('Cinema information edited.');
+            applicationService.informWithMessage('Cinema information edited.');
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     getCinemaList = () =>{
-        CinemaService.getCinemaList()
+        cinemaService.getCinemaList()
         .then(requestedData => {
             this.setState({
                 cinemaList: requestedData,
             });
         })
         .catch(error => 
-            ApplicationService.informWithErrorMessage(error)
+            applicationService.informWithErrorMessage(error)
         );
     }
 
     getCinema = (id) =>{
-        CinemaService.getCinema(id)
+        cinemaService.getCinema(id)
         .then(cinemaInfo => {
             this.setState({
                 chosenCinemaInfo: cinemaInfo,
@@ -69,7 +69,7 @@ export default class Cinema extends Component{
             this.setState({
                 chosenOperation:''
             });
-            ApplicationService.informWithErrorMessage(error);
+            applicationService.informWithErrorMessage(error);
         });
     }
 
@@ -77,7 +77,7 @@ export default class Cinema extends Component{
         this.setState({
             chosenOperation: 'editCinemaLoading'
         });
-        CinemaService.createCinema(cinemaInfoForCreation)
+        cinemaService.createCinema(cinemaInfoForCreation)
         .then(cinemaId => {
             this.setState({
                 cinemaList: this.state.cinemaList.concat({
@@ -91,13 +91,13 @@ export default class Cinema extends Component{
                 },
                 chosenOperation: 'editCinema'
             });
-            ApplicationService.informWithMessage('Cinema created.');
+            applicationService.informWithMessage('Cinema created.');
         })
         .catch(error => {
             this.setState({
                 chosenOperation: ''
             });
-            ApplicationService.informWithErrorMessage(error);
+            applicationService.informWithErrorMessage(error);
         });
     }
 

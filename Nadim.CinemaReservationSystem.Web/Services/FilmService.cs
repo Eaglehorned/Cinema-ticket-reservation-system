@@ -104,6 +104,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     .Where(f => f.FilmId == filmId)
                     .Select(f => new FilmInfo
                     {
+                        FilmId = f.FilmId,
                         Name = f.Name,
                         StartDate = f.StartDate,
                         EndDate = f.EndDate,

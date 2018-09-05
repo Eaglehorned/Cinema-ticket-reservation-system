@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace Nadim.CinemaReservationSystem.Web.Models
 {
-    public class ResponseCinemaRoomFullInfo
+    public class ResponseCinemaRoomInfo
     {
+        public int CinemaRoomId { get; set; }
         public string Name { get; set; }
         public List<SeatInfo> Seats { get; set; }
     }

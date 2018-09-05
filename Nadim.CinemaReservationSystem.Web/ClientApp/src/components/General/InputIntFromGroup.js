@@ -1,13 +1,13 @@
 import React from 'react';
 import { FormControl, ControlLabel, FormGroup, HelpBlock } from 'react-bootstrap';
-import ValidationService from '../../Services/ValidationService';
+import validationService from '../../Services/ValidationService';
 
 const InputIntFormGroup = (props) =>{
     return(
         <FormGroup
             className={props.isShown ? '' : 'hidden'}
             controlId={`form${props.label}Text`}
-            validationState={ValidationService.intValidationErrorMessage(props.showHint, props.value) === ''
+            validationState={validationService.intValidationErrorMessage(props.showHint, props.value) === ''
                 ? null 
                 : 'error'}
         >
@@ -27,7 +27,7 @@ const InputIntFormGroup = (props) =>{
                 <HelpBlock 
                     className="font-italic"
                 >
-                    {ValidationService.intValidationErrorMessage(props.showHint, props.value)}
+                    {validationService.intValidationErrorMessage(props.showHint, props.value)}
                 </HelpBlock> 
             }
         </FormGroup>    

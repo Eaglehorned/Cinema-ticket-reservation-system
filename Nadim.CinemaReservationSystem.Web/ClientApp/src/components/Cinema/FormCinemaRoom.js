@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import FormCinemaRoomInfo from './FormCinemaRoomInfo';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
-import CinemaService from '../../Services/CinemaService';
 import ChangeCinemaRoomInfoComponents from './ChangeCinemaRoomInfoComponents';
 import ChangeSeatTypeModal from './ChangeSeatTypeModal';
+import seatsHelper from '../../Helper/SeatsHelper';
 
 export default class FormCinemaRoom extends Component{
     displayName = FormCinemaRoom.displayName;
@@ -36,7 +36,7 @@ export default class FormCinemaRoom extends Component{
         cinemaRoomInfo.name = this.state.cinemaRoomInfo ? this.state.cinemaRoomInfo.name : cinemaRoomInfo.name;
         this.setState({
             cinemaRoomInfo: cinemaRoomInfo,
-            cinemaRoomSeats: CinemaService.createSeatsArray(cinemaRoomInfo.rows, cinemaRoomInfo.columns),
+            cinemaRoomSeats: seatsHelper.createSeatsArray(cinemaRoomInfo.rows, cinemaRoomInfo.columns),
         });
     }
 

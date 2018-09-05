@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from 'react-bootstrap';
 import DisplayChosenSeats from './DisplayChosenSeats';
 import DisplaySessionSeatsScheme from './DisplaySessionSeatsScheme';
-import ReservationServise from '../../Services/ReservationService';
+import reservationServise from '../../Services/ReservationService';
 
 const ChooseSeats = (props) =>{
     
@@ -22,7 +22,7 @@ const ChooseSeats = (props) =>{
                 <div className="font-x-large">
                     <span className="font-bold">Total check : </span>
                     {
-                        ReservationServise.countUpTotalPrice(props.chosenSeats, props.sessionSeatTypePrices)
+                        reservationServise.countUpTotalPrice(props.chosenSeats, props.sessionSeatTypePrices)
                     }
                 </div>
                 <div>

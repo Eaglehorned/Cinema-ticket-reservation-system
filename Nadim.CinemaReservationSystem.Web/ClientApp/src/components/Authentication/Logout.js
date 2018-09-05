@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
 import { Button } from 'react-bootstrap';
+import authorizationService from '../../Services/AuthorizationService';
 
 export default class Logout extends Component{
     displayName = Logout.displayName;
 
+    handleLogout = () =>{
+        authorizationService.setInfo('', '', '', '');
+        this.props.callBackHandleLogout();
+    }
+
     render(){
         return(            
             <div className="logout">
-                <h3>Username: {this.props.username}</h3>
+                <h3>Username: {authorizationService.getUsername()}</h3>
                 <Button
-                    onClick={this.props.callBackHandleLogout}
+                    onClick={this.handleLogout}
                 >
                     Log out
                 </Button>
                 {
-                this.props.role === 'admin' ?
+                authorizationService.getRole() === 'admin' ?
                 <div>
                     <div>
                         <Button

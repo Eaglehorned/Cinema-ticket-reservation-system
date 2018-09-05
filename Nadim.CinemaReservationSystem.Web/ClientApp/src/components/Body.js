@@ -58,7 +58,7 @@ export default class Body extends Component{
             case 'session': 
                 return <Session/>;
             case 'reservation':
-                return <Reservation userId={this.props.userId}/>;
+                return <Reservation/>;
             default: 
                 return '';
         }

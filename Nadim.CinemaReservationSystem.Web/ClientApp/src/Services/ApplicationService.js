@@ -1,18 +1,23 @@
-export default class ApplicationService{
-    static informWithMessage;
+var informWithMessage = undefined;
 
-    static setInformWithMessage = (informWithMessage) =>{
-        this.informWithMessage = informWithMessage;
+class ApplicationService{
+    setInformWithMessage = (_informWithMessage) =>{
+        informWithMessage = _informWithMessage;
     }
 
-    static informWithMessage = (message) =>{
-        this.informWithMessage(message);
+    informWithMessage = (message) =>{
+        informWithMessage(message);
     }
 
-    static informWithErrorMessage = (error) =>{
-        this.informWithMessage({ 
+    informWithErrorMessage = (error) =>{
+        informWithMessage({ 
             text: error.message,
             isError: true
         });
     }
 }
+
+const applicationService = new ApplicationService();
+
+export default applicationService;
+

@@ -7,9 +7,6 @@ const Header = (props) =>{
     return(
         <div className="header">
             <Authentication
-                username={props.username}
-                role={props.role}
-                callBackSetUserInfo={(userInfo) => props.callBackSetUserInfo(userInfo)}
                 callBackSetShownRole={props.callBackSetShownRole}
             />
         </div>

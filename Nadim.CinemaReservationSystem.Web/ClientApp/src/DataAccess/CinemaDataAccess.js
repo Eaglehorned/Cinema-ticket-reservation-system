@@ -1,200 +1,205 @@
-import TokenService from '../Services/TokenService';
-import ReceivedDataProcessingService from '../Services/ReceivedDataProcessingService';
+import authorizationService from '../Services/AuthorizationService';
+import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
+import seatsHelper from '../Helper/SeatsHelper';
 
-export default class CinemaDataAccess{
+const getCinemaListFetch = () =>{
+    return fetch('api/cinemas', {
+        method: 'GET',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    });
+}
 
-    static getCinemaList = () =>{
-        return CinemaDataAccess.getCinemaListFetch()
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
-    }
+const getCinemaFetch = (id) =>{
+    return fetch(`api/cinemas/${id}`, {
+        method: 'GET',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        }
+    });
+}
 
-    static getCinemaListFetch = () =>{
-        return fetch('api/cinemas', {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
-    }
+const compeleteCinemaInfoWithId = (cinemaInfo, id) =>{
+    cinemaInfo.info.cinemaId = id;
+    return cinemaInfo;
+}
 
-    static getCinema = (id) =>{
-        return CinemaDataAccess.getCinemaFetch(id)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData)
-        .then(requestedData => CinemaDataAccess.compeleteCinemaInfoWithId(requestedData, id))
-    }
+const createCinemaFetch = (cinemaInfo) =>{
+    return fetch('api/cinemas', {
+        method: 'POST',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify(cinemaInfo)
+    })
+}
 
-    static getCinemaFetch = (id) =>{
-        return fetch(`api/cinemas/${id}`, {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            }
-        });
-    }
+const editCinemaFetch = (cinemaInfo) =>{
+    return fetch(`api/cinemas/${cinemaInfo.cinemaId}/info`, {
+        method: 'PUT',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify(cinemaInfo)
+    });
+}
 
-    static createCinema = (cinemaInfo) =>{
-        return CinemaDataAccess.createCinemaFetch(cinemaInfo)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.getIdFromResponse)
-    }
+const getCinemaRoomListFetch = (cinemaId) =>{
+    return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
+        method: 'GET',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        }
+    });
+}
 
-    static createCinemaFetch = (cinemaInfo) =>{
-        return fetch('api/cinemas', {
-            method: 'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            },
-            body: JSON.stringify(cinemaInfo)
+const getCinemaRoomSeatTypesFetch = (cinemaId, cinemaRoomId) =>{
+    return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}/seatTypes`, {
+        method: 'GET',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        }
+    });
+}
+
+const handleReceivedCinemaRoomInfo = (cinemaRoomInfo, cinemaRoomId) =>{
+    let cinemaInfo = {};
+    cinemaInfo.info = {};
+    cinemaInfo.info.name = cinemaRoomInfo.requestedData.name;
+    cinemaInfo.info.cinemaRoomId = cinemaRoomId;
+    cinemaInfo.seats = cinemaRoomInfo.requestedData.seats;
+
+    cinemaInfo.seats = seatsHelper.sortSeats(cinemaRoomInfo.requestedData.seats);
+
+    cinemaInfo.info.rows = seatsHelper.getSeatsRowsNumber(cinemaInfo.seats);
+    cinemaInfo.info.columns = seatsHelper.getSeatsColumnsNumber(cinemaInfo.seats);
+
+    cinemaInfo.seats = seatsHelper.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
+
+    return cinemaInfo;
+}
+
+const getCinemaRoomFetch = (cinemaId, cinemaRoomId) =>{
+    return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}`, {
+        method: 'GET',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        }
+    });
+}
+
+const createCinemaRoomFetch = (cinemaId, cinemaRoomInfo) =>{
+    return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
+        method:'POST',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify({
+            name: cinemaRoomInfo.name,
+            seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
         })
-    }
+    })
+}
 
-    static editCinema = (cinemaInfo) =>{
-        return CinemaDataAccess.editCinemaFetch(cinemaInfo)
-        .then(ReceivedDataProcessingService.handleRequstError);
-    }
+const formCinemaRoomInfo = (name, cinemaRoomId) =>{
+    let cinemaRoom = {};
+    cinemaRoom.name = name;
+    cinemaRoom.cinemaRoomId = cinemaRoomId;
+    return cinemaRoom;
+}
 
-    static editCinemaFetch = (cinemaInfo) =>{
-        return fetch(`api/cinemas/${cinemaInfo.cinemaId}/info`, {
-            method: 'PUT',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            },
-            body: JSON.stringify(cinemaInfo)
-        });
-    }
-
-    static getCinemaRoomList = (cinemaId) =>{
-        return CinemaDataAccess.getCinemaRoomListFetch(cinemaId)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData)
-    }
-
-    static getCinemaRoomListFetch = (cinemaId) =>{
-        return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            }
-        });
-    }
-
-    static getCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
-        return CinemaDataAccess.getCinemaRoomSeatTypesFetch(cinemaId, cinemaRoomId)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then(ReceivedDataProcessingService.getRequsetedData);
-    }
-
-    static getCinemaRoomSeatTypesFetch = (cinemaId, cinemaRoomId) =>{
-        return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}/seatTypes`, {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            }
-        });
-    }
-
-    static getCinemaRoom = (cinemaid, cinemaRoomId) =>{
-        return CinemaDataAccess.getCinemaRoomFetch(cinemaid, cinemaRoomId)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(ReceivedDataProcessingService.parseJson)
-        .then((cinemaInfo) => CinemaDataAccess.handleReceivedCinemaRoomInfo(cinemaInfo, cinemaRoomId));
-    }
-
-    static getCinemaRoomFetch = (cinemaId, cinemaRoomId) =>{
-        return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}`, {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            }
-        });
-    }
-
-    static createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
-        return CinemaDataAccess.createCinemaRoomFetch(cinemaId, cinemaRoomInfo)
-        .then(ReceivedDataProcessingService.handleRequstError)
-        .then(response => CinemaDataAccess.formCinemaRoomInfo(cinemaRoomInfo.name, ReceivedDataProcessingService.getIdFromResponse(response)));
-    }
-
-    static createCinemaRoomFetch = (cinemaId, cinemaRoomInfo) =>{
-        return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
-            method:'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            },
-            body: JSON.stringify({
-                name: cinemaRoomInfo.name,
-                seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
-            })
+const editCinemaRoomFetch = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
+    return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}`, {
+        method:'PUT',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify({
+            name: cinemaRoomInfo.name,
+            seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
         })
+    });
+}
+
+class CinemaDataAccess{
+
+    getCinemaList = () =>{
+        return getCinemaListFetch()
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData);
     }
 
-    static editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
-        return CinemaDataAccess.editCinemaRoomFetch(cinemaId, cinemaRoomId, cinemaRoomInfo)
-        .then(ReceivedDataProcessingService.handleRequstError);
+    getCinema = (id) =>{
+        return getCinemaFetch(id)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData)
+        .then(requestedData => compeleteCinemaInfoWithId(requestedData, id))
     }
 
-    static editCinemaRoomFetch = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
-        return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}`, {
-            method:'PUT',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${TokenService.getToken()}`
-            },
-            body: JSON.stringify({
-                name: cinemaRoomInfo.name,
-                seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
-            })
-        });
+    createCinema = (cinemaInfo) =>{
+        return createCinemaFetch(cinemaInfo)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.getIdFromResponse)
     }
 
-    static handleReceivedCinemaRoomInfo(cinemaRoomInfo, cinemaRoomId){
-        let cinemaInfo = {};
-        cinemaInfo.info = {};
-        cinemaInfo.info.name = cinemaRoomInfo.requestedData.name;
-        cinemaInfo.info.cinemaRoomId = cinemaRoomId;
-        cinemaInfo.seats = cinemaRoomInfo.requestedData.seats;
-
-        cinemaInfo.seats = ReceivedDataProcessingService.sortSeats(cinemaRoomInfo.requestedData.seats);
-
-        cinemaInfo.info.rows = ReceivedDataProcessingService.getSeatsRowsNumber(cinemaInfo.seats);
-        cinemaInfo.info.columns = ReceivedDataProcessingService.getSeatsColumnsNumber(cinemaInfo.seats);
-
-        cinemaInfo.seats = ReceivedDataProcessingService.convertSeatsArray(cinemaInfo.seats, cinemaInfo.info.rows, cinemaInfo.info.columns);
-
-        return cinemaInfo;
+    editCinema = (cinemaInfo) =>{
+        return editCinemaFetch(cinemaInfo)
+        .then(receivedDataProcessingHelper.handleRequstError);
     }
 
-    static compeleteCinemaInfoWithId = (cinemaInfo, id) =>{
-        cinemaInfo.info.cinemaId = id;
-        return cinemaInfo;
+    getCinemaRoomList = (cinemaId) =>{
+        return getCinemaRoomListFetch(cinemaId)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData)
     }
-    
-    static formCinemaRoomInfo = (name, cinemaRoomId) =>{
-        let cinemaRoom = {};
-        cinemaRoom.name = name;
-        cinemaRoom.cinemaRoomId = cinemaRoomId;
-        return cinemaRoom;
+
+    getCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
+        return getCinemaRoomSeatTypesFetch(cinemaId, cinemaRoomId)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData);
+    }
+
+    getCinemaRoom = (cinemaid, cinemaRoomId) =>{
+        return getCinemaRoomFetch(cinemaid, cinemaRoomId)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then((cinemaInfo) => handleReceivedCinemaRoomInfo(cinemaInfo, cinemaRoomId));
+    }
+
+    createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
+        return createCinemaRoomFetch(cinemaId, cinemaRoomInfo)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(response => formCinemaRoomInfo(cinemaRoomInfo.name, receivedDataProcessingHelper.getIdFromResponse(response)));
+    }
+
+    editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
+        return editCinemaRoomFetch(cinemaId, cinemaRoomId, cinemaRoomInfo)
+        .then(receivedDataProcessingHelper.handleRequstError);
     }
 }
+
+const cinemaDataAccess = new CinemaDataAccess();
+
+export default cinemaDataAccess;

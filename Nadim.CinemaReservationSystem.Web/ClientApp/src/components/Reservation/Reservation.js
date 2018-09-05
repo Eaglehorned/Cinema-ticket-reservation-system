@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import SearchBar from './SearchBar';
 import ReserveTicket from './ReserveTicket';
 import DisplaySessions from './DisplaySessions';
-import SessionService from '../../Services/SessionService';
-import ApplicationService from '../../Services/ApplicationService';
+import sessionService from '../../Services/SessionService';
+import applicationService from '../../Services/ApplicationService';
 import '../../styles/Reservation.css';
 
 export default class Reservation extends Component{
@@ -22,10 +22,10 @@ export default class Reservation extends Component{
         this.setState({
             chosenOperation: 'reservationLoading'
         });
-        SessionService.getSession(sessionId)
+        sessionService.getSession(sessionId)
         .then(requestedData =>{
             this.setState({
-                session : SessionService.completeSessionWithInfo(this.state.session, requestedData)
+                session : sessionService.completeSessionWithInfo(this.state.session, requestedData)
             });
             return sessionId;
         })
@@ -34,15 +34,15 @@ export default class Reservation extends Component{
             this.setState({
                 chosenOperation: ''
             });
-            ApplicationService.informWithErrorMessage(error);
+            applicationService.informWithErrorMessage(error);
         });
     }
 
     getSessionSeats = (sessionId) =>{
-        SessionService.getSessionSeats(sessionId)
+        sessionService.getSessionSeats(sessionId)
         .then(requestedData =>{
             this.setState({
-                session : SessionService.completeSessionWithSeats(this.state.session, requestedData),
+                session : sessionService.completeSessionWithSeats(this.state.session, requestedData),
                 chosenOperation: 'reservation'
             })
         });
@@ -91,8 +91,8 @@ export default class Reservation extends Component{
                         token={this.props.token}
                         callBackInformWithMessage={this.props.callBackInformWithMessage}
                         session={this.state.session}
-                        callBackCancelParentOperation={this.handleCancelOperation}
-                        userId={this.props.userId}
+
+                        callBackCancelReservation={this.handleCancelOperation}
                     />
                 );
             case 'reservationLoading':

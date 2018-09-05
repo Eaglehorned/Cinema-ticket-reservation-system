@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import DisplayChosenSeats from './DisplayChosenSeats';
-import ReservationServise from '../../Services/ReservationService';
+import reservationServise from '../../Services/ReservationService';
 
 const ConfirmReservation = (props) =>{
 
@@ -25,7 +25,7 @@ const ConfirmReservation = (props) =>{
                         Total : 
                         <span className="font-x-large font-bold">         
                         {
-                            ReservationServise.countUpTotalPrice(props.chosenSeats, props.sessionSeatTypePrices)
+                            reservationServise.countUpTotalPrice(props.chosenSeats, props.sessionSeatTypePrices)
                         }
                         </span>
                     </div>

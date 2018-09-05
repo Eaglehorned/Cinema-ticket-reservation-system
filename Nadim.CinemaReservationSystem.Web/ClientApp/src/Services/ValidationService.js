@@ -1,15 +1,15 @@
 import moment from 'moment';
 
-export default class ValidationService{
+class ValidationService{
 
-    static showIsStringValid(showHint, str){
-        return !showHint || ValidationService.validateString(str);
+    showIsStringValid(showHint, str){
+        return !showHint || validationService.validateString(str);
     }
 
-    static intValidationErrorMessage(showHint, number){
+    intValidationErrorMessage(showHint, number){
         if (showHint){
             return number
-            ? (ValidationService.validateIntNumber(number)
+            ? (validationService.validateIntNumber(number)
                 ? ''
                 :'Data not valid'
             )
@@ -20,10 +20,10 @@ export default class ValidationService{
         }
     }
 
-    static doubleValidationErrorMessage(showHint, number){
+    doubleValidationErrorMessage(showHint, number){
         if (showHint){
             return number
-            ?(ValidationService.validateDoubleNumber(number)
+            ?(validationService.validateDoubleNumber(number)
                 ? ''
                 :'Data not valid'
             )
@@ -34,57 +34,57 @@ export default class ValidationService{
         }
     }
 
-    static validateIntNumber = (number) =>{
+    validateIntNumber = (number) =>{
         const result = /^\d+$/;
         return result.test(String(number));
     }
 
-    static validateDoubleNumber(number){
+    validateDoubleNumber(number){
         const result = /^\d+([.,]\d+)?$/;
         return result.test(String(number));
     }
 
-    static showIsDoubleNumberValid = (showHint, number) =>{
-        return !showHint || ValidationService.validateDoubleNumber(number);
+    showIsDoubleNumberValid = (showHint, number) =>{
+        return !showHint || validationService.validateDoubleNumber(number);
     }
 
-    static validateString = (str) =>{
+    validateString = (str) =>{
         return str;
     }
 
-    static validateStartAndEndDates = (startDate, endDate) =>{
+    validateStartAndEndDates = (startDate, endDate) =>{
         return endDate.isAfter(startDate);
     }
 
-    static showIsStartAndEndDatesValid = (showHint, startDate, endDate) =>{
-        return !showHint || ValidationService.validateStartAndEndDates(startDate, endDate);
+    showIsStartAndEndDatesValid = (showHint, startDate, endDate) =>{
+        return !showHint || validationService.validateStartAndEndDates(startDate, endDate);
     }
 
-    static validateDuration = (duration) =>{
+    validateDuration = (duration) =>{
         return duration.hours() !== 0
         || duration.minutes() !== 0
         || duration.seconds() !== 0;
     }
 
-    static validateFutureDate = (date) =>{
+    validateFutureDate = (date) =>{
         return date && date.format("YYYY-MM-DD") > moment().format("YYYY-MM-DD");
     }
 
-    static showIsDurationValid = (showHint, duration) =>{
-        return !showHint || ValidationService.validateDuration(duration);
+    showIsDurationValid = (showHint, duration) =>{
+        return !showHint || validationService.validateDuration(duration);
     }
 
-    static validateSeatTypePricesList = (seatTypes) =>{
+    validateSeatTypePricesList = (seatTypes) =>{
         let result = true;
-        seatTypes.forEach(el => result = result && ValidationService.validateDoubleNumber(el.price));
+        seatTypes.forEach(el => result = result && validationService.validateDoubleNumber(el.price));
         return result;
     }
 
-    static showIsFutureDateValid = (showHint, date) =>{
-        return !showHint || ValidationService.validateFutureDate(date);
+    showIsFutureDateValid = (showHint, date) =>{
+        return !showHint || validationService.validateFutureDate(date);
     }
 
-    static futureDateValidationErrorMessage = (showHint, date) =>{
+    futureDateValidationErrorMessage = (showHint, date) =>{
         if (showHint){
             if (!date){
                 return 'Begin time not entered.';
@@ -96,11 +96,15 @@ export default class ValidationService{
         return '';
     }
 
-    static showIsTimeValid = (showHint, time) =>{
-        return !showHint || ValidationService.validateTime(time);
+    showIsTimeValid = (showHint, time) =>{
+        return !showHint || validationService.validateTime(time);
     }
 
-    static validateTime = (time) =>{
+    validateTime = (time) =>{
         return time;
     }
 }
+
+const validationService = new ValidationService();
+
+export default validationService;

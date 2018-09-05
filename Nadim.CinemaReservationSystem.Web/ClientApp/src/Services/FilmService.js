@@ -1,25 +1,25 @@
-import FilmDataAccess from "../DataAccess/FilmDataAccess";
+import filmDataAccess from "../DataAccess/FilmDataAccess";
 import moment from 'moment';
-import ValidationService from "./ValidationService";
+import validationService from "./ValidationService";
 
-export default class FilmService{
-    static getFilmList = () =>{
-        return FilmDataAccess.getFilmList();
+class FilmService{
+    getFilmList = () =>{
+        return filmDataAccess.getFilmList();
     }
 
-    static getFilm = (id) =>{
-        return FilmDataAccess.getFilm(id);
+    getFilm = (id) =>{
+        return filmDataAccess.getFilm(id);
     }
 
-    static createFilm = (filmInfo) =>{
-        return FilmDataAccess.createFilm(filmInfo);
+    createFilm = (filmInfo) =>{
+        return filmDataAccess.createFilm(filmInfo);
     }
 
-    static editFilm = (filmId, filmInfo) =>{
-        return FilmDataAccess.editFilm(filmId, filmInfo);
+    editFilm = (filmId, filmInfo) =>{
+        return filmDataAccess.editFilm(filmId, filmInfo);
     }
 
-    static durationFromSecToDate = (duration) =>{
+    durationFromSecToDate = (duration) =>{
         let temp = moment({
             hours: Math.trunc(duration / 3600),
             minutes: Math.trunc((duration % 3600) / 60),
@@ -28,13 +28,13 @@ export default class FilmService{
         return temp;
     }
 
-    static durationFromDateToSec = (duration) =>{
+    durationFromDateToSec = (duration) =>{
         return duration.hours() * 3600 
         + duration.minutes() * 60
         + duration.seconds();
     }
 
-    static formDate = (date) =>{
+    formDate = (date) =>{
         return new Date( 
             Date.UTC(
                 date.year(), 
@@ -44,16 +44,20 @@ export default class FilmService{
         );
     }
 
-    static validateFilmInfo = (name, description, startDate, endDate, duration) =>{
-        return ValidationService.validateString(name)
-        && ValidationService.validateString(description)
-        && ValidationService.validateStartAndEndDates(startDate, endDate)
-        && ValidationService.validateDuration(duration);
+    validateFilmInfo = (name, description, startDate, endDate, duration) =>{
+        return validationService.validateString(name)
+        && validationService.validateString(description)
+        && validationService.validateStartAndEndDates(startDate, endDate)
+        && validationService.validateDuration(duration);
     }
 
-    static updateFilmList = (filmList, changedFilmId, changedFilmInfo) =>{
+    updateFilmList = (filmList, changedFilmId, changedFilmInfo) =>{
         let tempFilmList = filmList;
         tempFilmList.find((el) => el.filmId === changedFilmId).name = changedFilmInfo.name;
         return tempFilmList;
     }
 }
+
+const filmService = new FilmService();
+
+export default filmService;

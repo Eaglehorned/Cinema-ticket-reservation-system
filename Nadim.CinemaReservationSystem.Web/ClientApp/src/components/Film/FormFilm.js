@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import FilmService from '../../Services/FilmService';
+import filmService from '../../Services/FilmService';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
 import InputDurationFormGroup from '../General/InputDurationFormGroup';
 import InputDateFormGroup from '../General/InputDateFormGroup';
-import ValidationService from '../../Services/ValidationService';
+import validationService from '../../Services/ValidationService';
 import InputStringFormGroup from '../General/InputStringFormGroup';
 
 export default class FormFilm extends Component{
@@ -16,7 +16,7 @@ export default class FormFilm extends Component{
             name: this.props.filmInfo ? this.props.filmInfo.name : '',
             startDate: this.props.filmInfo ? moment(this.props.filmInfo.startDate) : moment(),
             endDate: this.props.filmInfo ? moment(this.props.filmInfo.endDate) : moment(),
-            duration: this.props.filmInfo ? FilmService.durationFromSecToDate(this.props.filmInfo.duration) : moment('00:00:00', 'HH:mm:ss'),
+            duration: this.props.filmInfo ? filmService.durationFromSecToDate(this.props.filmInfo.duration) : moment('00:00:00', 'HH:mm:ss'),
             description: this.props.filmInfo ? this.props.filmInfo.description : '',
             showHint: this.props.showHint ? this.props.showHint : false
         }
@@ -53,7 +53,7 @@ export default class FormFilm extends Component{
     }
 
     handleSubmitClick = () =>{
-        if (FilmService.validateFilmInfo(
+        if (filmService.validateFilmInfo(
             this.state.name,
             this.state.description,
             this.state.startDate,
@@ -62,9 +62,9 @@ export default class FormFilm extends Component{
         )){
             this.props.callBackReceiveFilmInfo({
                 name: this.state.name,
-                startDate: FilmService.formDate(this.state.startDate),
-                endDate: FilmService.formDate(this.state.endDate),
-                duration: FilmService.durationFromDateToSec(this.state.duration),
+                startDate: filmService.formDate(this.state.startDate),
+                endDate: filmService.formDate(this.state.endDate),
+                duration: filmService.durationFromDateToSec(this.state.duration),
                 description: this.state.description
             });
         }
@@ -96,7 +96,7 @@ export default class FormFilm extends Component{
                     handleValueChange={this.handleChangeStartDate}
                     showHint={this.state.showHint}
                     value={this.state.startDate}
-                    isValid={ValidationService.validateStartAndEndDates(this.state.startDate, this.state.endDate)}
+                    isValid={validationService.validateStartAndEndDates(this.state.startDate, this.state.endDate)}
                 />
                 <InputDateFormGroup
                     label="End date"
@@ -104,7 +104,7 @@ export default class FormFilm extends Component{
                     handleValueChange={this.handleChangeEndDate}
                     showHint={this.state.showHint}
                     value={this.state.endDate}
-                    isValid={ValidationService.validateStartAndEndDates(this.state.startDate, this.state.endDate)}
+                    isValid={validationService.validateStartAndEndDates(this.state.startDate, this.state.endDate)}
                 />
                 <InputDurationFormGroup
                     label="Duration"
