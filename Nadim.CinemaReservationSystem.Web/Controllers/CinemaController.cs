@@ -70,9 +70,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{cinemaId}/cinemaRooms/{cinemaRoomId}")]
-        public ActionResult<GetResult<ResponseCinemaRoomFullInfo>> GetCinemaRoom(int cinemaId, int cinemaRoomId)
+        public ActionResult<GetResult<ResponseCinemaRoomInfo>> GetCinemaRoom(int cinemaId, int cinemaRoomId)
         {
-            GetResult<ResponseCinemaRoomFullInfo> result = сinemaService.GetCinemaRoom(cinemaId, cinemaRoomId);
+            GetResult<ResponseCinemaRoomInfo> result = сinemaService.GetCinemaRoom(cinemaId, cinemaRoomId);
 
             if (result.ResultOk)
             {
