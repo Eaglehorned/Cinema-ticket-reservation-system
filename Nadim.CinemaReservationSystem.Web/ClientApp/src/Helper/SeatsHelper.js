@@ -1,5 +1,5 @@
-export default class SeatsHelper{
-    static convertSeatsArray(seats, rows, columns){
+class SeatsHelper{
+    convertSeatsArray(seats, rows, columns){
         let seatsArray = [];
         for (let i = 0; i < rows; i++){
             seatsArray[i] = [];
@@ -10,7 +10,7 @@ export default class SeatsHelper{
         return seatsArray;
     }
 
-    static sortSeats = (seats) =>{
+    sortSeats = (seats) =>{
         return seats.sort((a, b) => {
             if (a.row === b.row){
                 if (a.column > b.column){
@@ -28,15 +28,15 @@ export default class SeatsHelper{
         });
     }
 
-    static getSeatsRowsNumber = (seats) =>{
+    getSeatsRowsNumber = (seats) =>{
         return seats[seats.length - 1].row + 1;
     }
 
-    static getSeatsColumnsNumber = (seats) =>{
+    getSeatsColumnsNumber = (seats) =>{
         return seats[seats.length - 1].column + 1;
     }
 
-    static createSeatsArray(rows, columns){
+    createSeatsArray(rows, columns){
         let seatsArray = [];
         for (let i = 0; i < rows; i++){
             seatsArray[i] = [];
@@ -51,3 +51,7 @@ export default class SeatsHelper{
         return seatsArray;
     }
 }
+
+const seatsHelper = new SeatsHelper();
+ 
+export default seatsHelper;

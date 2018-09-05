@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ApplicationService from './Services/ApplicationService';
+import applicationService from './Services/ApplicationService';
 import Header from './components/Header';
 import Body from './components/Body';
 import MyAlert from './components/MyAlert';
@@ -14,7 +14,7 @@ export default class App extends Component {
             infoMessage:'',
             alertStyle:'info'
         }
-        ApplicationService.setInformWithMessage(this.informWithMessage);
+        applicationService.setInformWithMessage(this.informWithMessage);
     }
 
     setShownRole = (role) =>{

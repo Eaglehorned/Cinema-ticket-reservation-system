@@ -11,15 +11,15 @@ class AuthorizationService{
         return userInfo.token;
     }
 
-    setInfo = (username, token, role, userId) =>{
-        userInfo.username = username;
-        userInfo.token = token;
-        userInfo.role = role;
-        userInfo.userId = userId;
-        localStorage.setItem('username', username);
-        localStorage.setItem('token', token);
-        localStorage.setItem('role', role);
-        localStorage.setItem('userId', userId);
+    setInfo = (_username, _token, _role, _userId) =>{
+        userInfo.username = _username;
+        userInfo.token = _token;
+        userInfo.role = _role;
+        userInfo.userId = _userId;
+        localStorage.setItem('username', _username);
+        localStorage.setItem('token', _token);
+        localStorage.setItem('role', _role);
+        localStorage.setItem('userId', _userId);
     }
 
     getUsername = () =>{

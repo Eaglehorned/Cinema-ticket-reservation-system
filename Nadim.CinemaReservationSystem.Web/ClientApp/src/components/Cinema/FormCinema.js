@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import FormGeneralCinemaInfo from './FormGeneralCinemaInfo';
 import FormCinemaRoom from './FormCinemaRoom';
 import '../../styles/FormCinema.css';
-import CinemaService from '../../Services/CinemaService';
-import ApplicationService from '../../Services/ApplicationService';
+import cinemaService from '../../Services/CinemaService';
+import applicationService from '../../Services/ApplicationService';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
 import DisplayCinemaRoomsList from './DisplayCinemaRoomsList';
 
@@ -21,7 +21,7 @@ export default class FormCinema extends Component{
     }
 
     getCinemaRoom = (id) =>{
-        CinemaService.getCinemaRoom(this.state.cinemaInfo.cinemaId, id)
+        cinemaService.getCinemaRoom(this.state.cinemaInfo.cinemaId, id)
         .then(cinema => {
             this.setState({
                 chosenCinemaRoomInfo: cinema,
@@ -32,7 +32,7 @@ export default class FormCinema extends Component{
             this.setState({
                 chosenOperation:''
             });
-            ApplicationService.informWithErrorMessage(error);
+            applicationService.informWithErrorMessage(error);
         });
     }
 
@@ -40,32 +40,32 @@ export default class FormCinema extends Component{
         this.setState({
             chosenOperation: ''
         });
-        CinemaService.createCinemaRoom(this.state.cinemaInfo.cinemaId, cinemaRoomInfo)
+        cinemaService.createCinemaRoom(this.state.cinemaInfo.cinemaId, cinemaRoomInfo)
         .then(cinemaRoom => {
             this.setState({
                 cinemaRooms: this.state.cinemaRooms.concat(cinemaRoom)
             });
-            ApplicationService.informWithMessage('Cinema room created');
+            applicationService.informWithMessage('Cinema room created');
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
     
     editCinemaRoom = (cinemaRoomInfo) =>{
         this.setState({
             chosenOperation: '',
         });
-        CinemaService.editCinemaRoom(this.state.cinemaInfo.cinemaId, this.state.chosenCinemaRoomInfo.info.cinemaRoomId, cinemaRoomInfo)
+        cinemaService.editCinemaRoom(this.state.cinemaInfo.cinemaId, this.state.chosenCinemaRoomInfo.info.cinemaRoomId, cinemaRoomInfo)
         .then(() => {
             this.setState({
-                cinemaRooms: CinemaService.updateCinemaRoomList(
+                cinemaRooms: cinemaService.updateCinemaRoomList(
                     this.state.cinemaRooms,
                     this.state.chosenCinemaRoomInfo.info.cinemaRoomId,
                     cinemaRoomInfo
                 )
             });
-            ApplicationService.informWithMessage('Cinema room edited.');
+            applicationService.informWithMessage('Cinema room edited.');
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     submitFormCinema = () =>{

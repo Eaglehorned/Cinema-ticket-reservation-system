@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import FormFilm from './FormFilm';
-import FilmService from '../../Services/FilmService';
-import ApplicationService from '../../Services/ApplicationService';
+import filmService from '../../Services/FilmService';
+import applicationService from '../../Services/ApplicationService';
 import DisplayFilmList from './DisplayFilmList';
 
 export default class Film extends Component{
@@ -30,20 +30,20 @@ export default class Film extends Component{
     }
 
     getFilmList = () =>{
-        FilmService.getFilmList()
+        filmService.getFilmList()
         .then(requestedData => {
             this.setState({
                 filmList: requestedData,
             });
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     getFilm = (filmId) =>{
         this.setState({
             chosenOperation: 'editFilmLoading'
         });
-        FilmService.getFilm(filmId)
+        filmService.getFilm(filmId)
         .then(requestedData => {
             this.setState({
                 chosenFilmInfo: requestedData,
@@ -51,7 +51,7 @@ export default class Film extends Component{
             })
         })
         .catch(error => {
-            ApplicationService.informWithErrorMessage(error);
+            applicationService.informWithErrorMessage(error);
             this.setState({
                 chosenOperation: ''
             });
@@ -62,7 +62,7 @@ export default class Film extends Component{
         this.setState({
             chosenOperation: ''
         });
-        FilmService.createFilm(cinemaInfo)
+        filmService.createFilm(cinemaInfo)
         .then(filmId => {
             this.setState({
                 filmList: this.state.filmList.concat({
@@ -70,27 +70,27 @@ export default class Film extends Component{
                     filmId: filmId
                 })
             });
-            ApplicationService.informWithMessage('Film created.');
+            applicationService.informWithMessage('Film created.');
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     editFilm = (filmInfo) =>{
         this.setState({
             chosenOperation: ''
         });
-        FilmService.editFilm(this.state.chosenFilmInfo.filmId, filmInfo)
+        filmService.editFilm(this.state.chosenFilmInfo.filmId, filmInfo)
         .then(() => {
             this.setState({
-                filmList: FilmService.updateFilmList(
+                filmList: filmService.updateFilmList(
                     this.state.filmList, 
                     this.state.chosenFilmInfo.filmId,
                     filmInfo
                 )
             })
-            ApplicationService.informWithMessage('Film information edited.');
+            applicationService.informWithMessage('Film information edited.');
         })
-        .catch(error => ApplicationService.informWithErrorMessage(error));
+        .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     renderActionsContent = () =>{

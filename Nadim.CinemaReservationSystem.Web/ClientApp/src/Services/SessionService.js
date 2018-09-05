@@ -1,36 +1,36 @@
-import SessionDataAccess from '../DataAccess/SessionDataAccess';
-import ValidationService from './ValidationService';
+import sessionDataAccess from '../DataAccess/SessionDataAccess';
+import validationService from './ValidationService';
 
-export default class SessionService{
-    static getSessionList = () =>{
-        return SessionDataAccess.getSessionList();
+class SessionService{
+    getSessionList = () =>{
+        return sessionDataAccess.getSessionList();
     }
 
-    static createSession = (sessionInfo) =>{
-        return SessionDataAccess.createSession(sessionInfo);
+    createSession = (sessionInfo) =>{
+        return sessionDataAccess.createSession(sessionInfo);
     }
 
-    static getSession = (id) =>{
-        return SessionDataAccess.getSession(id);
+    getSession = (id) =>{
+        return sessionDataAccess.getSession(id);
     }
 
-    static editSession = (id, sessionInfo) =>{
-        return SessionDataAccess.editSession(id, sessionInfo);
+    editSession = (id, sessionInfo) =>{
+        return sessionDataAccess.editSession(id, sessionInfo);
     }
 
-    static getSessionSeats = (sessionId) =>{
-        return SessionDataAccess.getSessionSeats(sessionId);
+    getSessionSeats = (sessionId) =>{
+        return sessionDataAccess.getSessionSeats(sessionId);
     }
 
-    static getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
-        return SessionDataAccess.getSessionSeatsUpdates(sessionId, lastTimeUpdated);
+    getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
+        return sessionDataAccess.getSessionSeatsUpdates(sessionId, lastTimeUpdated);
     }
 
-    static editSessionSeat = (sessionId, sessionSeatId, booked) =>{
-        return SessionDataAccess.editSessionSeat(sessionId, sessionSeatId, booked);
+    editSessionSeat = (sessionId, sessionSeatId, booked) =>{
+        return sessionDataAccess.editSessionSeat(sessionId, sessionSeatId, booked);
     }
 
-    static updateSessionList = (sessionList, changedSessionId, changedSessionInfo) =>{
+    updateSessionList = (sessionList, changedSessionId, changedSessionInfo) =>{
         const tempSessionList = sessionList;
         const tempSessionChangedElement = tempSessionList.find( el => el.sessionId === changedSessionId);
         tempSessionChangedElement.cinema = changedSessionInfo.cinema;
@@ -40,28 +40,28 @@ export default class SessionService{
         return tempSessionList;
     }
 
-    static updateSeatTypesList = (seatTypes, seatTypeInfo) =>{
+    updateSeatTypesList = (seatTypes, seatTypeInfo) =>{
         let tempSeatTypes = seatTypes;
         tempSeatTypes.find((el) => el.seatTypeId === seatTypeInfo.seatTypeId).price = seatTypeInfo.price;
         return tempSeatTypes;
     }
 
-    static completeSessionWithSeats = (session, seats) =>{
+    completeSessionWithSeats = (session, seats) =>{
         session.seats = seats;
         return session;
     }
 
-    static completeSessionWithInfo = (session, info) =>{
+    completeSessionWithInfo = (session, info) =>{
         session.info = info;
         return session;
     }
 
-    static updateSessionSeatInSeatsArray = (seatInfo, seats) =>{
+    updateSessionSeatInSeatsArray = (seatInfo, seats) =>{
         seats[seatInfo.row][seatInfo.column].chosen = seatInfo.booked;
         return seats;
     }
 
-    static updateSessionSeatInChosenSeatsArray = (seatInfo, chosenSeats) =>{
+    updateSessionSeatInChosenSeatsArray = (seatInfo, chosenSeats) =>{
         if(!seatInfo.booked){
             chosenSeats.splice(chosenSeats.findIndex( el => el.sessionSeatId === seatInfo.sessionSeatId), 1);
         }
@@ -71,13 +71,13 @@ export default class SessionService{
         return chosenSeats ;
     }
 
-    static formSeatInfo = (seatInfo) =>{
+    formSeatInfo = (seatInfo) =>{
        const tempSeatInfo = Object.assign({}, seatInfo);
        tempSeatInfo.booked = !seatInfo.chosen;
        return tempSeatInfo; 
     }
 
-    static updateSessionSeats = (seats, chosenSeats, updates) =>{
+    updateSessionSeats = (seats, chosenSeats, updates) =>{
         const updatesNotChosenHere = updates.filter(el =>{
             return !chosenSeats.find(ch => ch.sessionSeatId === el.sessionSeatId);
         })
@@ -99,7 +99,7 @@ export default class SessionService{
         return seats;
     }
 
-    static updateChosenSessionSeats = (chosenSeats, updates) =>{
+    updateChosenSessionSeats = (chosenSeats, updates) =>{
         const updatesChosenHere = updates.filter(el =>{
             return chosenSeats.find(ch => ch.sessionSeatId === el.sessionSeatId);
         })
@@ -113,7 +113,7 @@ export default class SessionService{
         return chosenSeats;
     }
 
-    static validateSessionInfo = (
+    validateSessionInfo = (
         chosenCinema, 
         chosenCinemaRoom, 
         chosenFilm, 
@@ -124,11 +124,15 @@ export default class SessionService{
             && chosenCinemaRoom
             && chosenFilm
             && beginTime
-            && ValidationService.validateSeatTypePricesList(seatTypePrices)
-            && ValidationService.validateFutureDate(beginTime)
+            && validationService.validateSeatTypePricesList(seatTypePrices)
+            && validationService.validateFutureDate(beginTime)
         ){
             return true;
         }
         return false;
     }
 }
+
+const sessionService = new SessionService();
+
+export default sessionService;

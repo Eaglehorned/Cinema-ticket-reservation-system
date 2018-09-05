@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import InputStringFormGroup from '../General/InputStringFormGroup';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
-import CinemaService from '../../Services/CinemaService';
+import cinemaService from '../../Services/CinemaService';
 
 export default class FormGeneralCinemaInfo extends Component{
     displayName = FormGeneralCinemaInfo.name;
@@ -29,7 +29,7 @@ export default class FormGeneralCinemaInfo extends Component{
                 city: city,
                 name: name
             },
-            allowSubmit: CinemaService.validateCinemaInfo(
+            allowSubmit: cinemaService.validateCinemaInfo(
                 this.state.displayedComponents,
                 city,
                 name
@@ -65,7 +65,7 @@ export default class FormGeneralCinemaInfo extends Component{
         this.setState({
             showHint: true
         });
-        if(CinemaService.validateCinemaInfo(
+        if(cinemaService.validateCinemaInfo(
             this.state.displayedComponents,
             this.state.name,
             this.state.city

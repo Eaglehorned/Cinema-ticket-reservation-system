@@ -1,81 +1,85 @@
 import authorizationService from '../Services/AuthorizationService';
-import ReceivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
+import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
-export default class FilmDataAccess{
-    static getFilmList = () =>{
-        return FilmDataAccess.getFilmListFetch()
-        .then(ReceivedDataProcessingHelper.handleRequstError)
-        .then(ReceivedDataProcessingHelper.parseJson)
-        .then(ReceivedDataProcessingHelper.getRequsetedData);
+const getFilmListFetch = () =>{
+    return fetch('api/films', {
+        method: 'GET',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        }
+    });
+}
+
+const getFilmFetch = (id) =>{
+    return fetch(`api/films/${id}`,{
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        }
+    });
+}
+
+const completeFilmInfoWithId = (filmId, filmInfo) =>{
+    filmInfo.filmId = filmId;
+    return filmInfo;
+}
+
+const createFilmFetch = (filmInfo) =>{
+    return fetch('api/films', {
+        method: 'POST',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify(filmInfo)
+    });
+}
+
+const editFilmFetch = (filmId, filmInfo) =>{
+    return fetch(`api/films/${filmId}`, {
+        method: 'PUT',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${authorizationService.getToken()}`
+        },
+        body: JSON.stringify(filmInfo)
+    })
+}
+
+class FilmDataAccess{
+    getFilmList = () =>{
+        return getFilmListFetch()
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData);
     }
 
-    static getFilmListFetch = () =>{
-        return fetch('api/films', {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${authorizationService.getToken()}`
-            }
-        });
+    getFilm = (id) =>{
+        return getFilmFetch(id)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequsetedData)
+        .then((filmInfo) => completeFilmInfoWithId(id, filmInfo));
     }
 
-    static getFilm = (id) =>{
-        return FilmDataAccess.getFilmFetch(id)
-        .then(ReceivedDataProcessingHelper.handleRequstError)
-        .then(ReceivedDataProcessingHelper.parseJson)
-        .then(ReceivedDataProcessingHelper.getRequsetedData)
-        .then((filmInfo) => FilmDataAccess.completeFilmInfoWithId(id, filmInfo));
+    createFilm = (filmInfo) =>{
+        return createFilmFetch(filmInfo)
+        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.getIdFromResponse);
     }
 
-    static getFilmFetch = (id) =>{
-        return fetch(`api/films/${id}`,{
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${authorizationService.getToken()}`
-            }
-        });
-    }
-
-    static createFilm = (filmInfo) =>{
-        return FilmDataAccess.createFilmFetch(filmInfo)
-        .then(ReceivedDataProcessingHelper.handleRequstError)
-        .then(ReceivedDataProcessingHelper.getIdFromResponse);
-    }
-
-    static createFilmFetch = (filmInfo) =>{
-        return fetch('api/films', {
-            method: 'POST',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${authorizationService.getToken()}`
-            },
-            body: JSON.stringify(filmInfo)
-        });
-    }
-
-    static editFilm = (filmId, filmInfo) =>{
-        return FilmDataAccess.editFilmFetch(filmId, filmInfo)
-        .then(ReceivedDataProcessingHelper.handleRequstError);
-    }
-
-    static editFilmFetch = (filmId, filmInfo) =>{
-        return fetch(`api/films/${filmId}`, {
-            method: 'PUT',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${authorizationService.getToken()}`
-            },
-            body: JSON.stringify(filmInfo)
-        })
-    }
-
-    static completeFilmInfoWithId(filmId, filmInfo){
-        filmInfo.filmId = filmId;
-        return filmInfo;
+    editFilm = (filmId, filmInfo) =>{
+        return editFilmFetch(filmId, filmInfo)
+        .then(receivedDataProcessingHelper.handleRequstError);
     }
 }
+
+const filmDataAccess = new FilmDataAccess();
+
+export default filmDataAccess;

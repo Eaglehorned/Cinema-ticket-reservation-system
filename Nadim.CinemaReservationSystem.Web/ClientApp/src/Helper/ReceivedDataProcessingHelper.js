@@ -1,13 +1,13 @@
-export default class ReceivedDataProcessingHelper{
-    static getRequsetedData = (parsedJson) =>{
+class ReceivedDataProcessingHelper{
+    getRequsetedData = (parsedJson) =>{
         return (parsedJson.requestedData);
     }
 
-    static parseJson = (response) =>{
+    parseJson = (response) =>{
         return response.json();
     }
 
-    static handleRequstError = (response) =>{
+    handleRequstError = (response) =>{
         if (response.ok){
             return response;
         }
@@ -31,7 +31,11 @@ export default class ReceivedDataProcessingHelper{
         }
     }
 
-    static getIdFromResponse = (response) =>{
+    getIdFromResponse = (response) =>{
         return parseInt(response.headers.get('location').substring(response.headers.get('location').lastIndexOf('/') + 1, response.headers.get('location').length), 10);
     }
 }
+
+const receivedDataProcessingHelper = new ReceivedDataProcessingHelper();
+
+export default receivedDataProcessingHelper;
