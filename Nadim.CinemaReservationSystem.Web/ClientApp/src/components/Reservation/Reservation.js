@@ -91,8 +91,7 @@ export default class Reservation extends Component{
                         token={this.props.token}
                         callBackInformWithMessage={this.props.callBackInformWithMessage}
                         session={this.state.session}
-
-                        callBackCancelReservation={this.handleCancelOperation}
+                        callBackCancelParentOperation={this.handleCancelOperation}
                     />
                 );
             case 'reservationLoading':

@@ -1,7 +1,6 @@
 import authorizationService from '../Services/AuthorizationService';
 import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
-
 const getFilmListFetch = () =>{
     return fetch('api/films', {
         method: 'GET',
@@ -22,11 +21,6 @@ const getFilmFetch = (id) =>{
             'Authorization': `bearer ${authorizationService.getToken()}`
         }
     });
-}
-
-const completeFilmInfoWithId = (filmId, filmInfo) =>{
-    filmInfo.filmId = filmId;
-    return filmInfo;
 }
 
 const createFilmFetch = (filmInfo) =>{
@@ -65,8 +59,7 @@ class FilmDataAccess{
         return getFilmFetch(id)
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData)
-        .then((filmInfo) => completeFilmInfoWithId(id, filmInfo));
+        .then(receivedDataProcessingHelper.getRequsetedData);
     }
 
     createFilm = (filmInfo) =>{
