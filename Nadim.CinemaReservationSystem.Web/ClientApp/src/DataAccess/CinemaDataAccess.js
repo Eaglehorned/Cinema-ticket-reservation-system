@@ -23,11 +23,6 @@ const sendRequestToGetCinema = (id) =>{
     });
 }
 
-const compeleteCinemaInfoWithId = (cinemaInfo, id) =>{
-    cinemaInfo.info.cinemaId = id;
-    return cinemaInfo;
-}
-
 const sendRequestToCreateCinema = (cinemaInfo) =>{
     return fetch('api/cinemas', {
         method: 'POST',
@@ -74,14 +69,14 @@ const sendRequestToGetCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
     });
 }
 
-const handleReceivedCinemaRoomInfo = (cinemaRoomInfo, cinemaRoomId) =>{
+const handleReceivedCinemaRoomInfo = (requestedData) =>{
     let cinemaInfo = {};
     cinemaInfo.info = {};
-    cinemaInfo.info.name = cinemaRoomInfo.requestedData.name;
-    cinemaInfo.info.cinemaRoomId = cinemaRoomId;
-    cinemaInfo.seats = cinemaRoomInfo.requestedData.seats;
+    cinemaInfo.info.name = requestedData.name;
+    cinemaInfo.info.cinemaRoomId = requestedData.cinemaRoomId;
+    cinemaInfo.seats = requestedData.seats;
 
-    cinemaInfo.seats = seatsHelper.sortSeats(cinemaRoomInfo.requestedData.seats);
+    cinemaInfo.seats = seatsHelper.sortSeats(requestedData.seats);
 
     cinemaInfo.info.rows = seatsHelper.getSeatsRowsNumber(cinemaInfo.seats);
     cinemaInfo.info.columns = seatsHelper.getSeatsColumnsNumber(cinemaInfo.seats);
@@ -152,8 +147,7 @@ class CinemaDataAccess{
         return sendRequestToGetCinema(id)
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData)
-        .then(requestedData => compeleteCinemaInfoWithId(requestedData, id))
+        .then(receivedDataProcessingHelper.getRequsetedData);
     }
 
     createCinema = (cinemaInfo) =>{
@@ -185,7 +179,8 @@ class CinemaDataAccess{
         return sendRequestToGetCinemaRoom(cinemaid, cinemaRoomId)
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then((cinemaInfo) => handleReceivedCinemaRoomInfo(cinemaInfo, cinemaRoomId));
+        .then(receivedDataProcessingHelper.getRequsetedData)
+        .then(handleReceivedCinemaRoomInfo);
     }
 
     createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
