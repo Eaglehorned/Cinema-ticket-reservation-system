@@ -2,7 +2,7 @@ import authorizationService from '../Services/AuthorizationService';
 import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 import seatsHelper from '../Helper/SeatsHelper';
 
-const getCinemaListFetch = () =>{
+const sendRequestToGetCinemaList = () =>{
     return fetch('api/cinemas', {
         method: 'GET',
         headers:{
@@ -12,7 +12,7 @@ const getCinemaListFetch = () =>{
     });
 }
 
-const getCinemaFetch = (id) =>{
+const sendRequestToGetCinema = (id) =>{
     return fetch(`api/cinemas/${id}`, {
         method: 'GET',
         headers:{
@@ -23,7 +23,7 @@ const getCinemaFetch = (id) =>{
     });
 }
 
-const createCinemaFetch = (cinemaInfo) =>{
+const sendRequestToCreateCinema = (cinemaInfo) =>{
     return fetch('api/cinemas', {
         method: 'POST',
         headers:{
@@ -35,7 +35,7 @@ const createCinemaFetch = (cinemaInfo) =>{
     })
 }
 
-const editCinemaFetch = (cinemaInfo) =>{
+const sendRequestToEditCinema = (cinemaInfo) =>{
     return fetch(`api/cinemas/${cinemaInfo.cinemaId}/info`, {
         method: 'PUT',
         headers:{
@@ -47,7 +47,7 @@ const editCinemaFetch = (cinemaInfo) =>{
     });
 }
 
-const getCinemaRoomListFetch = (cinemaId) =>{
+const sendRequestToGetCinemaRoomList = (cinemaId) =>{
     return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
         method: 'GET',
         headers:{
@@ -58,7 +58,7 @@ const getCinemaRoomListFetch = (cinemaId) =>{
     });
 }
 
-const getCinemaRoomSeatTypesFetch = (cinemaId, cinemaRoomId) =>{
+const sendRequestToGetCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
     return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}/seatTypes`, {
         method: 'GET',
         headers:{
@@ -69,7 +69,7 @@ const getCinemaRoomSeatTypesFetch = (cinemaId, cinemaRoomId) =>{
     });
 }
 
-const handleReceivedCinemaRoomInfo = (requestedData) =>{
+const createCinemaInfo = (requestedData) =>{
     let cinemaInfo = {};
     cinemaInfo.info = {};
     cinemaInfo.info.name = requestedData.name;
@@ -86,7 +86,7 @@ const handleReceivedCinemaRoomInfo = (requestedData) =>{
     return cinemaInfo;
 }
 
-const getCinemaRoomFetch = (cinemaId, cinemaRoomId) =>{
+const sendRequestToGetCinemaRoom = (cinemaId, cinemaRoomId) =>{
     return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}`, {
         method: 'GET',
         headers:{
@@ -97,7 +97,7 @@ const getCinemaRoomFetch = (cinemaId, cinemaRoomId) =>{
     });
 }
 
-const createCinemaRoomFetch = (cinemaId, cinemaRoomInfo) =>{
+const sendRequestToCreateCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
     return fetch(`api/cinemas/${cinemaId}/cinemaRooms`, {
         method:'POST',
         headers:{
@@ -112,14 +112,14 @@ const createCinemaRoomFetch = (cinemaId, cinemaRoomInfo) =>{
     })
 }
 
-const formCinemaRoomInfo = (name, cinemaRoomId) =>{
+const createCinemaRoomInfo = (name, cinemaRoomId) =>{
     let cinemaRoom = {};
     cinemaRoom.name = name;
     cinemaRoom.cinemaRoomId = cinemaRoomId;
     return cinemaRoom;
 }
 
-const editCinemaRoomFetch = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
+const sendRequestToEditCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
     return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}`, {
         method:'PUT',
         headers:{
@@ -137,61 +137,61 @@ const editCinemaRoomFetch = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
 class CinemaDataAccess{
 
     getCinemaList = () =>{
-        return getCinemaListFetch()
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetCinemaList()
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     getCinema = (id) =>{
-        return getCinemaFetch(id)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetCinema(id)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     createCinema = (cinemaInfo) =>{
-        return createCinemaFetch(cinemaInfo)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToCreateCinema(cinemaInfo)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.getIdFromResponse)
     }
 
     editCinema = (cinemaInfo) =>{
-        return editCinemaFetch(cinemaInfo)
-        .then(receivedDataProcessingHelper.handleRequstError);
+        return sendRequestToEditCinema(cinemaInfo)
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 
     getCinemaRoomList = (cinemaId) =>{
-        return getCinemaRoomListFetch(cinemaId)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetCinemaRoomList(cinemaId)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData)
+        .then(receivedDataProcessingHelper.getRequestedData)
     }
 
     getCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
-        return getCinemaRoomSeatTypesFetch(cinemaId, cinemaRoomId)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetCinemaRoomSeatTypes(cinemaId, cinemaRoomId)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     getCinemaRoom = (cinemaid, cinemaRoomId) =>{
-        return getCinemaRoomFetch(cinemaid, cinemaRoomId)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetCinemaRoom(cinemaid, cinemaRoomId)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData)
-        .then(handleReceivedCinemaRoomInfo);
+        .then(receivedDataProcessingHelper.getRequestedData)
+        .then(createCinemaInfo);
     }
 
     createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
-        return createCinemaRoomFetch(cinemaId, cinemaRoomInfo)
-        .then(receivedDataProcessingHelper.handleRequstError)
-        .then(response => formCinemaRoomInfo(cinemaRoomInfo.name, receivedDataProcessingHelper.getIdFromResponse(response)));
+        return sendRequestToCreateCinemaRoom(cinemaId, cinemaRoomInfo)
+        .then(receivedDataProcessingHelper.handleRequestError)
+        .then(response => createCinemaRoomInfo(cinemaRoomInfo.name, receivedDataProcessingHelper.getIdFromResponse(response)));
     }
 
     editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
-        return editCinemaRoomFetch(cinemaId, cinemaRoomId, cinemaRoomInfo)
-        .then(receivedDataProcessingHelper.handleRequstError);
+        return sendRequestToEditCinemaRoom(cinemaId, cinemaRoomId, cinemaRoomInfo)
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 }
 

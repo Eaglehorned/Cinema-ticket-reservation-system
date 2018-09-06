@@ -48,7 +48,7 @@ export default class ReserveTicket extends Component{
         .catch(error => applicationService.informWithErrorMessage(error));
     }
 
-    handleSeatClickFetch = (seatInfo) =>{
+    editSessionSeat = (seatInfo) =>{
         return sessionService.editSessionSeat(this.props.session.info.sessionId, seatInfo.sessionSeatId, seatInfo.booked)
         .then(() =>{
             this.setState({
@@ -63,12 +63,12 @@ export default class ReserveTicket extends Component{
         if(!this.state.seats[seatInfo.row][seatInfo.column].booked){
             if(!this.state.chosenSeats.find(el => el.sessionSeatId === seatInfo.sessionSeatId)){
                 if(this.state.chosenSeats.length < 10){
-                    this.handleSeatClickFetch(sessionService.formSeatInfo(seatInfo))        
+                    this.editSessionSeat(sessionService.formSeatInfo(seatInfo))        
                     .then(this.getUpdates);
                 }
             }
             else{
-                this.handleSeatClickFetch(sessionService.formSeatInfo(seatInfo))
+                this.editSessionSeat(sessionService.formSeatInfo(seatInfo))
                 .then(this.getUpdates);
             }
         }

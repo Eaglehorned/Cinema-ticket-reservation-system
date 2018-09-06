@@ -1,7 +1,7 @@
 import authorizationService from "../Services/AuthorizationService";
 import receivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper";
 
-const createOrderFetch = (sessionId, chosenSessionSeats) =>{
+const sendRequestToCreateOrder = (sessionId, chosenSessionSeats) =>{
     return fetch('api/orders/', {
         method: 'POST',
         headers:{
@@ -19,8 +19,8 @@ const createOrderFetch = (sessionId, chosenSessionSeats) =>{
 
 class ReservationDataAccess{
     createOrder = (sessionId, chosenSessionSeats) =>{
-        return createOrderFetch(sessionId, chosenSessionSeats)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToCreateOrder(sessionId, chosenSessionSeats)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.getIdFromResponse);
     }
 }

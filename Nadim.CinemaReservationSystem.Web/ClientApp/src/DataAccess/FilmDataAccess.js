@@ -1,7 +1,7 @@
 import authorizationService from '../Services/AuthorizationService';
 import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
-const getFilmListFetch = () =>{
+const sendRequestToGetFilmList = () =>{
     return fetch('api/films', {
         method: 'GET',
         headers:{
@@ -12,7 +12,7 @@ const getFilmListFetch = () =>{
     });
 }
 
-const getFilmFetch = (id) =>{
+const sendRequestToGetFilm = (id) =>{
     return fetch(`api/films/${id}`,{
         method: 'GET',
         headers: {
@@ -23,7 +23,7 @@ const getFilmFetch = (id) =>{
     });
 }
 
-const createFilmFetch = (filmInfo) =>{
+const sendRequestToCreateFilm = (filmInfo) =>{
     return fetch('api/films', {
         method: 'POST',
         headers:{
@@ -35,7 +35,7 @@ const createFilmFetch = (filmInfo) =>{
     });
 }
 
-const editFilmFetch = (filmId, filmInfo) =>{
+const sendRequestToEditFilm = (filmId, filmInfo) =>{
     return fetch(`api/films/${filmId}`, {
         method: 'PUT',
         headers:{
@@ -49,29 +49,29 @@ const editFilmFetch = (filmId, filmInfo) =>{
 
 class FilmDataAccess{
     getFilmList = () =>{
-        return getFilmListFetch()
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetFilmList()
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     getFilm = (id) =>{
-        return getFilmFetch(id)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetFilm(id)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     createFilm = (filmInfo) =>{
-        return createFilmFetch(filmInfo)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToCreateFilm(filmInfo)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.getIdFromResponse);
     }
 
 
     editFilm = (filmId, filmInfo) =>{
-        return editFilmFetch(filmId, filmInfo)
-        .then(receivedDataProcessingHelper.handleRequstError);
+        return sendRequestToEditFilm(filmId, filmInfo)
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 }
 

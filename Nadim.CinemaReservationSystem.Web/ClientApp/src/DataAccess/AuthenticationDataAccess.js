@@ -1,7 +1,7 @@
 import authorizationService from '../Services/AuthorizationService';
 import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
-const loginUserFetch = (userInfo) =>{
+const sendRequestToLoginUser = (userInfo) =>{
     return fetch('api/Authentication/Login', {
         method: 'POST',
         headers: {
@@ -15,7 +15,7 @@ const loginUserFetch = (userInfo) =>{
     });
 }
 
-const registerUserFetch = (userInfo) =>{
+const sendRequestToRegisterUser = (userInfo) =>{
     return fetch('api/Authentication/Register', {
         method: 'POST',
         headers:{
@@ -32,18 +32,18 @@ const registerUserFetch = (userInfo) =>{
     });
 }
 
-const formUserInfo = (userInfo) =>{
+const createUserInfo = (receivedUserInfo) =>{
     let role = getParameterFromJwt(
         'role', 
-        parseJwt(userInfo.token)
+        parseJwt(receivedUserInfo.token)
     );
     let userId = getParameterFromJwt(
         'nameidentifier', 
-        parseJwt(userInfo.token)
+        parseJwt(receivedUserInfo.token)
     );
     return({
-        username: userInfo.fullUserName,
-        token: userInfo.token,
+        username: receivedUserInfo.fullUserName,
+        token: receivedUserInfo.token,
         role: role,
         userId: userId
     });
@@ -63,7 +63,7 @@ const getParameterFromJwt = (parameter, parsedJwtToken) =>{
     }
 }
 
-const completeUserInfoWithoutUsername = (almostCompleteUserInfo, username) =>{
+const addUsernameToUserInfo = (almostCompleteUserInfo, username) =>{
     let temp = almostCompleteUserInfo;
     temp.fullUserName = username;
     return temp;
@@ -71,19 +71,19 @@ const completeUserInfoWithoutUsername = (almostCompleteUserInfo, username) =>{
 
 class AuthenticationDataAccess{  
     loginUser = (userInfo) =>{
-        return loginUserFetch(userInfo)  
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToLoginUser(userInfo)  
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(formUserInfo)
+        .then(createUserInfo)
         .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
     }
 
     registerUser = (userInfo) =>{
-        return registerUserFetch(userInfo)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToRegisterUser(userInfo)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(parsedJson => completeUserInfoWithoutUsername(parsedJson, userInfo.userName))
-        .then(formUserInfo)
+        .then(parsedJson => addUsernameToUserInfo(parsedJson, userInfo.userName))
+        .then(createUserInfo)
         .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
     }
 }

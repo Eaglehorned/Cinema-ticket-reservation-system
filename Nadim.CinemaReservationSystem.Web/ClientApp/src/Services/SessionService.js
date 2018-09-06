@@ -46,12 +46,12 @@ class SessionService{
         return tempSeatTypes;
     }
 
-    completeSessionWithSeats = (session, seats) =>{
+    addSeatsToSession = (session, seats) =>{
         session.seats = seats;
         return session;
     }
 
-    completeSessionWithInfo = (session, info) =>{
+    addInfoToSession = (session, info) =>{
         session.info = info;
         return session;
     }

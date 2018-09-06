@@ -3,7 +3,7 @@ import receivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper
 import moment from 'moment';
 import seatsHelper from "../Helper/SeatsHelper";
 
-const getSessionListFetch = () =>{
+const sendRequestToGetSessionList = () =>{
     return fetch('api/sessions', {
         method: 'GET',
         headers:{
@@ -14,7 +14,7 @@ const getSessionListFetch = () =>{
     });
 }
 
-const formSessionInfoForRequest = (sessionInfo) =>{
+const createSessionInfoForRequest = (sessionInfo) =>{
     return new Promise ((resolve) => {
         resolve({
             cinemaRoomId: sessionInfo.cinemaRoom.cinemaRoomId,
@@ -25,7 +25,7 @@ const formSessionInfoForRequest = (sessionInfo) =>{
     );
 }
 
-const createSessionFetch = (sessionInfo) =>{
+const sendRequestToCreateSession = (sessionInfo) =>{
     return fetch('api/sessions', {
         method: 'POST',
         headers:{
@@ -37,12 +37,12 @@ const createSessionFetch = (sessionInfo) =>{
     })
 }
 
-const completeSessionInfoWithId = (sessionInfo, id) =>{
+const addIdToSessionInfo = (sessionInfo, id) =>{
     sessionInfo.sessionId = id;
     return sessionInfo;
 }
 
-const getSessionFetch = (id) =>{
+const sendRequestToGetSession = (id) =>{
     return fetch(`api/sessions/${id}`,{
         method: 'GET',
         headers: {
@@ -53,7 +53,7 @@ const getSessionFetch = (id) =>{
     });
 }
 
-const editSessionFetch = (id, sessionInfo) =>{
+const sendRequestToEditSession = (id, sessionInfo) =>{
     return fetch(`api/sessions/${id}`, {
         method: 'PUT',
         headers:{
@@ -65,7 +65,7 @@ const editSessionFetch = (id, sessionInfo) =>{
     });
 }
 
-const getSessionSeatsFetch = (sessionId) =>{
+const sendRequestToGetSessionSeats = (sessionId) =>{
     return fetch(`api/sessions/${sessionId}/seats`,{
         method: 'GET',
         headers: {
@@ -76,7 +76,7 @@ const getSessionSeatsFetch = (sessionId) =>{
     });
 }
 
-const getSessionSeatsUpdatesFetch = (sessionId, lastTimeUpdated) =>{
+const sendRequestToGetSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
     return fetch(`api/sessions/${sessionId}/seats`,{
         method: 'GET',
         headers: {
@@ -88,7 +88,7 @@ const getSessionSeatsUpdatesFetch = (sessionId, lastTimeUpdated) =>{
     });
 }
 
-const editSessionSeatFetch = (sessionId, sessionSeatId, booked) =>{
+const sendRequestToEditSessionSeat = (sessionId, sessionSeatId, booked) =>{
     return fetch(`api/sessions/${sessionId}/seats/${sessionSeatId}`,{
         method: 'PUT',
         headers: {
@@ -105,38 +105,38 @@ const editSessionSeatFetch = (sessionId, sessionSeatId, booked) =>{
 
 class SessionDataAccess{
     getSessionList = () =>{
-        return getSessionListFetch()
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetSessionList()
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     createSession = (sessionInfo) =>{
-        return formSessionInfoForRequest(sessionInfo)
-        .then(createSessionFetch)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return createSessionInfoForRequest(sessionInfo)
+        .then(sendRequestToCreateSession)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.getIdFromResponse)
-        .then(id => completeSessionInfoWithId(sessionInfo, id))
+        .then(id => addIdToSessionInfo(sessionInfo, id))
     }
 
     getSession = (id) =>{
-        return getSessionFetch(id)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetSession(id)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     editSession = (id, sessionInfo) =>{
-        return formSessionInfoForRequest(sessionInfo) 
-        .then(sessionInfoForRequest => editSessionFetch(id, sessionInfoForRequest))
-        .then(receivedDataProcessingHelper.handleRequstError);
+        return createSessionInfoForRequest(sessionInfo) 
+        .then(sessionInfoForRequest => sendRequestToEditSession(id, sessionInfoForRequest))
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 
     getSessionSeats = (sessionId) =>{
-        return getSessionSeatsFetch(sessionId)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetSessionSeats(sessionId)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData)
+        .then(receivedDataProcessingHelper.getRequestedData)
         .then(seatsHelper.sortSeats)
         .then((seats) => seatsHelper.convertSeatsArray(
             seats,
@@ -146,15 +146,15 @@ class SessionDataAccess{
     }
 
     getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
-        return getSessionSeatsUpdatesFetch(sessionId, lastTimeUpdated)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        return sendRequestToGetSessionSeatsUpdates(sessionId, lastTimeUpdated)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     editSessionSeat = (sessionId, sessionSeatId, booked) =>{
-        return editSessionSeatFetch(sessionId, sessionSeatId, booked)
-        .then(receivedDataProcessingHelper.handleRequstError);
+        return sendRequestToEditSessionSeat(sessionId, sessionSeatId, booked)
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 }
 

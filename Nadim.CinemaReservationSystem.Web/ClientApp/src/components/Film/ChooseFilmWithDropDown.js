@@ -12,7 +12,7 @@ const ChooseFilmWithDropDown = (props) =>{
                 <ControlLabel
                     className="font-large"
                 >
-                    Cinema :
+                    Film :
                     {
                         props.chosenFilm 
                         ? ` ${props.chosenFilm.name}`
