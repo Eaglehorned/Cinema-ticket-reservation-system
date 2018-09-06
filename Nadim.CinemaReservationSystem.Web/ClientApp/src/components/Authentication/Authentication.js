@@ -5,14 +5,14 @@ import Registration from './Registration';
 import Modal from 'react-modal';
 import '../../styles/Authentication.css';
 import Logout from './Logout';
-import authorizationService from '../../Services/AuthorizationService';
+import userService from '../../Services/UserService';
 
 export default class Authentication extends Component {
     constructor(props) {
         super(props);
         this.state = {
             modalIsOpen: false,
-            userAuthorized: authorizationService.getToken() ? true : false
+            userAuthorized: userService.getToken() ? true : false
         }
     }
 

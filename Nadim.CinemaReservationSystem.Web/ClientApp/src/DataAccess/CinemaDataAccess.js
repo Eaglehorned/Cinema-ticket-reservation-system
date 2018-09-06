@@ -1,6 +1,6 @@
-import authorizationService from '../Services/AuthorizationService';
 import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 import seatsHelper from '../Helper/SeatsHelper';
+import userService from '../Services/UserService';
 
 const sendRequestToGetCinemaList = () =>{
     return fetch('api/cinemas', {
@@ -18,7 +18,7 @@ const sendRequestToGetCinema = (id) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         }
     });
 }
@@ -29,7 +29,7 @@ const sendRequestToCreateCinema = (cinemaInfo) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify(cinemaInfo)
     })
@@ -41,7 +41,7 @@ const sendRequestToEditCinema = (cinemaInfo) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify(cinemaInfo)
     });
@@ -53,7 +53,7 @@ const sendRequestToGetCinemaRoomList = (cinemaId) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         }
     });
 }
@@ -64,7 +64,7 @@ const sendRequestToGetCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         }
     });
 }
@@ -92,7 +92,7 @@ const sendRequestToGetCinemaRoom = (cinemaId, cinemaRoomId) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         }
     });
 }
@@ -103,7 +103,7 @@ const sendRequestToCreateCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify({
             name: cinemaRoomInfo.name,
@@ -125,7 +125,7 @@ const sendRequestToEditCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify({
             name: cinemaRoomInfo.name,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FormControl, Button } from 'react-bootstrap';
-import authenticationService from '../../Services/AuthenticationService';
+import userService from '../../Services/UserService';
 
 export default class Registration extends Component {
     displayName = Registration.name;
@@ -53,7 +53,7 @@ export default class Registration extends Component {
     }
 
     handleRegisterClick = () =>{
-        authenticationService.registerUser({
+        userService.registerUser({
             email: this.state.email,
             password: this.state.password,
             firstName: this.state.firstName,
@@ -102,7 +102,7 @@ export default class Registration extends Component {
                 <Button
                     bsStyle="primary"
                     onClick={this.handleRegisterClick} 
-                    disabled={!authenticationService.allowRegisterClick(
+                    disabled={!userService.validateRegisterData(
                         this.state.email,
                         this.state.password,
                         this.state.lastName,

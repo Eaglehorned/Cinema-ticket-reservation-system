@@ -1,5 +1,5 @@
-import authorizationService from "../Services/AuthorizationService";
 import receivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper";
+import userService from "../Services/UserService";
 
 const sendRequestToCreateOrder = (sessionId, chosenSessionSeats) =>{
     return fetch('api/orders/', {
@@ -7,10 +7,10 @@ const sendRequestToCreateOrder = (sessionId, chosenSessionSeats) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify({
-            userId: authorizationService.getUserId(),
+            userId: userService.getUserId(),
             sessionId: sessionId,
             sessionSeats: chosenSessionSeats.map(el => el.sessionSeatId)
         })
