@@ -50,28 +50,28 @@ const sendRequestToEditFilm = (filmId, filmInfo) =>{
 class FilmDataAccess{
     getFilmList = () =>{
         return sendRequestToGetFilmList()
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     getFilm = (id) =>{
         return sendRequestToGetFilm(id)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     createFilm = (filmInfo) =>{
         return sendRequestToCreateFilm(filmInfo)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.getIdFromResponse);
     }
 
 
     editFilm = (filmId, filmInfo) =>{
         return sendRequestToEditFilm(filmId, filmInfo)
-        .then(receivedDataProcessingHelper.handleRequstError);
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 }
 

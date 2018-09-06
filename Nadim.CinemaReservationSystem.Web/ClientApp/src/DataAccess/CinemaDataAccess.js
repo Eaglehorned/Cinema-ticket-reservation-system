@@ -138,60 +138,60 @@ class CinemaDataAccess{
 
     getCinemaList = () =>{
         return sendRequestToGetCinemaList()
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     getCinema = (id) =>{
         return sendRequestToGetCinema(id)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     createCinema = (cinemaInfo) =>{
         return sendRequestToCreateCinema(cinemaInfo)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.getIdFromResponse)
     }
 
     editCinema = (cinemaInfo) =>{
         return sendRequestToEditCinema(cinemaInfo)
-        .then(receivedDataProcessingHelper.handleRequstError);
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 
     getCinemaRoomList = (cinemaId) =>{
         return sendRequestToGetCinemaRoomList(cinemaId)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData)
+        .then(receivedDataProcessingHelper.getRequestedData)
     }
 
     getCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
         return sendRequestToGetCinemaRoomSeatTypes(cinemaId, cinemaRoomId)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     getCinemaRoom = (cinemaid, cinemaRoomId) =>{
         return sendRequestToGetCinemaRoom(cinemaid, cinemaRoomId)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData)
+        .then(receivedDataProcessingHelper.getRequestedData)
         .then(createCinemaInfo);
     }
 
     createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
         return sendRequestToCreateCinemaRoom(cinemaId, cinemaRoomInfo)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(response => createCinemaRoomInfo(cinemaRoomInfo.name, receivedDataProcessingHelper.getIdFromResponse(response)));
     }
 
     editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
         return sendRequestToEditCinemaRoom(cinemaId, cinemaRoomId, cinemaRoomInfo)
-        .then(receivedDataProcessingHelper.handleRequstError);
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 }
 

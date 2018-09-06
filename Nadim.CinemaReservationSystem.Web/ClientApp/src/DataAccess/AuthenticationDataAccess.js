@@ -72,7 +72,7 @@ const addUsernameToUserInfo = (almostCompleteUserInfo, username) =>{
 class AuthenticationDataAccess{  
     loginUser = (userInfo) =>{
         return sendRequestToLoginUser(userInfo)  
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(createUserInfo)
         .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
@@ -80,7 +80,7 @@ class AuthenticationDataAccess{
 
     registerUser = (userInfo) =>{
         return sendRequestToRegisterUser(userInfo)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(parsedJson => addUsernameToUserInfo(parsedJson, userInfo.userName))
         .then(createUserInfo)

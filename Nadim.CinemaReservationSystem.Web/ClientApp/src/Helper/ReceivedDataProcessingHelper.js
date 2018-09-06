@@ -1,5 +1,5 @@
 class ReceivedDataProcessingHelper{
-    getRequsetedData = (parsedJson) =>{
+    getRequestedData = (parsedJson) =>{
         return (parsedJson.requestedData);
     }
 
@@ -7,7 +7,7 @@ class ReceivedDataProcessingHelper{
         return response.json();
     }
 
-    handleRequstError = (response) =>{
+    handleRequestError = (response) =>{
         if (response.ok){
             return response;
         }

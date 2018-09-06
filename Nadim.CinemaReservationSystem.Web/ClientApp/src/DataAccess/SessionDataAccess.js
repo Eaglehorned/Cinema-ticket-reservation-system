@@ -106,37 +106,37 @@ const sendRequestToEditSessionSeat = (sessionId, sessionSeatId, booked) =>{
 class SessionDataAccess{
     getSessionList = () =>{
         return sendRequestToGetSessionList()
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     createSession = (sessionInfo) =>{
         return createSessionInfoForRequest(sessionInfo)
         .then(sendRequestToCreateSession)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.getIdFromResponse)
         .then(id => addIdToSessionInfo(sessionInfo, id))
     }
 
     getSession = (id) =>{
         return sendRequestToGetSession(id)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     editSession = (id, sessionInfo) =>{
         return createSessionInfoForRequest(sessionInfo) 
         .then(sessionInfoForRequest => sendRequestToEditSession(id, sessionInfoForRequest))
-        .then(receivedDataProcessingHelper.handleRequstError);
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 
     getSessionSeats = (sessionId) =>{
         return sendRequestToGetSessionSeats(sessionId)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData)
+        .then(receivedDataProcessingHelper.getRequestedData)
         .then(seatsHelper.sortSeats)
         .then((seats) => seatsHelper.convertSeatsArray(
             seats,
@@ -147,14 +147,14 @@ class SessionDataAccess{
 
     getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
         return sendRequestToGetSessionSeatsUpdates(sessionId, lastTimeUpdated)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(receivedDataProcessingHelper.getRequsetedData);
+        .then(receivedDataProcessingHelper.getRequestedData);
     }
 
     editSessionSeat = (sessionId, sessionSeatId, booked) =>{
         return sendRequestToEditSessionSeat(sessionId, sessionSeatId, booked)
-        .then(receivedDataProcessingHelper.handleRequstError);
+        .then(receivedDataProcessingHelper.handleRequestError);
     }
 }
 

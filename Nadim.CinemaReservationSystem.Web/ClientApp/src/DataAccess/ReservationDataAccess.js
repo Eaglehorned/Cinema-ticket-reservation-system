@@ -20,7 +20,7 @@ const sendRequestToCreateOrder = (sessionId, chosenSessionSeats) =>{
 class ReservationDataAccess{
     createOrder = (sessionId, chosenSessionSeats) =>{
         return sendRequestToCreateOrder(sessionId, chosenSessionSeats)
-        .then(receivedDataProcessingHelper.handleRequstError)
+        .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.getIdFromResponse);
     }
 }
