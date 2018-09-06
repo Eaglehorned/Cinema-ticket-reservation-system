@@ -69,7 +69,7 @@ const sendRequestToGetCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
     });
 }
 
-const handleReceivedCinemaRoomInfo = (requestedData) =>{
+const createCinemaInfo = (requestedData) =>{
     let cinemaInfo = {};
     cinemaInfo.info = {};
     cinemaInfo.info.name = requestedData.name;
@@ -112,7 +112,7 @@ const sendRequestToCreateCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
     })
 }
 
-const formCinemaRoomInfo = (name, cinemaRoomId) =>{
+const createCinemaRoomInfo = (name, cinemaRoomId) =>{
     let cinemaRoom = {};
     cinemaRoom.name = name;
     cinemaRoom.cinemaRoomId = cinemaRoomId;
@@ -180,13 +180,13 @@ class CinemaDataAccess{
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(receivedDataProcessingHelper.getRequsetedData)
-        .then(handleReceivedCinemaRoomInfo);
+        .then(createCinemaInfo);
     }
 
     createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
         return sendRequestToCreateCinemaRoom(cinemaId, cinemaRoomInfo)
         .then(receivedDataProcessingHelper.handleRequstError)
-        .then(response => formCinemaRoomInfo(cinemaRoomInfo.name, receivedDataProcessingHelper.getIdFromResponse(response)));
+        .then(response => createCinemaRoomInfo(cinemaRoomInfo.name, receivedDataProcessingHelper.getIdFromResponse(response)));
     }
 
     editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
