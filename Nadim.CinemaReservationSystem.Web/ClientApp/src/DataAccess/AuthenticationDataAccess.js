@@ -63,7 +63,7 @@ const getParameterFromJwt = (parameter, parsedJwtToken) =>{
     }
 }
 
-const completeUserInfoWithoutUsername = (almostCompleteUserInfo, username) =>{
+const addUsernameToUserInfo = (almostCompleteUserInfo, username) =>{
     let temp = almostCompleteUserInfo;
     temp.fullUserName = username;
     return temp;
@@ -82,7 +82,7 @@ class AuthenticationDataAccess{
         return sendRequestToRegisterUser(userInfo)
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(parsedJson => completeUserInfoWithoutUsername(parsedJson, userInfo.userName))
+        .then(parsedJson => addUsernameToUserInfo(parsedJson, userInfo.userName))
         .then(createUserInfo)
         .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
     }

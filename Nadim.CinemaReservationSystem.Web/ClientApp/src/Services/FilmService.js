@@ -19,7 +19,7 @@ class FilmService{
         return filmDataAccess.editFilm(filmId, filmInfo);
     }
 
-    durationFromSecToDate = (duration) =>{
+    convertFromSecToDate = (duration) =>{
         let temp = moment({
             hours: Math.trunc(duration / 3600),
             minutes: Math.trunc((duration % 3600) / 60),
@@ -28,7 +28,7 @@ class FilmService{
         return temp;
     }
 
-    durationFromDateToSec = (duration) =>{
+    convertFromDateToSec = (duration) =>{
         return duration.hours() * 3600 
         + duration.minutes() * 60
         + duration.seconds();

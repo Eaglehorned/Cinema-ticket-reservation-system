@@ -25,7 +25,7 @@ export default class Reservation extends Component{
         sessionService.getSession(sessionId)
         .then(requestedData =>{
             this.setState({
-                session : sessionService.completeSessionWithInfo(this.state.session, requestedData)
+                session : sessionService.addInfoToSession(this.state.session, requestedData)
             });
             return sessionId;
         })
@@ -42,7 +42,7 @@ export default class Reservation extends Component{
         sessionService.getSessionSeats(sessionId)
         .then(requestedData =>{
             this.setState({
-                session : sessionService.completeSessionWithSeats(this.state.session, requestedData),
+                session : sessionService.addSeatsToSession(this.state.session, requestedData),
                 chosenOperation: 'reservation'
             })
         });

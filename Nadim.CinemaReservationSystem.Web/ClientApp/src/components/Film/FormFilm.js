@@ -16,7 +16,7 @@ export default class FormFilm extends Component{
             name: this.props.filmInfo ? this.props.filmInfo.name : '',
             startDate: this.props.filmInfo ? moment(this.props.filmInfo.startDate) : moment(),
             endDate: this.props.filmInfo ? moment(this.props.filmInfo.endDate) : moment(),
-            duration: this.props.filmInfo ? filmService.durationFromSecToDate(this.props.filmInfo.duration) : moment('00:00:00', 'HH:mm:ss'),
+            duration: this.props.filmInfo ? filmService.convertFromSecToDate(this.props.filmInfo.duration) : moment('00:00:00', 'HH:mm:ss'),
             description: this.props.filmInfo ? this.props.filmInfo.description : '',
             showHint: this.props.showHint ? this.props.showHint : false
         }
@@ -64,7 +64,7 @@ export default class FormFilm extends Component{
                 name: this.state.name,
                 startDate: filmService.formDate(this.state.startDate),
                 endDate: filmService.formDate(this.state.endDate),
-                duration: filmService.durationFromDateToSec(this.state.duration),
+                duration: filmService.convertFromDateToSec(this.state.duration),
                 description: this.state.description
             });
         }
