@@ -32,18 +32,18 @@ const sendRequestToRegisterUser = (userInfo) =>{
     });
 }
 
-const formUserInfo = (userInfo) =>{
+const createUserInfo = (receivedUserInfo) =>{
     let role = getParameterFromJwt(
         'role', 
-        parseJwt(userInfo.token)
+        parseJwt(receivedUserInfo.token)
     );
     let userId = getParameterFromJwt(
         'nameidentifier', 
-        parseJwt(userInfo.token)
+        parseJwt(receivedUserInfo.token)
     );
     return({
-        username: userInfo.fullUserName,
-        token: userInfo.token,
+        username: receivedUserInfo.fullUserName,
+        token: receivedUserInfo.token,
         role: role,
         userId: userId
     });
@@ -74,7 +74,7 @@ class AuthenticationDataAccess{
         return sendRequestToLoginUser(userInfo)  
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(formUserInfo)
+        .then(createUserInfo)
         .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
     }
 
@@ -83,7 +83,7 @@ class AuthenticationDataAccess{
         .then(receivedDataProcessingHelper.handleRequstError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(parsedJson => completeUserInfoWithoutUsername(parsedJson, userInfo.userName))
-        .then(formUserInfo)
+        .then(createUserInfo)
         .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
     }
 }
