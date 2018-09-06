@@ -1,7 +1,6 @@
 import authorizationService from '../Services/AuthorizationService';
 import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
-
 const getFilmListFetch = () =>{
     return fetch('api/films', {
         method: 'GET',
