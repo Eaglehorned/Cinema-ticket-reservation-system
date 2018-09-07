@@ -1,4 +1,3 @@
-import authorizationService from '../Services/AuthorizationService';
 import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
 
 const sendRequestToLoginUser = (userInfo) =>{
@@ -69,13 +68,12 @@ const addUsernameToUserInfo = (almostCompleteUserInfo, username) =>{
     return temp;
 }
 
-class AuthenticationDataAccess{  
+class UserDataAccess{  
     loginUser = (userInfo) =>{
         return sendRequestToLoginUser(userInfo)  
         .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
-        .then(createUserInfo)
-        .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
+        .then(createUserInfo);
     }
 
     registerUser = (userInfo) =>{
@@ -83,11 +81,10 @@ class AuthenticationDataAccess{
         .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(parsedJson => addUsernameToUserInfo(parsedJson, userInfo.userName))
-        .then(createUserInfo)
-        .then(user => authorizationService.setInfo(user.username, user.token, user.role, user.userId));
+        .then(createUserInfo);
     }
 }
 
-const authenticationDataAccess = new AuthenticationDataAccess();
+const userDataAccess = new UserDataAccess();
 
-export default authenticationDataAccess;
+export default userDataAccess;

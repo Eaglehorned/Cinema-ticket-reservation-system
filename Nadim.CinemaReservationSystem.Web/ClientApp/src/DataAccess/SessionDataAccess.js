@@ -1,7 +1,7 @@
-import authorizationService from "../Services/AuthorizationService";
 import receivedDataProcessingHelper from "../Helper/ReceivedDataProcessingHelper";
 import moment from 'moment';
 import seatsHelper from "../Helper/SeatsHelper";
+import userService from "../Services/UserService";
 
 const sendRequestToGetSessionList = () =>{
     return fetch('api/sessions', {
@@ -9,7 +9,7 @@ const sendRequestToGetSessionList = () =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         }
     });
 }
@@ -31,7 +31,7 @@ const sendRequestToCreateSession = (sessionInfo) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify(sessionInfo)
     })
@@ -48,7 +48,7 @@ const sendRequestToGetSession = (id) =>{
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         }
     });
 }
@@ -59,7 +59,7 @@ const sendRequestToEditSession = (id, sessionInfo) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify(sessionInfo)
     });
@@ -71,7 +71,7 @@ const sendRequestToGetSessionSeats = (sessionId) =>{
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         }
     });
 }
@@ -82,7 +82,7 @@ const sendRequestToGetSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`,
+            'Authorization': `bearer ${userService.getToken()}`,
             'If-Modified-Since': lastTimeUpdated.toUTCString()
         }
     });
@@ -94,7 +94,7 @@ const sendRequestToEditSessionSeat = (sessionId, sessionSeatId, booked) =>{
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify({
             booked: booked,

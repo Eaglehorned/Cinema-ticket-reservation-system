@@ -1,5 +1,5 @@
-import authorizationService from '../Services/AuthorizationService';
 import receivedDataProcessingHelper from '../Helper/ReceivedDataProcessingHelper';
+import userService from '../Services/UserService';
 
 const sendRequestToGetFilmList = () =>{
     return fetch('api/films', {
@@ -7,7 +7,7 @@ const sendRequestToGetFilmList = () =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         }
     });
 }
@@ -18,7 +18,7 @@ const sendRequestToGetFilm = (id) =>{
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         }
     });
 }
@@ -29,7 +29,7 @@ const sendRequestToCreateFilm = (filmInfo) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify(filmInfo)
     });
@@ -41,7 +41,7 @@ const sendRequestToEditFilm = (filmId, filmInfo) =>{
         headers:{
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': `bearer ${authorizationService.getToken()}`
+            'Authorization': `bearer ${userService.getToken()}`
         },
         body: JSON.stringify(filmInfo)
     })
