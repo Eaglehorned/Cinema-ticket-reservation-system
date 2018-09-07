@@ -6,7 +6,7 @@ export default class Logout extends Component{
     displayName = Logout.displayName;
 
     handleLogout = () =>{
-        userService.setInfo('', '', '', '');
+        userService.logOut();
         this.props.callBackHandleLogout();
     }
 

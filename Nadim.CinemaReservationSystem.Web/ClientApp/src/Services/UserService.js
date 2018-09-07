@@ -1,4 +1,4 @@
-import authenticationDataAccess from '../DataAccess/AuthenticationDataAccess';
+import userDataAccess from '../DataAccess/AuthenticationDataAccess';
 
 let userInfo = {
     token: localStorage.getItem('token'),
@@ -7,29 +7,31 @@ let userInfo = {
     userId: localStorage.getItem('userId')
 }
 
+const setInfo = (receivedUserInfo) =>{
+    userInfo.username = receivedUserInfo.username;
+    userInfo.token = receivedUserInfo.token;
+    userInfo.role = receivedUserInfo.role;
+    userInfo.userId = receivedUserInfo.userId;
+    localStorage.setItem('username', receivedUserInfo.username);
+    localStorage.setItem('token', receivedUserInfo.token);
+    localStorage.setItem('role', receivedUserInfo.role);
+    localStorage.setItem('userId', receivedUserInfo.userId);
+}
+
 class UserService{
     getToken = () =>{
         return userInfo.token;
     }
 
-    setInfo = (_username, _token, _role, _userId) =>{
-        userInfo.username = _username;
-        userInfo.token = _token;
-        userInfo.role = _role;
-        userInfo.userId = _userId;
-        localStorage.setItem('username', _username);
-        localStorage.setItem('token', _token);
-        localStorage.setItem('role', _role);
-        localStorage.setItem('userId', _userId);
-    }
+    logOut = () =>(setInfo({
+        token: '',
+        username: '',
+        role: '',
+        userId: ''
+    }));
 
     getUsername = () =>{
         return userInfo.username;
-    }
-
-    setToken = (token) =>{
-        userInfo.token = token;
-        localStorage.setItem('token', token);
     }
 
     getUserId = () =>{
@@ -46,13 +48,13 @@ class UserService{
     }
 
     loginUser = (userInfo) =>{
-        return authenticationDataAccess.loginUser(userInfo)
-        .then(user => userService.setInfo(user.username, user.token, user.role, user.userId));
+        return userDataAccess.loginUser(userInfo)
+        .then(setInfo);
     }
 
     registerUser = (userInfo) =>{
-        return authenticationDataAccess.registerUser(userInfo)
-        .then(user => userService.setInfo(user.username, user.token, user.role, user.userId));
+        return userDataAccess.registerUser(userInfo)
+        .then(setInfo);
     }
 
     validateRegisterData = (email, password, lastName, firstName) =>{

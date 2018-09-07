@@ -68,7 +68,7 @@ const addUsernameToUserInfo = (almostCompleteUserInfo, username) =>{
     return temp;
 }
 
-class AuthenticationDataAccess{  
+class UserDataAccess{  
     loginUser = (userInfo) =>{
         return sendRequestToLoginUser(userInfo)  
         .then(receivedDataProcessingHelper.handleRequestError)
@@ -85,6 +85,6 @@ class AuthenticationDataAccess{
     }
 }
 
-const authenticationDataAccess = new AuthenticationDataAccess();
+const userDataAccess = new UserDataAccess();
 
-export default authenticationDataAccess;
+export default userDataAccess;
