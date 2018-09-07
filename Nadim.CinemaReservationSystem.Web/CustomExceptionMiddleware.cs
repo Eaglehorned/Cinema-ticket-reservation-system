@@ -37,7 +37,8 @@ namespace Nadim.CinemaReservationSystem.Web
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(
                 new Result {
-                    ResultOk = false
+                    ResultOk = false,
+                    Details="Server side error."
                 }
             ));
         }
