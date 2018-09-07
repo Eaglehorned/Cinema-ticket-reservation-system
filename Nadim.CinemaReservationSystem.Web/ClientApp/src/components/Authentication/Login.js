@@ -53,37 +53,34 @@ export default class Login extends Component {
                     horizontal
                 >
                     <FormGroup
-                        // bsSize="small"
-                        bsClass="input-container"
+                        bsClass="form-group form-group-sm input-container"
                     >
                         <Col sm={2}>
                             <ControlLabel>Email:</ControlLabel>
                         </Col>
                         <Col sm={10}>
-                        <FormControl
-                            bsSize="small"
-                            type="text"
-                            value={this.state.email} 
-                            onChange={this.handleEmailChange} 
-                            placeholder="Example@example.com"
-                        />
+                            <FormControl
+                                type="text"
+                                value={this.state.email} 
+                                onChange={this.handleEmailChange} 
+                                placeholder="Example@example.com"
+                            />
                         </Col>
                     </FormGroup>
-                {/* </Form>
-                <Form
-                    horizontal
-                > */}
                     <FormGroup 
-                        bsSize="small"
                         bsClass="form-group form-group-sm input-container"
                     >
-                        <ControlLabel>Password :</ControlLabel>{' '}
-                        <FormControl 
-                            type="password" 
-                            value={this.state.password} 
-                            onChange={this.handlePasswordChange} 
-                            placeholder="Password"
-                        />
+                        <Col sm={2}>
+                            <ControlLabel>Password:</ControlLabel>
+                        </Col>
+                        <Col sm={10}>
+                            <FormControl
+                                type="password" 
+                                value={this.state.password} 
+                                onChange={this.handlePasswordChange} 
+                                placeholder="Password"
+                            />
+                        </Col>
                     </FormGroup>
                 </Form>
                 <h4 className="error-text">{this.state.error}</h4>
