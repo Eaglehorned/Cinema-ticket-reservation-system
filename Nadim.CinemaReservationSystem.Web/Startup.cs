@@ -79,8 +79,8 @@ namespace Nadim.CinemaReservationSystem.Web
             else
             {
                 app.UseHsts();
-                app.UseCustomExceptionMiddleware();
             }
+            app.UseCustomExceptionHandling();
 
             app.UseAuthentication();
 

@@ -10,16 +10,16 @@ using Newtonsoft.Json;
 namespace Nadim.CinemaReservationSystem.Web
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
-    public class CustomExceptionMiddleware
+    public class CustomExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public CustomExceptionMiddleware(RequestDelegate next)
+        public CustomExceptionHandlingMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task InvokeAsync(HttpContext httpContext)
         {
             try
             {
@@ -30,6 +30,7 @@ namespace Nadim.CinemaReservationSystem.Web
                 await HandleExceptionAsync(httpContext);
             }
         }
+
         private static Task HandleExceptionAsync(HttpContext context)
         {
             context.Response.ContentType = "application/json";
@@ -38,7 +39,7 @@ namespace Nadim.CinemaReservationSystem.Web
             return context.Response.WriteAsync(JsonConvert.SerializeObject(
                 new Result {
                     ResultOk = false,
-                    Details="Server side error."
+                    Details = "Server side error."
                 }
             ));
         }
@@ -47,9 +48,9 @@ namespace Nadim.CinemaReservationSystem.Web
     // Extension method used to add the middleware to the HTTP request pipeline.
     public static class CustomExceptionMiddlewareExtensions
     {
-        public static IApplicationBuilder UseCustomExceptionMiddleware(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseCustomExceptionHandling(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<CustomExceptionMiddleware>();
+            return builder.UseMiddleware<CustomExceptionHandlingMiddleware>();
         }
     }
 }
