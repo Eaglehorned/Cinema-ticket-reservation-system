@@ -65,25 +65,23 @@ const sendRequestToEditSession = (id, sessionInfo) =>{
     });
 }
 
-const sendRequestToGetSessionSeats = (sessionId) =>{
-    return fetch(`api/sessions/${sessionId}/seats`,{
+const createGetSessionSeatsRequestURI = (sessionId, lastTimeUpdated) =>{
+    let uriString = `api/sessions/${sessionId}/seats`;
+
+    if(lastTimeUpdated){
+        uriString = uriString.concat(`?lastTimeUpdated=${lastTimeUpdated.toISOString()}`);
+    }
+
+    return uriString;
+}
+
+const sendRequestToGetSessionSeats = (sessionId, lastTimeUpdated) =>{
+    return fetch(createGetSessionSeatsRequestURI(sessionId, lastTimeUpdated),{ 
         method: 'GET',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'Authorization': `bearer ${userService.getToken()}`
-        }
-    });
-}
-
-const sendRequestToGetSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
-    return fetch(`api/sessions/${sessionId}/seats`,{
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': `bearer ${userService.getToken()}`,
-            'If-Modified-Since': lastTimeUpdated.toUTCString()
         }
     });
 }
@@ -146,7 +144,7 @@ class SessionDataAccess{
     }
 
     getSessionSeatsUpdates = (sessionId, lastTimeUpdated) =>{
-        return sendRequestToGetSessionSeatsUpdates(sessionId, lastTimeUpdated)
+        return sendRequestToGetSessionSeats(sessionId, lastTimeUpdated)
         .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(receivedDataProcessingHelper.getRequestedData);

@@ -396,11 +396,11 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId, string lastTimeUpdatedString)
+        public GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId, DateTime? lastTimeUpdated)
         {
             ClearSessionSeats(sessionId);
 
-            if (String.IsNullOrEmpty(lastTimeUpdatedString))
+            if(lastTimeUpdated == null)
             {
                 return new GetResult<List<SeatReservationInfo>>
                 {
@@ -417,9 +417,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         }).ToList()
                 };
             }
-
-            DateTime lastTimeUpdated = Utils.FromUTCStringToDateTime(lastTimeUpdatedString);
-
+            
             return new GetResult<List<SeatReservationInfo>>
             {
                 ResultOk = true,

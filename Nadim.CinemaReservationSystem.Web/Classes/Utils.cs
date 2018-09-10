@@ -26,14 +26,6 @@ namespace Nadim.CinemaReservationSystem.Web
                 return sb.ToString();
             }
         }
-        public static DateTime FromUTCStringToDateTime(string timeString)
-        {
-            if (timeString.Contains("UTC"))
-            {
-                timeString = timeString.Replace("UTC", "GMT");
-            }
-            return DateTime.ParseExact(timeString, "ddd, dd MMM yyyy HH:mm:ss Z", CultureInfo.InvariantCulture);
-        }
 
         public static bool IsEmailValid(string email)
         {

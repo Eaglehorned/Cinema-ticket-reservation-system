@@ -16,7 +16,7 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
 
         Result EditSession(int sessionId, SessionInfo sessionInfo);
 
-        GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId, string lastUpdated);
+        GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId, DateTime? lastTimeUpdated);
 
         Result EditSessionSeat(int sessionId, int sessionSeatId, SessionSeatInfo seatInfo);
     }
