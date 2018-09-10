@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Nadim.CinemaReservationSystem.Web.Contracts;
 using Nadim.CinemaReservationSystem.Web.Models;
@@ -82,7 +83,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{sessionId}/seats")]
-        public ActionResult<GetResult<List<SeatReservationInfo>>> GetSessionSeats(int sessionId, [FromHeader(Name = "If-Modified-Since")]string lastTimeUpdated)
+        public ActionResult<GetResult<List<SeatReservationInfo>>> GetSessionSeats(int sessionId, DateTime? lastTimeUpdated)
         {
             GetResult<List<SeatReservationInfo>> result = sessionService.GetSessionSeats(sessionId, lastTimeUpdated);
 
