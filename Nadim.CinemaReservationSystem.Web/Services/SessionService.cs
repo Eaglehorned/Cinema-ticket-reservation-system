@@ -189,6 +189,19 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             return query;
         }
 
+        private IQueryable<SessionSeat> CreateFilteredSessionSeatsQuery(int sessionId, DateTime? lastTimeUpdated)
+        {
+            IQueryable<SessionSeat> query = dbContext.SessionSeats
+                .Where(ss => ss.SessionId == sessionId);
+
+            if (lastTimeUpdated != null)
+            {
+                query = query.Where(ss => lastTimeUpdated < ss.LastTimeUpdated);
+            }
+
+            return query;
+        }
+
         public Result EditSessionSeat(int sessionId, int sessionSeatId, SessionSeatInfo seatInfo)
         {
             ClearSessionSeats(sessionId);
@@ -400,29 +413,12 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         {
             ClearSessionSeats(sessionId);
 
-            if(lastTimeUpdated == null)
-            {
-                return new GetResult<List<SeatReservationInfo>>
-                {
-                    ResultOk = true,
-                    RequestedData = dbContext.SessionSeats
-                        .Where(ss => ss.SessionId == sessionId)
-                        .Select(ss => new SeatReservationInfo
-                        {
-                            Row = ss.Seat.Row,
-                            Column = ss.Seat.Column,
-                            Type = ss.Seat.Type.TypeName,
-                            Booked = ss.Booked,
-                            SessionSeatId = ss.SessionSeatId
-                        }).ToList()
-                };
-            }
-            
+            IQueryable<SessionSeat> query = CreateFilteredSessionSeatsQuery(sessionId, lastTimeUpdated);
+
             return new GetResult<List<SeatReservationInfo>>
             {
                 ResultOk = true,
-                RequestedData = dbContext.SessionSeats
-                    .Where(ss => ss.SessionId == sessionId && lastTimeUpdated < ss.LastTimeUpdated)
+                RequestedData = query
                     .Select(ss => new SeatReservationInfo
                     {
                         Row = ss.Seat.Row,
