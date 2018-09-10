@@ -5,11 +5,11 @@
 .login, .logout{
     padding: 5px;
     border-left: groove 1px black;
-    margin-left: calc(100% - 400px); 
+    margin-left: calc(100% - 450px); 
     background-color: rgb(235, 235, 235);
     position: relative;
     height: 183px;
-    width: 400px;
+    width: 450px;
 }
 
 .logout{

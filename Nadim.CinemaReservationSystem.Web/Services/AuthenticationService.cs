@@ -78,30 +78,12 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
         public Result Login(UserLoginInfo user)
         {
-            if (!InputLoginDataValid(user))
+            if (!InputLoginDataValid(user) || !UserExists(user.Email) || !IsUserDataCorrect(user))
             {
                 return new Result
                 {
                     ResultOk = false,
-                    Details = "Incorrect data."
-                };
-            }
-
-            if (!UserExists(user.Email))
-            {
-                return new Result
-                {
-                    ResultOk = false,
-                    Details = "User doesnt exist."
-                };
-            }
-
-            if (!IsUserDataCorrect(user))
-            {
-                return new Result
-                {
-                    ResultOk = false,
-                    Details = "Incorrect password."
+                    Details = "Invalid data."
                 };
             }
 

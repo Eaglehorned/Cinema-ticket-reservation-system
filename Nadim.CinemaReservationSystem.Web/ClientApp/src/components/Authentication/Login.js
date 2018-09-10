@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { FormControl, FormGroup, Button } from 'react-bootstrap';
+import { FormControl, FormGroup, Button, ControlLabel, Form, Col } from 'react-bootstrap';
 import userService from '../../Services/UserService';
 
 export default class Login extends Component {
@@ -49,23 +49,40 @@ export default class Login extends Component {
     render() {
         return (
             <fieldset>
-                <FormGroup 
-                    bsSize="small"
-                    bsClass="form-group form-group-sm input-container"
+                <Form
+                    horizontal
                 >
-                    <FormControl 
-                        type="text"
-                        value={this.state.email} 
-                        onChange={this.handleEmailChange} 
-                        placeholder="Example@example.com"
-                    />
-                    <FormControl 
-                        type="password" 
-                        value={this.state.password} 
-                        onChange={this.handlePasswordChange} 
-                        placeholder="Password"
-                    />
-                </FormGroup>
+                    <FormGroup
+                        bsClass="form-group form-group-sm input-container"
+                    >
+                        <Col sm={2}>
+                            <ControlLabel>Email:</ControlLabel>
+                        </Col>
+                        <Col sm={10}>
+                            <FormControl
+                                type="text"
+                                value={this.state.email} 
+                                onChange={this.handleEmailChange} 
+                                placeholder="Example@example.com"
+                            />
+                        </Col>
+                    </FormGroup>
+                    <FormGroup 
+                        bsClass="form-group form-group-sm input-container"
+                    >
+                        <Col sm={2}>
+                            <ControlLabel>Password:</ControlLabel>
+                        </Col>
+                        <Col sm={10}>
+                            <FormControl
+                                type="password" 
+                                value={this.state.password} 
+                                onChange={this.handlePasswordChange} 
+                                placeholder="Password"
+                            />
+                        </Col>
+                    </FormGroup>
+                </Form>
                 <h4 className="error-text">{this.state.error}</h4>
                 <Button  
                     bsStyle="primary"
