@@ -70,7 +70,6 @@ export default class App extends Component {
                 />
                 <Body
                     role={this.state.shownRole}
-                    userId={this.state.userId}
                 />
             </React.Fragment>
         );

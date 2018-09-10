@@ -7,6 +7,7 @@ export default class Logout extends Component{
 
     handleLogout = () =>{
         userService.logOut();
+        this.props.callBackSetShownRole('');
         this.props.callBackHandleLogout();
     }
 
