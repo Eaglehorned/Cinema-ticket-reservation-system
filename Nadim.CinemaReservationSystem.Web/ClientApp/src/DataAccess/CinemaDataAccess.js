@@ -69,14 +69,14 @@ const sendRequestToGetCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
     });
 }
 
-const createCinemaInfo = (requestedData) =>{
-    let cinemaInfo = {};
-    cinemaInfo.info = {};
-    cinemaInfo.info.name = requestedData.name;
-    cinemaInfo.info.cinemaRoomId = requestedData.cinemaRoomId;
-    cinemaInfo.seats = requestedData.seats;
-
-    cinemaInfo.seats = seatsHelper.sortSeats(requestedData.seats);
+const createRequestedCinemaRoomInfo = (requestedData) =>{
+    const cinemaInfo = {
+        info:{
+            name: requestedData.name,
+            cinemaRoomId: requestedData.cinemaRoomId
+        },
+        seats: seatsHelper.sortSeats(requestedData.seats)
+    };
 
     cinemaInfo.info.rows = seatsHelper.getSeatsRowsNumber(cinemaInfo.seats);
     cinemaInfo.info.columns = seatsHelper.getSeatsColumnsNumber(cinemaInfo.seats);
@@ -113,10 +113,10 @@ const sendRequestToCreateCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
 }
 
 const createCinemaRoomInfo = (name, cinemaRoomId) =>{
-    let cinemaRoom = {};
-    cinemaRoom.name = name;
-    cinemaRoom.cinemaRoomId = cinemaRoomId;
-    return cinemaRoom;
+    return {
+        name: name,
+        cinemaRoomId: cinemaRoomId
+    };
 }
 
 const sendRequestToEditCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
@@ -180,7 +180,7 @@ class CinemaDataAccess{
         .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(receivedDataProcessingHelper.getRequestedData)
-        .then(createCinemaInfo);
+        .then(createRequestedCinemaRoomInfo);
     }
 
     createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
