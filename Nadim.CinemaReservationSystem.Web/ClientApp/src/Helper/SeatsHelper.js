@@ -10,6 +10,10 @@ class SeatsHelper{
         return seatsArray;
     }
 
+    flatSeatsArray = (seats) =>{
+        return [].concat(...seats);
+    }
+
     sortSeats = (seats) =>{
         return seats.sort((a, b) => {
             if (a.row === b.row){
