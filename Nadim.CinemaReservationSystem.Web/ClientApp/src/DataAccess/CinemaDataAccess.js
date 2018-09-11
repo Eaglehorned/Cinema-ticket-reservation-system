@@ -107,16 +107,9 @@ const sendRequestToCreateCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
         },
         body: JSON.stringify({
             name: cinemaRoomInfo.name,
-            seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
+            seats: seatsHelper.flatSeatsArray(cinemaRoomInfo.cinemaRoomSeats)
         })
     })
-}
-
-const createCinemaRoomInfo = (name, cinemaRoomId) =>{
-    return {
-        name: name,
-        cinemaRoomId: cinemaRoomId
-    };
 }
 
 const sendRequestToEditCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
@@ -129,7 +122,7 @@ const sendRequestToEditCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
         },
         body: JSON.stringify({
             name: cinemaRoomInfo.name,
-            seats: [].concat(...cinemaRoomInfo.cinemaRoomSeats)
+            seats: seatsHelper.flatSeatsArray(cinemaRoomInfo.cinemaRoomSeats)
         })
     });
 }
@@ -186,7 +179,14 @@ class CinemaDataAccess{
     createCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
         return sendRequestToCreateCinemaRoom(cinemaId, cinemaRoomInfo)
         .then(receivedDataProcessingHelper.handleRequestError)
-        .then(response => createCinemaRoomInfo(cinemaRoomInfo.name, receivedDataProcessingHelper.getIdFromResponse(response)));
+        .then(response =>
+            {
+                return {
+                    name: cinemaRoomInfo.name,
+                    cinemaRoomId: receivedDataProcessingHelper.getIdFromResponse(response)
+                }
+            }
+        );
     }
 
     editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
