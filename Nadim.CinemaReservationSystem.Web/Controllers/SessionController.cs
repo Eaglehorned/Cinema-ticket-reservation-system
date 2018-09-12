@@ -85,7 +85,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         [HttpGet("{sessionId}/seats")]
         public IActionResult GetSessionSeats(int sessionId, DateTime? lastTimeUpdated)
         {
-            GetResult<List<SeatReservationInfo>> result = sessionService.GetSessionSeats(sessionId, lastTimeUpdated);
+            GetResult<IEnumerable<SeatReservationInfo>> result = sessionService.GetSessionSeats(sessionId, lastTimeUpdated);
 
             if (result.ResultOk)
             {

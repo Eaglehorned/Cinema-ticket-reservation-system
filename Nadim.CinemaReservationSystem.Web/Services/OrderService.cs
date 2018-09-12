@@ -67,8 +67,9 @@ namespace Nadim.CinemaReservationSystem.Web
 
             Order order = new Order
             {
-                UserId = orderInfo.UserId
-            };
+                UserId = orderInfo.UserId,
+                SessionSeats = new List<SessionSeat>()
+        };
 
             foreach (var sessionSeatId in orderInfo.SessionSeats)
             {

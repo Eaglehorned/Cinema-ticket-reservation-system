@@ -298,8 +298,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             {
                 FilmId = sessionInfo.FilmId,
                 CinemaRoomId = sessionInfo.CinemaRoomId,
-                BeginTime = sessionInfo.BeginTime,
-                //SessionSeatTypePrices = new List<SessionSeatTypePrice>()
+                BeginTime = sessionInfo.BeginTime
             };
 
             session.SessionSeatTypePrices = sessionInfo.SessionSeatTypePrices
@@ -333,7 +332,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         {
             var query = FormFilteredSessionQuery(filter);
 
-            return new GetResult<List<ResponseSessionDisplayInfo>>
+            return new GetResult<IEnumerable<ResponseSessionDisplayInfo>>
             {
                 ResultOk = true,
                 RequestedData = query
@@ -357,7 +356,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         CinemaRoomId = s.CinemaRoomId
                     },
                     BeginTime = s.BeginTime
-                }).ToList()
+                })
             };
         }
 
@@ -403,7 +402,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                                SeatTypeId = stp.SeatTypeId,
                                TypeName = stp.SeatType.TypeName,
                                Price = stp.Price
-                           }).ToList()
+                           })
                     })
                     .FirstOrDefault()
             };
@@ -415,7 +414,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
 
             IQueryable<SessionSeat> query = CreateFilteredSessionSeatsQuery(sessionId, lastTimeUpdated);
 
-            return new GetResult<List<SeatReservationInfo>>
+            return new GetResult<IEnumerable<SeatReservationInfo>>
             {
                 ResultOk = true,
                 RequestedData = query
@@ -426,7 +425,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         Type = ss.Seat.Type.TypeName,
                         Booked = ss.Booked,
                         SessionSeatId = ss.SessionSeatId
-                    }).ToList()
+                    })
             };
         }
 

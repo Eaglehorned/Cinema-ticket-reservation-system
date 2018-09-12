@@ -13,6 +13,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public ResponseFilmDisplayInfo Film { get; set; }
         public DateTime BeginTime { get; set; }
 
-        public List<SessionSeatTypePriceFullInfo> SessionSeatTypePrices { get; set; }
+        public IEnumerable<SessionSeatTypePriceFullInfo> SessionSeatTypePrices { get; set; }
     }
 }
