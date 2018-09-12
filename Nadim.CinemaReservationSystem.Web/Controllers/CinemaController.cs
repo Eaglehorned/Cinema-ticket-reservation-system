@@ -19,7 +19,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost]
-        public ActionResult<ResultCreated> CreateCinema([FromBody] CinemaInfo cinemaInfo)
+        public IActionResult CreateCinema([FromBody] CinemaInfo cinemaInfo)
         {
             ResultCreated result = сinemaService.CreateCinema(cinemaInfo);
 
@@ -32,7 +32,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPut("{cinemaId}/info")]
-        public ActionResult<Result> EditCinema([FromBody] CinemaInfo cinemaInfo, int cinemaId)
+        public IActionResult EditCinema([FromBody] CinemaInfo cinemaInfo, int cinemaId)
         {
             Result result = сinemaService.EditCinema(cinemaId, cinemaInfo);
 
@@ -44,7 +44,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult<GetResult<IEnumerable<ResponseCinemaDisplayInfo>>> GetCinemaList()
+        public IActionResult GetCinemaList()
         {
             GetResult<IEnumerable<ResponseCinemaDisplayInfo>> result = сinemaService.GetCinemaList();
 
@@ -57,7 +57,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{cinemaId}")]
-        public ActionResult<GetResult<ResponseCinemaFullInfo>> GetCinema(int cinemaId)
+        public IActionResult GetCinema(int cinemaId)
         {
             GetResult<ResponseCinemaFullInfo> result = сinemaService.GetCinema(cinemaId);
 
@@ -70,7 +70,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{cinemaId}/cinemaRooms/{cinemaRoomId}")]
-        public ActionResult<GetResult<ResponseCinemaRoomInfo>> GetCinemaRoom(int cinemaId, int cinemaRoomId)
+        public IActionResult GetCinemaRoom(int cinemaId, int cinemaRoomId)
         {
             GetResult<ResponseCinemaRoomInfo> result = сinemaService.GetCinemaRoom(cinemaId, cinemaRoomId);
 
@@ -83,7 +83,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost("{cinemaId}/cinemaRooms")]
-        public ActionResult<ResultCreated> CreateCinemaRoom([FromBody] CinemaRoomInfo cinemaRoom, int cinemaId)
+        public IActionResult CreateCinemaRoom([FromBody] CinemaRoomInfo cinemaRoom, int cinemaId)
         {
             ResultCreated result = сinemaService.CreateCinemaRoom(cinemaId, cinemaRoom);
 
@@ -96,7 +96,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPut("{cinemaId}/cinemaRooms/{cinemaRoomId}")]
-        public ActionResult<Result> EditCinemaRoom([FromBody] CinemaRoomInfo cinemaRoomInfo, int cinemaId, int cinemaRoomId)
+        public IActionResult EditCinemaRoom([FromBody] CinemaRoomInfo cinemaRoomInfo, int cinemaId, int cinemaRoomId)
         {
             Result result = сinemaService.EditCinemaRoom(cinemaId, cinemaRoomId, cinemaRoomInfo);
 
@@ -123,7 +123,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{cinemaId}/cinemaRooms/{cinemaRoomId}/seatTypes")]
-        public ActionResult<GetResult<IEnumerable<ResponseSeatTypesInCinemaRoomInfo>>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId)
+        public IActionResult GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId)
         {
             GetResult<IEnumerable<ResponseSeatTypesInCinemaRoomInfo>> result = сinemaService.GetCinemaRoomSeatTypes(cinemaId, cinemaRoomId);
 
