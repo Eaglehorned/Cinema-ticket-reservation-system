@@ -23,9 +23,9 @@ namespace Nadim.CinemaReservationSystem.Web
                 .FirstOrDefault(ss => ss.SessionSeatId == sessionSeatId).Session != null;
         }
 
-        private bool ValidateSeatList(List<int> list)
+        private bool ValidateSeatList(IEnumerable<int> list)
         {
-            return list == null || list.Count == 0 && list.Count <= 10;
+            return list == null || list.Count() == 0 && list.Count() <= 10;
         }
 
         private bool UserExists(int userId) {
