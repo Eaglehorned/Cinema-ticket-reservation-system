@@ -18,7 +18,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost]
-        public ActionResult<ResultCreated> CreateFilm([FromBody] FilmInfo filmInfo)
+        public IActionResult CreateFilm([FromBody] FilmInfo filmInfo)
         {
             ResultCreated result = filmService.CreateFilm(filmInfo);
 
@@ -30,9 +30,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult<GetResult<List<ResponseFilmDisplayInfo>>> GetFilmList()
+        public IActionResult GetFilmList()
         {
-            GetResult<List<ResponseFilmDisplayInfo>> result = filmService.GetFilmList();
+            GetResult<IEnumerable<ResponseFilmDisplayInfo>> result = filmService.GetFilmList();
 
             if (result.ResultOk)
             {
@@ -43,7 +43,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{filmId}")]
-        public ActionResult<GetResult<FilmInfo>> GetFilm(int filmId)
+        public IActionResult GetFilm(int filmId)
         {
             GetResult<FilmInfo> result = filmService.GetFilm(filmId);
 
@@ -56,7 +56,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPut("{filmId}")]
-        public ActionResult<Result> EditFilm([FromBody] FilmInfo filmInfo, int filmId)
+        public IActionResult EditFilm([FromBody] FilmInfo filmInfo, int filmId)
         {
             Result result = filmService.EditFilm(filmId, filmInfo);
 

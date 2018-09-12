@@ -34,9 +34,9 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 && filmInfo.Duration != 0;
         }
 
-        public GetResult<List<ResponseFilmDisplayInfo>> GetFilmList()
+        public GetResult<IEnumerable<ResponseFilmDisplayInfo>> GetFilmList()
         {
-            return new GetResult<List<ResponseFilmDisplayInfo>>
+            return new GetResult<IEnumerable<ResponseFilmDisplayInfo>>
             {
                 ResultOk = true,
                 RequestedData = dbContext.Films
@@ -44,7 +44,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     {
                         Name = f.Name,
                         FilmId = f.FilmId
-                    }).ToList()
+                    })
             };
         }
 
