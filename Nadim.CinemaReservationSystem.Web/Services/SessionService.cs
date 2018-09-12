@@ -299,7 +299,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 FilmId = sessionInfo.FilmId,
                 CinemaRoomId = sessionInfo.CinemaRoomId,
                 BeginTime = sessionInfo.BeginTime,
-                SessionSeatTypePrices = new List<SessionSeatTypePrice>()
+                //SessionSeatTypePrices = new List<SessionSeatTypePrice>()
             };
 
             session.SessionSeatTypePrices = sessionInfo.SessionSeatTypePrices
@@ -329,7 +329,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public GetResult<List<ResponseSessionDisplayInfo>> GetSessionList(SessionFilter filter)
+        public GetResult<IEnumerable<ResponseSessionDisplayInfo>> GetSessionList(SessionFilter filter)
         {
             var query = FormFilteredSessionQuery(filter);
 
@@ -409,7 +409,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public GetResult<List<SeatReservationInfo>> GetSessionSeats(int sessionId, DateTime? lastTimeUpdated)
+        public GetResult<IEnumerable<SeatReservationInfo>> GetSessionSeats(int sessionId, DateTime? lastTimeUpdated)
         {
             ClearSessionSeats(sessionId);
 
