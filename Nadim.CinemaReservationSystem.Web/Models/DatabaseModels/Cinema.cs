@@ -13,6 +13,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public string City { get; set; }
         public string Name { get; set; }
 
-        public virtual List<CinemaRoom> CinemaRooms { get; set; }
+        public virtual ICollection<CinemaRoom> CinemaRooms { get; set; }
     }
 }

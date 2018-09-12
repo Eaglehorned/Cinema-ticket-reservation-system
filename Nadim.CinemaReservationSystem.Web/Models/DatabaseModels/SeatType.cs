@@ -12,6 +12,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public int SeatTypeId { get; set; }
         public string TypeName { get; set; }
 
-        public List<SessionSeatTypePrice> SessionSeatTypePrices { get; set; }
+        public ICollection<SessionSeatTypePrice> SessionSeatTypePrices { get; set; }
     }
 }

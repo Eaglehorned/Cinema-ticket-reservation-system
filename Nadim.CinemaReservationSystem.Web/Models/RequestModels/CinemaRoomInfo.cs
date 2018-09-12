@@ -7,7 +7,7 @@ namespace Nadim.CinemaReservationSystem.Web.Models
 {
     public class CinemaRoomInfo
     {
-        public List<SeatInfo> Seats { get; set; }
+        public IEnumerable<SeatInfo> Seats { get; set; }
         public string Name { get; set; }
     }
 }

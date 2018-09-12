@@ -32,8 +32,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             var newCinema = new Cinema
             {
                 City = cinemaInfo.City,
-                Name = cinemaInfo.Name,
-                CinemaRooms = new List<CinemaRoom>()
+                Name = cinemaInfo.Name
             };
 
             return newCinema;
@@ -120,9 +119,9 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public GetResult<List<ResponseCinemaDisplayInfo>> GetCinemaList()
+        public GetResult<IEnumerable<ResponseCinemaDisplayInfo>> GetCinemaList()
         {
-            return new GetResult<List<ResponseCinemaDisplayInfo>>
+            return new GetResult<IEnumerable<ResponseCinemaDisplayInfo>>
             {
                 ResultOk = true,
                 RequestedData = dbContext.Cinemas
@@ -131,22 +130,22 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                         Name = c.Name,
                         City = c.City,
                         CinemaId = c.CinemaId
-                    }).ToList()
+                    })
             };
         }
 
-        public GetResult<List<ResponseCinemaRoomDisplayInfo>> GetCinemaRoomList(int cinemaId)
+        public GetResult<IEnumerable<ResponseCinemaRoomDisplayInfo>> GetCinemaRoomList(int cinemaId)
         {
             if (!CinemaExists(cinemaId))
             {
-                return new GetResult<List<ResponseCinemaRoomDisplayInfo>>
+                return new GetResult<IEnumerable<ResponseCinemaRoomDisplayInfo>>
                 {
                     ResultOk = false,
                     Details = "Cant find such cinema"
                 };
             }
 
-            return new GetResult<List<ResponseCinemaRoomDisplayInfo>>
+            return new GetResult<IEnumerable<ResponseCinemaRoomDisplayInfo>>
             {
                 ResultOk = true,
                 RequestedData = dbContext.CinemaRooms
@@ -155,7 +154,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     {
                         Name = r.Name,
                         CinemaRoomId = r.CinemaRoomId
-                    }).ToList()
+                    })
             };
         }
 
@@ -188,7 +187,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                             {
                                 CinemaRoomId = r.CinemaRoomId,
                                 Name = r.Name
-                            }).ToList()
+                            })
                     }).FirstOrDefault()
             };
         }
@@ -276,7 +275,7 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             cinemaRoom.Seats = cinemaRoomInfo.Seats
                 .Select(s => new Seat
                 {
-                    Type = dbContext.SeatTypes.FirstOrDefault( st => st.TypeName == s.Type),
+                    Type = dbContext.SeatTypes.FirstOrDefault(st => st.TypeName == s.Type),
                     Row = s.Row,
                     Column = s.Column
                 }).ToList();
@@ -324,16 +323,16 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                                     Type = s.Type.TypeName,
                                     Row = s.Row,
                                     Column = s.Column
-                                }).ToList()
+                                })
                         })
                     .FirstOrDefault()
             };
         }
 
-        public GetResult<List<ResponseSeatTypesInCinemaRoomInfo>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId)
+        public GetResult<IEnumerable<ResponseSeatTypesInCinemaRoomInfo>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId)
         {
             if (!CinemaExists(cinemaId)) {
-                return new GetResult<List<ResponseSeatTypesInCinemaRoomInfo>>
+                return new GetResult<IEnumerable<ResponseSeatTypesInCinemaRoomInfo>>
                 {
                     ResultOk = false,
                     Details = "Cant find such cinema."
@@ -341,14 +340,14 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             }
 
             if (!CinemaRoomExists(cinemaRoomId)){
-                return new GetResult<List<ResponseSeatTypesInCinemaRoomInfo>>
+                return new GetResult<IEnumerable<ResponseSeatTypesInCinemaRoomInfo>>
                 {
                     ResultOk = false,
                     Details = "Cant find such cinema room."
                 };
             }
 
-            return new GetResult<List<ResponseSeatTypesInCinemaRoomInfo>> {
+            return new GetResult<IEnumerable<ResponseSeatTypesInCinemaRoomInfo>> {
                 ResultOk = true,
                 RequestedData = dbContext.Seats
                     .Where(s => s.CinemaRoomId == cinemaRoomId)
@@ -359,7 +358,6 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                             .TypeName
                     })
                     .Distinct()
-                    .ToList()
             };
         }
     }
