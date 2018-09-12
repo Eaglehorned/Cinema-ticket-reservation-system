@@ -44,9 +44,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult<GetResult<List<ResponseCinemaDisplayInfo>>> GetCinemaList()
+        public ActionResult<GetResult<IEnumerable<ResponseCinemaDisplayInfo>>> GetCinemaList()
         {
-            GetResult<List<ResponseCinemaDisplayInfo>> result = сinemaService.GetCinemaList();
+            GetResult<IEnumerable<ResponseCinemaDisplayInfo>> result = сinemaService.GetCinemaList();
 
             if (result.ResultOk)
             {
@@ -110,9 +110,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{cinemaId}/cinemaRooms")]
-        public ActionResult<GetResult<List<ResponseCinemaRoomDisplayInfo>>> GetCinemaRoomList(int cinemaId)
+        public IActionResult GetCinemaRoomList(int cinemaId)
         {
-            GetResult<List<ResponseCinemaRoomDisplayInfo>> result = сinemaService.GetCinemaRoomList(cinemaId);
+            GetResult<IEnumerable<ResponseCinemaRoomDisplayInfo>> result = сinemaService.GetCinemaRoomList(cinemaId);
 
             if (result.ResultOk)
             {
@@ -123,9 +123,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{cinemaId}/cinemaRooms/{cinemaRoomId}/seatTypes")]
-        public ActionResult<GetResult<List<ResponseSeatTypesInCinemaRoomInfo>>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId)
+        public ActionResult<GetResult<IEnumerable<ResponseSeatTypesInCinemaRoomInfo>>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId)
         {
-            GetResult<List<ResponseSeatTypesInCinemaRoomInfo>> result = сinemaService.GetCinemaRoomSeatTypes(cinemaId, cinemaRoomId);
+            GetResult<IEnumerable<ResponseSeatTypesInCinemaRoomInfo>> result = сinemaService.GetCinemaRoomSeatTypes(cinemaId, cinemaRoomId);
 
             if (result.ResultOk)
             {

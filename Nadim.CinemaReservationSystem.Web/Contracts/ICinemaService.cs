@@ -12,7 +12,7 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
 
         ResultCreated CreateCinemaRoom(int cinemaId, CinemaRoomInfo cinemaRoom);
 
-        GetResult<List<ResponseCinemaDisplayInfo>> GetCinemaList();
+        GetResult<IEnumerable<ResponseCinemaDisplayInfo>> GetCinemaList();
 
         Result EditCinema(int cinemaId, CinemaInfo cinemaInfo);
 
@@ -22,8 +22,8 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
 
         GetResult<ResponseCinemaRoomInfo> GetCinemaRoom(int cinemaId, int cinemaRoomId);
 
-        GetResult<List<ResponseCinemaRoomDisplayInfo>> GetCinemaRoomList(int cinemaId);
+        GetResult<IEnumerable<ResponseCinemaRoomDisplayInfo>> GetCinemaRoomList(int cinemaId);
 
-        GetResult<List<ResponseSeatTypesInCinemaRoomInfo>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId);
+        GetResult<IEnumerable<ResponseSeatTypesInCinemaRoomInfo>> GetCinemaRoomSeatTypes(int cinemaId, int cinemaRoomId);
     }
 }
