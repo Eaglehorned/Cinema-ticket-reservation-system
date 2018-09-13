@@ -1,0 +1,21 @@
+.body-nav-menu{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.body-nav-menu ul{
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.body-nav-menu li{
+    flex-grow: 1;
+}
+
+.body-nav-menu .link-box{
+    padding: 10px 30px;
+    font-size: x-large;
+}

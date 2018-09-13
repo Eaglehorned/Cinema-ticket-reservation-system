@@ -4,6 +4,8 @@ import Cinema from './Cinema/Cinema';
 import Film from './Film/Film';
 import Session from './Session/Session';
 import Reservation from './Reservation/Reservation';
+import { BrowserRouter as Router, Route, Link, Switch} from 'react-router-dom';
+import "../styles/Body.css";
 
 export default class Body extends Component{
     constructor(props){
@@ -50,6 +52,15 @@ export default class Body extends Component{
     }
 
     renderContent = () => {
+        return(
+            <Switch>
+                <Route exact path="/cinema" component={()=> (<Cinema/>)}/>
+                <Route exact path="/film" component={()=> (<Film/>)}/>
+                <Route exact path="/session" component={()=> (<Session/>)}/>
+                <Route exact path="/reservation" component={()=> (<Reservation/>)}/>
+            </Switch>
+        );
+
         switch(this.state.chosenOperation){
             case 'cinema': 
                 return <Cinema/>;
@@ -66,25 +77,39 @@ export default class Body extends Component{
 
     renderAdminNav = () =>{
         return(
-            <Tabs
-                justified
-                activeKey={this.state.chosenOperation}
-                onSelect={key => this.handleSelectNav(key)}
-                id="select_operation"
-            >
-                <Tab 
-                    eventKey={'cinema'}
-                    title="Cinema"
-                />
-                <Tab 
-                    eventKey={'film'}
-                    title="Film"
-                />
-                <Tab 
-                    eventKey={'session'}
-                    title="Session"
-                />
-            </Tabs>
+            <div className="body-nav-menu">
+                {/* <ul>
+                    <li> */}
+                        <Link to="/cinema" className="link-box">Cinema</Link>
+                    {/* </li>
+                    <li> */}
+                        <Link to="/film" className="link-box">Film</Link>
+                    {/* </li>
+                    <li> */}
+                        <Link to="/session" className="link-box">Session</Link>
+                    {/* </li>
+                </ul> */}
+            </div>
+            // <Tabs
+            //     justified
+            //     activeKey={this.state.chosenOperation}
+            //     onSelect={key => this.handleSelectNav(key)}
+            //     id="select_operation"
+            // >
+            //     <Tab
+            //         eventKey={'cinema'}
+            //         href="https://www.google.com"
+            //         title={<Link to="/cinema">Cinema</Link>}
+            //     />
+            //     <Tab 
+            //         eventKey={'film'}
+            //         title={<Link to="/film">Film</Link>}
+            //     />
+            //     <Tab 
+            //         eventKey={'session'}
+            //         title={<Link to="/session">Session</Link>}
+            //     />
+            // </Tabs>
         );
     }
 
