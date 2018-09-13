@@ -14,6 +14,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public List<SessionSeat> SessionSeats { get; set; } = new List<SessionSeat>();
+        public ICollection<SessionSeat> SessionSeats { get; set; }
     }
 }

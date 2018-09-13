@@ -19,7 +19,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost]
-        public ActionResult<ResultCreated> CreateSession([FromBody] SessionInfo sessionInfo)
+        public IActionResult CreateSession([FromBody] SessionInfo sessionInfo)
         {
             ResultCreated result = sessionService.CreateSession(sessionInfo);
 
@@ -31,9 +31,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult<GetResult<List<ResponseSessionDisplayInfo>>> GetSessionList([FromQuery] SessionFilter filter)
+        public IActionResult GetSessionList([FromQuery] SessionFilter filter)
         {
-            GetResult<List<ResponseSessionDisplayInfo>> result = sessionService.GetSessionList(filter);
+            GetResult<IEnumerable<ResponseSessionDisplayInfo>> result = sessionService.GetSessionList(filter);
 
             if (result.ResultOk)
             {
@@ -44,7 +44,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{sessionId}")]
-        public ActionResult<GetResult<ResponseSessionFullInfo>> GetSession(int sessionId)
+        public IActionResult GetSession(int sessionId)
         {
             GetResult<ResponseSessionFullInfo> result = sessionService.GetSession(sessionId);
 
@@ -57,7 +57,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPut("{sessionId}")]
-        public ActionResult<Result> EditSession(int sessionId, [FromBody] SessionInfo sessionInfo)
+        public IActionResult EditSession(int sessionId, [FromBody] SessionInfo sessionInfo)
         {
             Result result = sessionService.EditSession(sessionId, sessionInfo);
 
@@ -70,7 +70,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpPut("{sessionId}/seats/{sessionSeatId}")]
-        public ActionResult<Result> EditSessionSeat(int sessionId, int sessionSeatId, [FromBody]SessionSeatInfo sessionSeatInfo)
+        public IActionResult EditSessionSeat(int sessionId, int sessionSeatId, [FromBody]SessionSeatInfo sessionSeatInfo)
         {
             Result result = sessionService.EditSessionSeat(sessionId, sessionSeatId, sessionSeatInfo);
 
@@ -83,9 +83,9 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpGet("{sessionId}/seats")]
-        public ActionResult<GetResult<List<SeatReservationInfo>>> GetSessionSeats(int sessionId, DateTime? lastTimeUpdated)
+        public IActionResult GetSessionSeats(int sessionId, DateTime? lastTimeUpdated)
         {
-            GetResult<List<SeatReservationInfo>> result = sessionService.GetSessionSeats(sessionId, lastTimeUpdated);
+            GetResult<IEnumerable<SeatReservationInfo>> result = sessionService.GetSessionSeats(sessionId, lastTimeUpdated);
 
             if (result.ResultOk)
             {

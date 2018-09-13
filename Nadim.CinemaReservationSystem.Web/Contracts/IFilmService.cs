@@ -10,7 +10,7 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
     {
         ResultCreated CreateFilm(FilmInfo filmInfo);
 
-        GetResult<List<ResponseFilmDisplayInfo>> GetFilmList();
+        GetResult<IEnumerable<ResponseFilmDisplayInfo>> GetFilmList();
 
         GetResult<FilmInfo> GetFilm(int filmId);
 

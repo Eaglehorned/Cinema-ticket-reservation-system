@@ -11,6 +11,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
         public int CinemaRoomId { get; set; }
         public DateTime BeginTime { get; set; }
         
-        public List<SessionSeatTypePriceInfo> SessionSeatTypePrices { get; set; }
+        public IEnumerable<SessionSeatTypePriceInfo> SessionSeatTypePrices { get; set; }
     }
 }

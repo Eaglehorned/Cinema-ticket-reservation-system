@@ -8,6 +8,6 @@ namespace Nadim.CinemaReservationSystem.Web.Models
     public class OrderInfo
     {
         public int UserId { get; set; }
-        public List<int> SessionSeats { get; set; }
+        public IEnumerable<int> SessionSeats { get; set; }
     }
 }

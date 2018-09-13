@@ -21,7 +21,7 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult<ResultCreated> CreateOrder([FromBody]OrderInfo order)
+        public IActionResult CreateOrder([FromBody]OrderInfo order)
         {
             ResultCreated result = orderService.CreateOrder(order);
 
