@@ -9,6 +9,7 @@ import DisplayCinemaRoomsList from './DisplayCinemaRoomsList';
 
 export default class FormCinema extends Component{
     displayName = FormCinema.displayName;
+
     constructor(props){
         super(props);
         this.state={

@@ -30,10 +30,12 @@ export default class Authentication extends Component {
 
     handleAuthorization = () => {
         this.setState({ userAuthorized: true });
+        this.props.callBackSetShownRole(userService.getRole())
     }
 
     handleLogout = () =>{
         this.setState({ userAuthorized: false });
+        this.props.callBackSetShownRole('');
     }
 
     renderAuthenticationContent = () =>{

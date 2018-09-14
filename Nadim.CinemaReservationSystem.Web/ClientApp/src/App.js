@@ -18,12 +18,6 @@ export default class App extends Component {
         applicationService.setInformWithMessage(this.informWithMessage);
     }
 
-    setShownRole = (role) =>{
-        this.setState({
-            shownRole: role
-        })
-    }
-
     informWithMessage = (message) =>{
         if (message.isError){
             this.setState({
@@ -73,9 +67,7 @@ export default class App extends Component {
                         />
                     )}/>
                     <Route component={()=>(
-                        <Body
-                            role={this.state.shownRole}
-                        />
+                        <Body/>
                     )}/>
                 </React.Fragment>
             </Router>

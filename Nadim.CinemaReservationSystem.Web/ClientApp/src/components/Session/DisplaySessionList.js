@@ -19,7 +19,7 @@ const DisplaySessionList = (props) =>{
                     bsStyle="primary"
                     onClick={props.handleListButtonClick}
                 >
-                    Create cinema
+                    Create session
                 </Button>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { withRouter, Switch, Route } from 'react-router-dom';
 import FormCinema from './FormCinema';
 import cinemaService from '../../Services/CinemaService';
 import applicationService from '../../Services/ApplicationService';
@@ -7,7 +8,7 @@ import '../../styles/Cinema.css';
 import '../../styles/ListStyles.css';
 import DisplayCinemaList from './DisplayCinemaList';
 
-export default class Cinema extends Component{
+class Cinema extends Component{
     displayName = Cinema.displayName;
 
     constructor(props){
@@ -17,20 +18,26 @@ export default class Cinema extends Component{
             cinemaList: [],
             chosenCinemaInfo: undefined
         };
-
-        this.getCinemaList();
     }
+
+    componentWillMount(){
+        this.getCinemaList();
+    }   
 
     cancelCurrentAction = () =>{
         this.setState({
             chosenOperation:''
         });
+        this.props.history.push(`${this.props.match.url}`)
     }
 
     editCinema = (cinemaInfo) =>{
         this.setState({
             chosenOperation: ''
         });
+
+        this.props.history.push(`${this.props.match.url}`)
+
         cinemaService.editCinema(cinemaInfo)
         .then(() => {
             this.setState({
@@ -65,6 +72,7 @@ export default class Cinema extends Component{
                 chosenOperation: 'editCinema'
             })
         })
+        .then(() => this.props.history.push(`${this.props.match.url}/${id}`))
         .catch(error => {
             this.setState({
                 chosenOperation:''
@@ -128,35 +136,50 @@ export default class Cinema extends Component{
     }
 
     renderContent = () =>{
-        switch(this.state.chosenOperation){
-            case 'createCinema':
-                return (         
+        // switch(this.state.chosenOperation){
+        //     case 'createCinema':
+        //         return (         
+        //             <FormCinema
+        //                 callBackCancelParentOperation={this.cancelCurrentAction}
+        //                 callBackFromParent={this.createCinema}
+        //             />
+        //         );
+        //     case 'editCinemaLoading':
+        //         return (
+        //             <div className="font-x-large font-italic">
+        //                 Loading...
+        //             </div>
+        //         );
+        //     case 'editCinema':
+        //         if (this.state.chosenCinemaInfo){
+        //             return(         
+        //                 <FormCinema
+        //                     cinema={this.state.chosenCinemaInfo}
+        //                     callBackCancelParentOperation={this.cancelCurrentAction}
+        //                     callBackFromParent={this.editCinema}
+        //                 />
+        //             )
+        //         }
+        //         this.setState({chosenOperation: ''});
+        //         break;
+        //     default: 
+        //         return this.renderActionsContent();
+        // }
+        const test = "test";
+        return(
+            <Switch>
+                <Route path={`${this.props.match.url}/:number`} component={() => (
                     <FormCinema
+                        cinema={this.state.chosenCinemaInfo}
                         callBackCancelParentOperation={this.cancelCurrentAction}
-                        callBackFromParent={this.createCinema}
+                        callBackFromParent={this.editCinema}
                     />
-                );
-            case 'editCinemaLoading':
-                return (
-                    <div className="font-x-large font-italic">
-                        Loading...
-                    </div>
-                );
-            case 'editCinema':
-                if (this.state.chosenCinemaInfo){
-                    return(         
-                        <FormCinema
-                            cinema={this.state.chosenCinemaInfo}
-                            callBackCancelParentOperation={this.cancelCurrentAction}
-                            callBackFromParent={this.editCinema}
-                        />
-                    )
-                }
-                this.setState({chosenOperation: ''});
-                break;
-            default: 
-                return this.renderActionsContent();
-        }
+                )}/>
+                <Route exact path={this.props.match.url}
+                    render={() => this.renderActionsContent()}
+                />
+            </Switch>
+        );
     }
 
     render(){
@@ -170,3 +193,5 @@ export default class Cinema extends Component{
         );
     }
 }
+
+export default withRouter(Cinema);
