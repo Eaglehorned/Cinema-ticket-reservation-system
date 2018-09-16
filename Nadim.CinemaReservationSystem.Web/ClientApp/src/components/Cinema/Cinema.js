@@ -14,7 +14,6 @@ class Cinema extends Component{
     constructor(props){
         super(props);
         this.state={
-            chosenOperation: '',
             cinemaList: [],
             chosenCinemaInfo: undefined
         };
@@ -24,19 +23,12 @@ class Cinema extends Component{
         this.getCinemaList();
     }   
 
-    cancelCurrentAction = () =>{
-        this.setState({
-            chosenOperation:''
-        });
+    returnToCinemaPage = () =>{
         this.props.history.push(`${this.props.match.url}`)
     }
 
     editCinema = (cinemaInfo) =>{
-        this.setState({
-            chosenOperation: ''
-        });
-
-        this.props.history.push(`${this.props.match.url}`)
+        this.returnToCinemaPage();
 
         cinemaService.editCinema(cinemaInfo)
         .then(() => {
@@ -44,8 +36,7 @@ class Cinema extends Component{
                 cinemaList: cinemaService.updateCinemaList(
                     this.state.cinemaList,
                     cinemaInfo
-                ),
-                chosenOperation: ''
+                )
             });
             applicationService.informWithMessage('Cinema information edited.');
         })
@@ -65,26 +56,20 @@ class Cinema extends Component{
     }
 
     getCinema = (id) =>{
-        cinemaService.getCinema(id)
+        return cinemaService.getCinema(id)
         .then(cinemaInfo => {
             this.setState({
-                chosenCinemaInfo: cinemaInfo,
-                chosenOperation: 'editCinema'
+                chosenCinemaInfo: cinemaInfo
             })
         })
-        .then(() => this.props.history.push(`${this.props.match.url}/${id}`))
         .catch(error => {
-            this.setState({
-                chosenOperation:''
-            });
             applicationService.informWithErrorMessage(error);
         });
     }
 
     createCinema = (cinemaInfoForCreation) =>{
-        this.setState({
-            chosenOperation: 'editCinemaLoading'
-        });
+        //TODO make it properly
+        this.props.history.push(this.props.match.url);
         cinemaService.createCinema(cinemaInfoForCreation)
         .then(cinemaId => {
             this.setState({
@@ -96,30 +81,23 @@ class Cinema extends Component{
                 chosenCinemaInfo: {
                     info: {...cinemaInfoForCreation, cinemaId},
                     cinemaRooms: []
-                },
-                chosenOperation: 'editCinema'
+                }
             });
             applicationService.informWithMessage('Cinema created.');
         })
+        .then(() => this.props.history.push(`${this.props.match.url}/${this.state.chosenCinemaInfo.info.cinemaId}`))
         .catch(error => {
-            this.setState({
-                chosenOperation: ''
-            });
             applicationService.informWithErrorMessage(error);
         });
     }
 
     handleChooseCreateCinemaOpeation = () =>{
-        this.setState({
-            chosenOperation: 'createCinema',
-        });
+        this.props.history.push(`${this.props.match.url}/new`);
     }
 
     handleChooseEditCinemaAction = (cinemaId) =>{
-        this.setState({
-            chosenOperation: 'editCinemaLoading'
-        });
-        this.getCinema(cinemaId);
+        this.getCinema(cinemaId)
+        .then(() => this.props.history.push(`${this.props.match.url}/${cinemaId}`));
     }
 
     renderActionsContent = () =>{
@@ -136,42 +114,18 @@ class Cinema extends Component{
     }
 
     renderContent = () =>{
-        // switch(this.state.chosenOperation){
-        //     case 'createCinema':
-        //         return (         
-        //             <FormCinema
-        //                 callBackCancelParentOperation={this.cancelCurrentAction}
-        //                 callBackFromParent={this.createCinema}
-        //             />
-        //         );
-        //     case 'editCinemaLoading':
-        //         return (
-        //             <div className="font-x-large font-italic">
-        //                 Loading...
-        //             </div>
-        //         );
-        //     case 'editCinema':
-        //         if (this.state.chosenCinemaInfo){
-        //             return(         
-        //                 <FormCinema
-        //                     cinema={this.state.chosenCinemaInfo}
-        //                     callBackCancelParentOperation={this.cancelCurrentAction}
-        //                     callBackFromParent={this.editCinema}
-        //                 />
-        //             )
-        //         }
-        //         this.setState({chosenOperation: ''});
-        //         break;
-        //     default: 
-        //         return this.renderActionsContent();
-        // }
-        const test = "test";
         return(
             <Switch>
-                <Route path={`${this.props.match.url}/:number`} component={() => (
+                <Route exact path={`${this.props.match.url}/new`} render ={() => (
+                    <FormCinema
+                        callBackCancelParentOperation={this.returnToCinemaPage}
+                        callBackFromParent={this.createCinema}
+                    />
+                )}/>
+                <Route path={`${this.props.match.url}/:number`} render={() => (
                     <FormCinema
                         cinema={this.state.chosenCinemaInfo}
-                        callBackCancelParentOperation={this.cancelCurrentAction}
+                        callBackCancelParentOperation={this.returnToCinemaPage}
                         callBackFromParent={this.editCinema}
                     />
                 )}/>
