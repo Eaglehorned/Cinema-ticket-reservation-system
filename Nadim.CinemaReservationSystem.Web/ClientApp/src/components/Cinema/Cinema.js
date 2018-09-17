@@ -62,9 +62,6 @@ class Cinema extends Component{
                 chosenCinemaInfo: cinemaInfo
             })
         })
-        .catch(error => {
-            applicationService.informWithErrorMessage(error);
-        });
     }
 
     createCinema = (cinemaInfoForCreation) =>{
@@ -97,7 +94,10 @@ class Cinema extends Component{
 
     handleChooseEditCinemaAction = (cinemaId) =>{
         this.getCinema(cinemaId)
-        .then(() => this.props.history.push(`${this.props.match.url}/${cinemaId}`));
+        .then(() => this.props.history.push(`${this.props.match.url}/${cinemaId}`))
+        .catch(error => {
+            applicationService.informWithErrorMessage(error);
+        });
     }
 
     renderActionsContent = () =>{

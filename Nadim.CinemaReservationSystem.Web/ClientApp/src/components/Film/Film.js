@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import FormFilm from './FormFilm';
 import filmService from '../../Services/FilmService';
 import applicationService from '../../Services/ApplicationService';
@@ -11,57 +12,49 @@ export default class Film extends Component{
         super(props);
         this.state={
             filmList:[],
-            chosenOperation: '',
             chosenFilmInfo: undefined
         }
         this.getFilmList();
     }
 
-    cancelCurrentOperation = () =>{
-        this.setState({
-            chosenOperation: ''
+    returnToFilmPage = () =>{
+        this.props.history.push(`${this.props.match.url}`);
+    }
+
+    handleChooseEditFilmAction = (filmId) =>{
+        this.getFilm(filmId)
+        .then(() => this.props.history.push(`${this.props.match.url}/${filmId}`))
+        .catch(error => {
+            applicationService.informWithErrorMessage(error);
         });
     }
 
-    handleChooseCreateFilmOperation = () =>{
-        this.setState({
-            chosenOperation: 'createFilm'
-        });
+    handleChooseCreateFilmAction = () =>{
+        this.props.history.push(`${this.props.match.url}/new`);
     }
 
     getFilmList = () =>{
         filmService.getFilmList()
         .then(requestedData => {
             this.setState({
-                filmList: requestedData,
+                filmList: requestedData
             });
         })
         .catch(error => applicationService.informWithErrorMessage(error));
     }
 
     getFilm = (filmId) =>{
-        this.setState({
-            chosenOperation: 'editFilmLoading'
-        });
-        filmService.getFilm(filmId)
+        return filmService.getFilm(filmId)
         .then(requestedData => {
             this.setState({
-                chosenFilmInfo: requestedData,
-                chosenOperation: 'editFilm'
+                chosenFilmInfo: requestedData
             })
-        })
-        .catch(error => {
-            applicationService.informWithErrorMessage(error);
-            this.setState({
-                chosenOperation: ''
-            });
         });
     }
 
     createFilm = (cinemaInfo) =>{
-        this.setState({
-            chosenOperation: ''
-        });
+        this.returnToFilmPage();
+
         filmService.createFilm(cinemaInfo)
         .then(filmId => {
             this.setState({
@@ -76,9 +69,8 @@ export default class Film extends Component{
     }
 
     editFilm = (filmInfo) =>{
-        this.setState({
-            chosenOperation: ''
-        });
+        this.returnToFilmPage();
+
         filmService.editFilm(this.state.chosenFilmInfo.filmId, filmInfo)
         .then(() => {
             this.setState({
@@ -99,40 +91,35 @@ export default class Film extends Component{
                 <h1>Film list</h1>
                 <DisplayFilmList
                     list={this.state.filmList}
-                    handleElementClick={this.getFilm}
-                    handleListButtonClick={this.handleChooseCreateFilmOperation}
+                    handleElementClick={this.handleChooseEditFilmAction}
+                    handleListButtonClick={this.handleChooseCreateFilmAction}
                 />
             </React.Fragment>
         );
     }
 
     renderContent = () =>{
-        switch(this.state.chosenOperation){
-            case 'createFilm':
-                return( 
+        return(
+            <Switch>
+                <Route exact path={`${this.props.match.url}/new`} render={()=>(
                     <FormFilm
                         callBackReceiveFilmInfo={this.createFilm}
-                        callBackCancel={this.cancelCurrentOperation}
+                        callBackCancel={this.returnToFilmPage}
                     />
-                );
-            case 'editFilmLoading':
-                return(
-                    <div className="font-x-large font-italic">
-                        Loading...
-                    </div>
-                );
-            case 'editFilm': 
-                return(
+                )}/>
+                <Route path={`${this.props.match.url}/:id`} render={()=>(
                     <FormFilm
                         showHint={true}
                         filmInfo={this.state.chosenFilmInfo}
                         callBackReceiveFilmInfo={this.editFilm}
-                        callBackCancel={this.cancelCurrentOperation}
+                        callBackCancel={this.returnToFilmPage}
                     />
-                );
-            default:    
-                return this.renderActionsContent();
-        }
+                )}/>
+                <Route exact path={`${this.props.match.url}`} render={()=> 
+                    this.renderActionsContent()
+                }/>
+            </Switch>
+        );
     }
 
     render(){

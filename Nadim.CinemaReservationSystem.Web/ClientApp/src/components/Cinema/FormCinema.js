@@ -27,9 +27,6 @@ class FormCinema extends Component{
             this.setState({
                 chosenCinemaRoomInfo: cinema
             });
-        })
-        .catch(error => {
-            applicationService.informWithErrorMessage(error);
         });
     }
 
@@ -47,6 +44,7 @@ class FormCinema extends Component{
     
     editCinemaRoom = (cinemaRoomInfo) =>{
         this.returnToCinemaMainPage();
+
         cinemaService.editCinemaRoom(this.state.cinemaInfo.cinemaId, this.state.chosenCinemaRoomInfo.info.cinemaRoomId, cinemaRoomInfo)
         .then(() => {
             this.setState({
@@ -84,7 +82,10 @@ class FormCinema extends Component{
 
     handleChooseEditCinemaRoomAction = (cinemaRoomId) =>{
         this.getCinemaRoom(cinemaRoomId)
-        .then(() => this.props.history.push(`${this.props.match.url}/cinemaRoom/${cinemaRoomId}}`));
+        .then(() => this.props.history.push(`${this.props.match.url}/cinemaRoom/${cinemaRoomId}}`))
+        .catch(error => {
+            applicationService.informWithErrorMessage(error);
+        });
     }
 
     handleChooseCreateCinemaRoomAction = () =>{
