@@ -16,7 +16,7 @@ class Header extends Component{
                 this.props.history.push('/')
             }
             else{
-                this.props.history.push('/cinema')
+                this.props.history.push('/admin/cinema')
             }
         }
         this.setState({
@@ -31,9 +31,9 @@ class Header extends Component{
         else{
             return(
                 <React.Fragment>
-                    <Link to="/cinema" className="link-box">Cinema</Link>
-                    <Link to="/film" className="link-box">Film</Link>
-                    <Link to="/session" className="link-box">Session</Link>
+                    <Link to="/admin/cinema" className="link-box">Cinema</Link>
+                    <Link to="/admin/film" className="link-box">Film</Link>
+                    <Link to="/admin/session" className="link-box">Session</Link>
                 </React.Fragment>
             );
         }

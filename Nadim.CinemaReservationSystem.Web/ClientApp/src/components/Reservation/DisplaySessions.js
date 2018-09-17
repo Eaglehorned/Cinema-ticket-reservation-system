@@ -7,7 +7,7 @@ export default class DisplaySessions extends Component{
     render(){
         const films = this.props.sessions.map((el) =>el.film.filmId).filter((e, i, a) => a.indexOf(e) === i);
         return(
-            <React.Fragment>
+            <div className="list-container">
                 {
                     films.map((f) =>
                         <DisplayFilm
@@ -19,7 +19,7 @@ export default class DisplaySessions extends Component{
                         />
                     )
                 }
-            </React.Fragment>
+            </div>
         );
     }
 }

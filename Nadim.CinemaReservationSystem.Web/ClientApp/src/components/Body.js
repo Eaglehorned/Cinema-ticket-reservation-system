@@ -10,10 +10,10 @@ const Body = () =>{
     return(
         <div className="body">
             <Switch>
-                <Route path="/cinema" component={Cinema}/>
-                <Route path="/film" component={Film}/>
-                <Route path="/session" component={Session}/>
-                <Route exact path="/" component={Reservation}/>
+                <Route path="/admin/cinema" component={Cinema}/>
+                <Route path="/admin/film" component={Film}/>
+                <Route path="/admin/session" component={Session}/>
+                <Route path="/" component={Reservation}/>
             </Switch>
         </div>
     );
