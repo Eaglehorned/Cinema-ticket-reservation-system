@@ -122,7 +122,7 @@ class Cinema extends Component{
                         callBackFromParent={this.createCinema}
                     />
                 )}/>
-                <Route path={`${this.props.match.url}/:number`} render={() => (
+                <Route path={`${this.props.match.url}/:id`} render={() => (
                     <FormCinema
                         cinema={this.state.chosenCinemaInfo}
                         callBackCancelParentOperation={this.returnToCinemaPage}

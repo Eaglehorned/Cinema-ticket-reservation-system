@@ -19,6 +19,27 @@ class FormCinema extends Component{
             chosenCinemaRoomInfo: undefined,
             allowSubmit: true
         };
+        console.log(props);
+    }
+
+    componentWillMount(){
+        if(this.props.match.params.id){
+            this.getCinema(this.props.match.params.id);
+        }
+        this.setState({
+            cinemaInfo: undefined,
+            cinemaRooms: []       
+        })
+    }
+
+    getCinema = (id) =>{
+        return cinemaService.getCinema(id)
+        .then(cinema => {
+            this.setState({
+                cinemaInfo: cinema.info,
+                cinemaRooms: cinema.cinemaRooms
+            })
+        })
     }
 
     getCinemaRoom = (id) =>{
