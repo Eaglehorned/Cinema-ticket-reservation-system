@@ -5,6 +5,7 @@ import ConfirmReservation from './ConfirmReservation';
 import sessionService from '../../Services/SessionService';
 import applicationService from '../../Services/ApplicationService';
 import reservationServise from '../../Services/ReservationService';
+import Loading from '../General/Loading';
 
 class ReserveTicket extends Component{
     displayName = ReserveTicket.displayName;
@@ -195,9 +196,7 @@ class ReserveTicket extends Component{
     render(){
         const content = this.state.dataIsLoaded 
             ? this.renderContent() 
-            : <div className="font-x-large font-italic">
-                Loading...
-            </div>;
+            : <Loading/>;
         return(
             <div>
                 {content}

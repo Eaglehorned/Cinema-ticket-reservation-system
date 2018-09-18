@@ -88,7 +88,7 @@ class Cinema extends Component{
         });
     }
 
-    handleChooseCreateCinemaOpeation = () =>{
+    handleChooseCreateCinemaAction = () =>{
         this.props.history.push(`${this.props.match.url}/new`);
     }
 
@@ -107,7 +107,7 @@ class Cinema extends Component{
                 <DisplayCinemaList
                     list={this.state.cinemaList}
                     handleElementClick={this.handleChooseEditCinemaAction}
-                    handleListButtonClick={this.handleChooseCreateCinemaOpeation}
+                    handleListButtonClick={this.handleChooseCreateCinemaAction}
                 />
             </React.Fragment>
         );

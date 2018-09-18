@@ -7,6 +7,7 @@ import applicationService from '../../Services/ApplicationService';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
 import DisplayCinemaRoomsList from './DisplayCinemaRoomsList';
 import '../../styles/FormCinema.css';
+import Loading from '../General/Loading';
 
 class FormCinema extends Component{
     displayName = FormCinema.displayName;
@@ -14,22 +15,22 @@ class FormCinema extends Component{
     constructor(props){
         super(props);
         this.state={
-            cinemaInfo: this.props.cinema ? this.props.cinema.info : undefined,
-            cinemaRooms: this.props.cinema ? this.props.cinema.cinemaRooms : [],
+            cinemaInfo: undefined,
+            cinemaRooms: undefined,
             chosenCinemaRoomInfo: undefined,
-            allowSubmit: true
+            allowSubmit: true,
+            dataIsLoaded: false
         };
-        console.log(props);
     }
 
     componentWillMount(){
         if(this.props.match.params.id){
-            this.getCinema(this.props.match.params.id);
+            this.getCinema(this.props.match.params.id)
+            .then(() => this.setState({ dataIsLoaded: true }));
         }
-        this.setState({
-            cinemaInfo: undefined,
-            cinemaRooms: []       
-        })
+        else{
+            this.setState({ dataIsLoaded: true });
+        }
     }
 
     getCinema = (id) =>{
@@ -39,7 +40,7 @@ class FormCinema extends Component{
                 cinemaInfo: cinema.info,
                 cinemaRooms: cinema.cinemaRooms
             })
-        })
+        });
     }
 
     getCinemaRoom = (id) =>{
@@ -103,7 +104,7 @@ class FormCinema extends Component{
 
     handleChooseEditCinemaRoomAction = (cinemaRoomId) =>{
         this.getCinemaRoom(cinemaRoomId)
-        .then(() => this.props.history.push(`${this.props.match.url}/cinemaRoom/${cinemaRoomId}}`))
+        .then(() => this.props.history.push(`${this.props.match.url}/cinemaRoom/${cinemaRoomId}`))
         .catch(error => {
             applicationService.informWithErrorMessage(error);
         });
@@ -171,7 +172,7 @@ class FormCinema extends Component{
         );
     }
 
-    renderComponentContent = () =>{
+    renderContent = () =>{
         if (!this.state.cinemaInfo){
             return this.renderFormCreateCinemaContent();
         }
@@ -183,7 +184,7 @@ class FormCinema extends Component{
                         callBackCancel={this.returnToCinemaMainPage}
                     />
                 )}/>
-                <Route path={`${this.props.match.url}/cinemaRoom/:number`} render={() => (
+                <Route path={`${this.props.match.url}/cinemaRoom/:id`} render={() => (
                     <FormCinemaRoom
                         callBackReceiveCinemaRoom={this.editCinemaRoom}
                         cinemaRoom={this.state.chosenCinemaRoomInfo}
@@ -198,7 +199,9 @@ class FormCinema extends Component{
     }
 
     render(){
-        const content = this.renderComponentContent();
+        const content = this.state.dataIsLoaded
+        ? this.renderContent()
+        : <Loading/>;
 
         return(
             <div className="form-cinema-room-container">
