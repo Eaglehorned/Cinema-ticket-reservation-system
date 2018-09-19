@@ -10,10 +10,16 @@ class Header extends Component{
         this.state={ shownRole: userService.getRole() }
     }
 
+    componentWillMount(){
+        if (this.state.shownRole === 'admin' && this.props.location.pathname.indexOf('admin') === -1){
+            this.setState({shownRole: 'user'});
+        }
+    }
+
     setShownRole = (role) =>{
         if (role !== this.state.shownRole){
             if (role !== 'admin'){
-                this.props.history.push('/sessions')
+                this.props.history.push('/')
             }
             else{
                 this.props.history.push('/admin/cinema')

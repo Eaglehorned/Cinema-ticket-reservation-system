@@ -3,9 +3,9 @@ import { Button } from 'react-bootstrap';
 import Login from './Login';
 import Registration from './Registration';
 import Modal from 'react-modal';
-import '../../styles/Authentication.css';
 import Logout from './Logout';
 import userService from '../../Services/UserService';
+import '../../styles/Authentication.css';
 
 export default class Authentication extends Component {
     constructor(props) {
