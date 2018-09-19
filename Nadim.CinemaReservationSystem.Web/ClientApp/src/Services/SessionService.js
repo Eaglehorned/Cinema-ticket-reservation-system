@@ -6,6 +6,10 @@ class SessionService{
         return sessionDataAccess.getSessionList();
     }
 
+    getSessionListWithFilters = (filterString) =>{
+        return sessionDataAccess.getSessionListWithFilters(filterString);
+    }
+
     createSession = (sessionInfo) =>{
         return sessionDataAccess.createSession(sessionInfo);
     }

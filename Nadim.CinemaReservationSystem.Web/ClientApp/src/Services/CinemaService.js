@@ -39,6 +39,10 @@ class CinemaService{
         return cinemaDataAccess.getCinemaRoomSeatTypes(cinemaId, cinemaRoomId);
     }
 
+    getCinemaIdFromCinemaRoomUrl = (url) =>{
+        return url.slice(url.indexOf("cinema") + 7, url.indexOf("cinemaRoom") - 1);
+    }
+
     validateCinemaRoomInfo(displayedComponents, rows, columns, name){
         if (displayedComponents.rows && !validationService.validateIntNumber(rows)){
             return false;
@@ -62,9 +66,9 @@ class CinemaService{
         return true;
     }
 
-    updateCinemaList = (cinemaList, changedCinemaInfo) =>{
+    updateCinemaList = (cinemaList, changedCinemaId, changedCinemaInfo) =>{
         const tempCinemaList = cinemaList;
-        const tempChosenCinema = tempCinemaList.find((el) => el.cinemaId === changedCinemaInfo.cinemaId);
+        const tempChosenCinema = tempCinemaList.find((el) => el.cinemaId === changedCinemaId);
         tempChosenCinema.name = changedCinemaInfo.name;
         tempChosenCinema.city = changedCinemaInfo.city;
         return tempCinemaList;

@@ -25,7 +25,10 @@ class ReserveTicket extends Component{
     componentWillMount = () =>{
         this.getSession(this.props.match.params.id)
         .then(() => { this.setState({dataIsLoaded: true}) })
-        .catch(error => applicationService.informWithErrorMessage(error));
+        .catch(error => {
+            applicationService.informWithErrorMessage(error)
+            this.props.callBackReturnToUpperPage();
+        });
     }
 
     getSession = (sessionId) =>{
@@ -84,7 +87,8 @@ class ReserveTicket extends Component{
     editSessionSeat = (seatInfo) =>{
         return sessionService.editSessionSeat(
             this.state.session.info.sessionId, 
-            seatInfo.sessionSeatId, seatInfo.booked
+            seatInfo.sessionSeatId, 
+            seatInfo.booked
         )
         .then(() =>{
             this.setState({
@@ -95,26 +99,33 @@ class ReserveTicket extends Component{
         .catch(error => applicationService.informWithErrorMessage(error));
     }
 
-    handleSeatClick = (seatInfo) =>{
+    changeSeat = (seatInfo) =>{
         if(!this.state.seats[seatInfo.row][seatInfo.column].booked){
             if(!this.state.chosenSeats.find(el => el.sessionSeatId === seatInfo.sessionSeatId)){
                 if(this.state.chosenSeats.length < 10){
-                    this.editSessionSeat(sessionService.formSeatInfo(seatInfo))        
-                    .then(this.getUpdates);
+                    return this.editSessionSeat(sessionService.formSeatInfo(seatInfo));
                 }
             }
             else{
-                this.editSessionSeat(sessionService.formSeatInfo(seatInfo))
-                .then(this.getUpdates);
+                return this.editSessionSeat(sessionService.formSeatInfo(seatInfo));
             }
         }
     }
 
+    handleSeatClick = (seatInfo) =>{
+        this.changeSeat(seatInfo)
+        .then(this.getUpdates);
+    }
+
     cancelReservation = () =>{
         this.state.chosenSeats.forEach(el=>{
-            this.handleSeatClick(this.state.seats[el.row][el.column]);
+            sessionService.editSessionSeat(
+                this.state.session.info.sessionId, 
+                this.state.seats[el.row][el.column].sessionSeatId,
+                false
+            );
         });
-        this.props.callBackCancelParentOperation();
+        this.props.callBackReturnToUpperPage();
     }
 
     handleSeatsChoice = () =>{
@@ -131,7 +142,7 @@ class ReserveTicket extends Component{
 
     handleConfirmReservation = () =>{
         this.createOrder();
-        this.props.callBackCancelParentOperation();
+        this.props.callBackReturnToUpperPage();
     }
 
     renderChooseSeatsContent(){

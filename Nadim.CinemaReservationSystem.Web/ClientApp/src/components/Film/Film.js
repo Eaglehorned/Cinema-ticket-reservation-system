@@ -22,11 +22,7 @@ export default class Film extends Component{
     }
 
     handleChooseEditFilmAction = (filmId) =>{
-        this.getFilm(filmId)
-        .then(() => this.props.history.push(`${this.props.match.url}/${filmId}`))
-        .catch(error => {
-            applicationService.informWithErrorMessage(error);
-        });
+        this.props.history.push(`${this.props.match.url}/${filmId}`);
     }
 
     handleChooseCreateFilmAction = () =>{
@@ -43,23 +39,14 @@ export default class Film extends Component{
         .catch(error => applicationService.informWithErrorMessage(error));
     }
 
-    getFilm = (filmId) =>{
-        return filmService.getFilm(filmId)
-        .then(requestedData => {
-            this.setState({
-                chosenFilmInfo: requestedData
-            })
-        });
-    }
-
-    createFilm = (cinemaInfo) =>{
+    createFilm = (filmInfo) =>{
         this.returnToFilmPage();
 
-        filmService.createFilm(cinemaInfo)
+        filmService.createFilm(filmInfo)
         .then(filmId => {
             this.setState({
                 filmList: this.state.filmList.concat({
-                    name: cinemaInfo.name,
+                    name: filmInfo.name,
                     filmId: filmId
                 })
             });
@@ -70,13 +57,14 @@ export default class Film extends Component{
 
     editFilm = (filmInfo) =>{
         this.returnToFilmPage();
-
-        filmService.editFilm(this.state.chosenFilmInfo.filmId, filmInfo)
+        filmService.editFilm(
+            filmInfo.filmId,
+            filmInfo)
         .then(() => {
             this.setState({
                 filmList: filmService.updateFilmList(
                     this.state.filmList, 
-                    this.state.chosenFilmInfo.filmId,
+                    filmInfo.filmId,
                     filmInfo
                 )
             })
@@ -104,15 +92,14 @@ export default class Film extends Component{
                 <Route exact path={`${this.props.match.url}/new`} render={()=>(
                     <FormFilm
                         callBackReceiveFilmInfo={this.createFilm}
-                        callBackCancel={this.returnToFilmPage}
+                        callBackReturnToUpperPage={this.returnToFilmPage}
                     />
                 )}/>
                 <Route path={`${this.props.match.url}/:id`} render={()=>(
                     <FormFilm
                         showHint={true}
-                        filmInfo={this.state.chosenFilmInfo}
                         callBackReceiveFilmInfo={this.editFilm}
-                        callBackCancel={this.returnToFilmPage}
+                        callBackReturnToUpperPage={this.returnToFilmPage}
                     />
                 )}/>
                 <Route exact path={`${this.props.match.url}`} render={()=> 

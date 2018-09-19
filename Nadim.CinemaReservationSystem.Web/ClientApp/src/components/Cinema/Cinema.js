@@ -35,6 +35,7 @@ class Cinema extends Component{
             this.setState({
                 cinemaList: cinemaService.updateCinemaList(
                     this.state.cinemaList,
+                    cinemaInfo.cinemaId,
                     cinemaInfo
                 )
             });
@@ -55,18 +56,9 @@ class Cinema extends Component{
         );
     }
 
-    getCinema = (id) =>{
-        return cinemaService.getCinema(id)
-        .then(cinemaInfo => {
-            this.setState({
-                chosenCinemaInfo: cinemaInfo
-            })
-        })
-    }
-
     createCinema = (cinemaInfoForCreation) =>{
-        //TODO make it properly
-        this.props.history.push(this.props.match.url);
+        this.returnToCinemaPage();
+
         cinemaService.createCinema(cinemaInfoForCreation)
         .then(cinemaId => {
             this.setState({
@@ -93,11 +85,7 @@ class Cinema extends Component{
     }
 
     handleChooseEditCinemaAction = (cinemaId) =>{
-        this.getCinema(cinemaId)
-        .then(() => this.props.history.push(`${this.props.match.url}/${cinemaId}`))
-        .catch(error => {
-            applicationService.informWithErrorMessage(error);
-        });
+        this.props.history.push(`${this.props.match.url}/${cinemaId}`);
     }
 
     renderActionsContent = () =>{
@@ -118,14 +106,13 @@ class Cinema extends Component{
             <Switch>
                 <Route exact path={`${this.props.match.url}/new`} render ={() => (
                     <FormCinema
-                        callBackCancelParentOperation={this.returnToCinemaPage}
+                        callBackReturnToUpperPage={this.returnToCinemaPage}
                         callBackFromParent={this.createCinema}
                     />
                 )}/>
                 <Route path={`${this.props.match.url}/:id`} render={() => (
                     <FormCinema
-                        cinema={this.state.chosenCinemaInfo}
-                        callBackCancelParentOperation={this.returnToCinemaPage}
+                        callBackReturnToUpperPage={this.returnToCinemaPage}
                         callBackFromParent={this.editCinema}
                     />
                 )}/>

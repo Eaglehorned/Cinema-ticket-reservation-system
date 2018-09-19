@@ -61,12 +61,12 @@ export default class App extends Component {
                             ''
                         }
                     </div>
-                    <Route render={()=> (
+                    <Route path="/" render={()=> (
                         <Header
                             callBackSetShownRole={this.setShownRole}
                         />
                     )}/>
-                    <Route component={Body}/>
+                    <Route path="/" component={Body}/>
                 </React.Fragment>
             </Router>
         );

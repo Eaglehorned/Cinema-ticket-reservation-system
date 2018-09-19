@@ -10,8 +10,7 @@ export default class Session extends Component{
     constructor(props){
         super(props);
         this.state={
-            sessionList: [],
-            chosenSessionInfo: undefined,
+            sessionList: []
         }
         this.getSessionList();
     }
@@ -25,11 +24,7 @@ export default class Session extends Component{
     }
 
     handleChooseEditSessionAction = (sessionId) =>{
-        this.getSession(sessionId)
-        .then(() => this.props.history.push(`${this.props.match.url}/${sessionId}`))
-        .catch(error => {
-            applicationService.informWithErrorMessage(error);
-        });
+        this.props.history.push(`${this.props.match.url}/${sessionId}`);
     }
 
     getSessionList = () =>{
@@ -57,24 +52,15 @@ export default class Session extends Component{
         .catch(error => applicationService.informWithErrorMessage(error));
     }
 
-    getSession = (sessionId) =>{
-        return sessionService.getSession(sessionId)
-        .then(requestedData => {
-            this.setState({
-                chosenSessionInfo: requestedData
-            })
-        });
-    }
-
     editSession = (sessionInfo) =>{
         this.returnToSessionPage();
 
-        sessionService.editSession(this.state.chosenSessionInfo.sessionId, sessionInfo)
+        sessionService.editSession(sessionInfo.sessionId, sessionInfo)
         .then(() => {
             this.setState({
                 sessionList: sessionService.updateSessionList(
                     this.state.sessionList,
-                    this.state.chosenSessionInfo.sessionId,
+                    sessionInfo.sessionId,
                     sessionInfo
                 )
             });
@@ -101,17 +87,14 @@ export default class Session extends Component{
             <Switch>
                 <Route exact path={`${this.props.match.url}/new`} render={() =>(
                     <FormSession
-                        callBackInformWithMessage={this.props.callBackInformWithMessage}
                         callBackReceiveSessionInfo={this.createSession}
-                        callBackCancel={this.returnToSessionPage}
+                        callBackReturnToUpperPage={this.returnToSessionPage}
                     />
                 )}/>
                 <Route exact path={`${this.props.match.url}/:id`} render={() =>(
                     <FormSession
-                        callBackInformWithMessage={this.props.callBackInformWithMessage}
-                        sessionInfo={this.state.chosenSessionInfo}
                         callBackReceiveSessionInfo={this.editSession}
-                        callBackCancel={this.returnToSessionPage}
+                        callBackReturnToUpperPage={this.returnToSessionPage}
                     />
                 )}/>
                 <Route exact path={`${this.props.match.url}`} render={() =>

@@ -15,6 +15,22 @@ class ApplicationService{
             isError: true
         });
     }
+    
+    convertFiltersToFilterString = (filters) =>{
+        let filterString = '';
+        for (let prop in filters){
+            if(filters[prop]){ 
+                if (filterString === ''){
+                    filterString = `?${prop}=${filters[prop]}`;
+                }
+                else{
+                    filterString = filterString.concat(`&${prop}=${filters[prop]}`);
+                }
+            }
+        }
+        
+        return filterString;
+    }
 }
 
 const applicationService = new ApplicationService();

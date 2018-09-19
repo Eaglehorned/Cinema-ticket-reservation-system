@@ -101,9 +101,27 @@ const sendRequestToEditSessionSeat = (sessionId, sessionSeatId, booked) =>{
     });
 }
 
+const sendRequestToGetSessionListWithFilters = (filterString) =>{
+    return fetch(`api/sessions${filterString}`, {
+        method: 'GET',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userService.getToken()}`
+        }
+    });
+}
+
 class SessionDataAccess{
     getSessionList = () =>{
         return sendRequestToGetSessionList()
+        .then(receivedDataProcessingHelper.handleRequestError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequestedData);
+    }
+
+    getSessionListWithFilters = (filterString) =>{
+        return sendRequestToGetSessionListWithFilters(filterString)
         .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(receivedDataProcessingHelper.getRequestedData);

@@ -23,7 +23,7 @@ export default class Reservation extends Component{
     }
 
     handleReserveTicketClick = (sessionId) =>{
-        this.props.history.push(`${this.props.match.url}session/${sessionId}`);
+        this.props.history.push(`${this.props.match.url}/${sessionId}`);
     }
 
     returnToMainPage = () =>{
@@ -34,14 +34,13 @@ export default class Reservation extends Component{
         return(
             <React.Fragment>
                 <h1>Sessions</h1>
-                    <SearchBar
-                        token={this.props.token}
-                        callBackReceiveSessionList={this.handleReceiveSessionList}
-                    />
-                    <DisplaySessions
-                        sessions={this.state.sessionList}
-                        callBackHandleSessionAction={this.handleReserveTicketClick}
-                    />
+                    <Route path={this.props.match.url} component={SearchBar}/>
+                    <Route path={this.props.match.url} render={() =>(
+                        <DisplaySessions
+                            sessions={this.state.sessionList}
+                            callBackHandleSessionAction={this.handleReserveTicketClick}
+                        />
+                    )}/>
             </React.Fragment>
         );
     }
@@ -49,12 +48,12 @@ export default class Reservation extends Component{
     renderContent = () =>{
         return(
             <Switch>
-                <Route path={`${this.props.match.url}session/:id`} render={() => (
+                <Route path={`${this.props.match.url}/:id`} render={() => (
                     <ReserveTicket
-                        callBackCancelParentOperation={this.returnToMainPage}
+                        callBackReturnToUpperPage={this.returnToMainPage}
                     />                   
                 )}/>
-                <Route exact path={this.props.match.url} render={() => 
+                <Route path={this.props.match.url} render={() => 
                     this.renderSessionListContent()
                 }/>
             </Switch>

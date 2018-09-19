@@ -6,8 +6,8 @@ import cinemaService from '../../Services/CinemaService';
 import applicationService from '../../Services/ApplicationService';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
 import DisplayCinemaRoomsList from './DisplayCinemaRoomsList';
-import '../../styles/FormCinema.css';
 import Loading from '../General/Loading';
+import '../../styles/FormCinema.css';
 
 class FormCinema extends Component{
     displayName = FormCinema.displayName;
@@ -26,7 +26,11 @@ class FormCinema extends Component{
     componentWillMount(){
         if(this.props.match.params.id){
             this.getCinema(this.props.match.params.id)
-            .then(() => this.setState({ dataIsLoaded: true }));
+            .then(() => this.setState({ dataIsLoaded: true }))
+            .catch(error => {
+                applicationService.informWithErrorMessage(error);
+                this.props.callBackReturnToUpperPage();
+            });
         }
         else{
             this.setState({ dataIsLoaded: true });
@@ -43,18 +47,10 @@ class FormCinema extends Component{
         });
     }
 
-    getCinemaRoom = (id) =>{
-        return cinemaService.getCinemaRoom(this.state.cinemaInfo.cinemaId, id)
-        .then(cinema => {
-            this.setState({
-                chosenCinemaRoomInfo: cinema
-            });
-        });
-    }
-
     createCinemaRoom = (cinemaRoomInfo) =>{
         this.returnToCinemaMainPage();
-        cinemaService.createCinemaRoom(this.state.cinemaInfo.cinemaId, cinemaRoomInfo)
+
+        cinemaService.createCinemaRoom(this.props.match.params.id, cinemaRoomInfo)
         .then(cinemaRoom => {
             this.setState({
                 cinemaRooms: this.state.cinemaRooms.concat(cinemaRoom)
@@ -67,12 +63,12 @@ class FormCinema extends Component{
     editCinemaRoom = (cinemaRoomInfo) =>{
         this.returnToCinemaMainPage();
 
-        cinemaService.editCinemaRoom(this.state.cinemaInfo.cinemaId, this.state.chosenCinemaRoomInfo.info.cinemaRoomId, cinemaRoomInfo)
+        cinemaService.editCinemaRoom(this.props.match.params.id, cinemaRoomInfo.cinemaRoomId, cinemaRoomInfo)
         .then(() => {
             this.setState({
                 cinemaRooms: cinemaService.updateCinemaRoomList(
                     this.state.cinemaRooms,
-                    this.state.chosenCinemaRoomInfo.info.cinemaRoomId,
+                    cinemaRoomInfo.cinemaRoomId,
                     cinemaRoomInfo
                 )
             });
@@ -103,11 +99,7 @@ class FormCinema extends Component{
     }
 
     handleChooseEditCinemaRoomAction = (cinemaRoomId) =>{
-        this.getCinemaRoom(cinemaRoomId)
-        .then(() => this.props.history.push(`${this.props.match.url}/cinemaRoom/${cinemaRoomId}`))
-        .catch(error => {
-            applicationService.informWithErrorMessage(error);
-        });
+        this.props.history.push(`${this.props.match.url}/cinemaRoom/${cinemaRoomId}`)
     }
 
     handleChooseCreateCinemaRoomAction = () =>{
@@ -127,7 +119,7 @@ class FormCinema extends Component{
                 />
                 <SubmitCancelButtons
                     handleSubmitClick={this.submitFormCinema}
-                    handleCancelClick={this.props.callBackCancelParentOperation}
+                    handleCancelClick={this.props.callBackReturnToUpperPage}
                 />
             </fieldset>
         )
@@ -142,7 +134,7 @@ class FormCinema extends Component{
                 </h2>
                 <FormGeneralCinemaInfo 
                     callBackFromParent={this.props.callBackFromParent}
-                    callBackCancel={this.props.callBackCancelParentOperation}
+                    callBackCancel={this.props.callBackReturnToUpperPage}
                 />
             </React.Fragment>
         );
@@ -181,14 +173,13 @@ class FormCinema extends Component{
                 <Route exact path={`${this.props.match.url}/cinemaRoom/new`} render={() =>(
                     <FormCinemaRoom
                         callBackReceiveCinemaRoom={this.createCinemaRoom}
-                        callBackCancel={this.returnToCinemaMainPage}
+                        callBackReturnToUpperPage={this.returnToCinemaMainPage}
                     />
                 )}/>
                 <Route path={`${this.props.match.url}/cinemaRoom/:id`} render={() => (
                     <FormCinemaRoom
                         callBackReceiveCinemaRoom={this.editCinemaRoom}
-                        cinemaRoom={this.state.chosenCinemaRoomInfo}
-                        callBackCancel={this.returnToCinemaMainPage}
+                        callBackReturnToUpperPage={this.returnToCinemaMainPage}
                     />
                 )}/>
                 <Route exact path={this.props.match.url} render={()=>(

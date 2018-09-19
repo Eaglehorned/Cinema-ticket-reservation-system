@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import Authentication from './Authentication/Authentication';
-import { Link, withRouter } from 'react-router-dom';
+import { Route, Link, withRouter } from 'react-router-dom';
 import '../styles/Header.css'
 import userService from '../Services/UserService';
 
@@ -13,7 +13,7 @@ class Header extends Component{
     setShownRole = (role) =>{
         if (role !== this.state.shownRole){
             if (role !== 'admin'){
-                this.props.history.push('/')
+                this.props.history.push('/sessions')
             }
             else{
                 this.props.history.push('/admin/cinema')
@@ -30,11 +30,13 @@ class Header extends Component{
         }
         else{
             return(
-                <React.Fragment>
-                    <Link to="/admin/cinema" className="link-box">Cinema</Link>
-                    <Link to="/admin/film" className="link-box">Film</Link>
-                    <Link to="/admin/session" className="link-box">Session</Link>
-                </React.Fragment>
+                <Route path="/admin" render={() => (
+                    <React.Fragment>
+                        <Link to="/admin/cinema" className="link-box">Cinema</Link>
+                        <Link to="/admin/film" className="link-box">Film</Link>
+                        <Link to="/admin/session" className="link-box">Session</Link>
+                    </React.Fragment>
+                )}/>
             );
         }
     }

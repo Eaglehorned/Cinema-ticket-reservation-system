@@ -13,7 +13,7 @@ const Body = () =>{
                 <Route path="/admin/cinema" component={Cinema}/>
                 <Route path="/admin/film" component={Film}/>
                 <Route path="/admin/session" component={Session}/>
-                <Route path="/" component={Reservation}/>
+                <Route path="/sessions" component={Reservation}/>
             </Switch>
         </div>
     );

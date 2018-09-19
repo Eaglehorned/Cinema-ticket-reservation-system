@@ -7,6 +7,7 @@ import ChangeSeatTypeModal from './ChangeSeatTypeModal';
 import seatsHelper from '../../Helper/SeatsHelper';
 import cinemaService from '../../Services/CinemaService';
 import Loading from '../General/Loading';
+import applicationService from '../../Services/ApplicationService';
 
 class FormCinemaRoom extends Component{
     displayName = FormCinemaRoom.displayName;
@@ -26,7 +27,11 @@ class FormCinemaRoom extends Component{
     componentWillMount(){
         if(this.props.match.params.id){
             this.getCinemaRoom(this.props.match.params.id)
-            .then(() => this.setState({ dataIsLoaded: true }));
+            .then(() => this.setState({ dataIsLoaded: true }))
+            .catch(error => {
+                applicationService.informWithErrorMessage(error);
+                this.props.callBackReturnToUpperPage();
+            });
         }
         else{
             this.setState({ dataIsLoaded: true });
@@ -34,13 +39,11 @@ class FormCinemaRoom extends Component{
     }
 
     getCinemaRoom = (id) =>{
-        const url = this.props.match.url;
-        //TODO move get cinema id string to separate method
-        return cinemaService.getCinemaRoom(url.slice(url.indexOf("cinema") + 7, url.indexOf("cinemaRoom") - 1), id)
-        .then(cinema => {
+        return cinemaService.getCinemaRoom(cinemaService.getCinemaIdFromCinemaRoomUrl(this.props.match.url), id)
+        .then(cinemaRoom => {
             this.setState({
-                cinemaRoomInfo: cinema.info,
-                cinemaRoomSeats: cinema.seats
+                cinemaRoomInfo: cinemaRoom.info,
+                cinemaRoomSeats: cinemaRoom.seats
             });
         });
     }
@@ -48,6 +51,7 @@ class FormCinemaRoom extends Component{
     returnCinemaRoom = () =>{
         if (this.state.allowSubmit){
             this.props.callBackReceiveCinemaRoom({
+                cinemaRoomId: this.state.cinemaRoomInfo.cinemaRoomId,
                 name: this.state.cinemaRoomInfo.name,
                 cinemaRoomSeats: this.state.cinemaRoomSeats
             });
@@ -55,7 +59,7 @@ class FormCinemaRoom extends Component{
     }
 
     cancelFormCinemaRoom = () =>{
-        this.props.callBackCancel();
+        this.props.callBackReturnToUpperPage();
     }
 
     createSeatsArray = (cinemaRoomInfo) =>{
@@ -112,7 +116,7 @@ class FormCinemaRoom extends Component{
                 <FormCinemaRoomInfo
                     callBackReceiveCinemaRoomInfo={this.createSeatsArray}
                     callBackCancel={this.cancelFormCinemaRoom}
-                />  
+                />
             </React.Fragment> 
         );
     }
