@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import FormSession from './FormSession';
 import sessionService from '../../Services/SessionService';
 import applicationService from '../../Services/ApplicationService';
@@ -9,23 +10,21 @@ export default class Session extends Component{
     constructor(props){
         super(props);
         this.state={
-            chosenOperation: '',
-            sessionList: [],
-            chosenSessionInfo: undefined,
+            sessionList: []
         }
         this.getSessionList();
     }
     
-    cancelCurrentOperation = () =>{
-        this.setState({
-            chosenOperation: ''
-        });
+    returnToSessionPage = () =>{
+        this.props.history.push(this.props.match.url);
     }
 
-    handleChooseCreateCinemaOpeation = () =>{
-        this.setState({
-            chosenOperation: 'createSession',
-        });
+    handleChooseCreateSessionAction = () =>{
+        this.props.history.push(`${this.props.match.url}/new`);
+    }
+
+    handleChooseEditSessionAction = (sessionId) =>{
+        this.props.history.push(`${this.props.match.url}/${sessionId}`);
     }
 
     getSessionList = () =>{
@@ -39,9 +38,8 @@ export default class Session extends Component{
     }
 
     createSession = (sessionInfoForCreation) =>{
-        this.setState({
-            chosenOperation: ''
-        });
+        this.returnToSessionPage();
+
         sessionService.createSession(sessionInfoForCreation)
         .then(sessionInfo => {
             this.setState({
@@ -54,35 +52,14 @@ export default class Session extends Component{
         .catch(error => applicationService.informWithErrorMessage(error));
     }
 
-    getSession = (sessionId) =>{
-        this.setState({
-            chosenOperation: 'editSessionLoading'
-        });
-        sessionService.getSession(sessionId)
-        .then(requestedData => {
-            this.setState({
-                chosenSessionInfo: requestedData,
-                chosenOperation: 'editSession'
-            })
-        })
-        .catch(error => {
-            this.setState({
-                chosenOperation: ''
-            });
-            applicationService.informWithErrorMessage(error);
-        });
-    }
-
     editSession = (sessionInfo) =>{
-        this.setState({
-            chosenOperation: ''
-        });
-        sessionService.editSession(this.state.chosenSessionInfo.sessionId, sessionInfo)
+        this.returnToSessionPage();
+
+        sessionService.editSession(sessionInfo)
         .then(() => {
             this.setState({
                 sessionList: sessionService.updateSessionList(
                     this.state.sessionList,
-                    this.state.chosenSessionInfo.sessionId,
                     sessionInfo
                 )
             });
@@ -97,43 +74,33 @@ export default class Session extends Component{
                 <h1>Session list</h1>
                 <DisplaySessionList
                     list={this.state.sessionList}
-                    handleElementClick={this.getSession}
-                    handleListButtonClick={this.handleChooseCreateCinemaOpeation}
+                    handleElementClick={this.handleChooseEditSessionAction}
+                    handleListButtonClick={this.handleChooseCreateSessionAction}
                 />
             </React.Fragment>
         );
     }
 
     renderContent = () =>{
-        switch(this.state.chosenOperation){
-            case 'createSession':
-                return( 
+        return(
+            <Switch>
+                <Route exact path={`${this.props.match.url}/new`} render={() =>(
                     <FormSession
-                        callBackInformWithMessage={this.props.callBackInformWithMessage}
-                        token={this.props.token}
                         callBackReceiveSessionInfo={this.createSession}
-                        callBackCancel={this.cancelCurrentOperation}
+                        callBackReturnToUpperPage={this.returnToSessionPage}
                     />
-                );
-            case 'editSessionLoading': 
-                return(
-                    <div className="font-x-large font-italic">
-                        Loading...
-                    </div>
-                );
-            case 'editSession': 
-                return(
+                )}/>
+                <Route exact path={`${this.props.match.url}/:id`} render={() =>(
                     <FormSession
-                        callBackInformWithMessage={this.props.callBackInformWithMessage}
-                        sessionInfo={this.state.chosenSessionInfo}
-                        token={this.props.token}
                         callBackReceiveSessionInfo={this.editSession}
-                        callBackCancel={this.cancelCurrentOperation}
+                        callBackReturnToUpperPage={this.returnToSessionPage}
                     />
-                );
-            default:
-                return this.renderSessionList();
-        }
+                )}/>
+                <Route exact path={`${this.props.match.url}`} render={() =>
+                    this.renderSessionList()
+                }/>
+            </Switch>
+        );
     }
 
     render(){

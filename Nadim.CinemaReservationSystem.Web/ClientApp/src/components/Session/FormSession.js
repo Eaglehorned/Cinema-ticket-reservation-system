@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import CinemaService from '../../Services/CinemaService';
 import applicationService from '../../Services/ApplicationService';
 import FilmService from '../../Services/FilmService';
@@ -11,34 +12,61 @@ import SubmitCancelButtons from '../General/SubmitCancelButtons';
 import ChooseCinemaRoomWithDropDown from '../Cinema/ChooseCinemaRoomWithDropDown';
 import ChooseFilmWithDropDown from '../Film/ChooseFilmWithDropDown';
 import DisplaySeatTypesList from './DisplaySeatTypesList';
+import Loading from '../General/Loading';
 import '../../styles/Session.css';
 
-export default class FormSession extends Component{
+class FormSession extends Component{
     displayName = FormSession.displayName;
 
     constructor(props){
         super(props);
         this.state={
-            beginTime: this.props.sessionInfo 
-                ? moment(this.props.sessionInfo.beginTime)
-                : moment(),
+            beginTime: moment(),
             cinemaList: [],
-            chosenCinema: this.props.sessionInfo ? this.props.sessionInfo.cinema : undefined,
+            chosenCinema: undefined,
             chosenCinemaRoomsList: [],
-            chosenCinemaRoom: this.props.sessionInfo ? this.props.sessionInfo.cinemaRoom : undefined,
+            chosenCinemaRoom: undefined,
             filmList: [],
-            chosenFilm: this.props.sessionInfo ? this.props.sessionInfo.film : undefined,
-            seatTypes:  this.props.sessionInfo ? this.props.sessionInfo.sessionSeatTypePrices : [],
-            showHint: this.props.sessionInfo ? true : false
+            chosenFilm: undefined,
+            seatTypes: [],
+            showHint: this.props.sessionInfo ? true : false,
+            dataIsLoaded: false,
+            sessionId: undefined
         }
-        
-        this.getCinemaList()
-        .then(() =>{
-            if (this.props.sessionInfo){
-                this.getCinemaRoomList(this.props.sessionInfo.cinema.cinemaId);
-            }
-        });
+    }
+
+    componentWillMount(){
+        this.getCinemaList();
         this.getFilmList();
+
+        if (this.props.match.params.id){
+            this.getSession(this.props.match.params.id)        
+            .then(() => this.getCinemaRoomList(this.state.chosenCinema.cinemaId))
+            .then(() => this.setState({ dataIsLoaded: true }))
+            .catch(error => {
+                applicationService.informWithErrorMessage(error);
+                this.props.callBackReturnToUpperPage();
+            });
+        }
+        else{
+            this.setState({ 
+                dataIsLoaded: true
+            });
+        }  
+    }
+
+    getSession = (sessionId) =>{
+        return sessionService.getSession(sessionId)
+        .then(requestedData => {
+            this.setState({
+                sessionId: requestedData.sessionId,
+                beginTime: moment(requestedData.beginTime),
+                chosenCinema: requestedData.cinema,
+                chosenCinemaRoom: requestedData.cinemaRoom,
+                chosenFilm: requestedData.film,
+                seatTypes: requestedData.sessionSeatTypePrices
+            })
+        });
     }
 
     getCinemaList = () =>{ 
@@ -138,6 +166,7 @@ export default class FormSession extends Component{
             )
         ){
             this.props.callBackReceiveSessionInfo({
+                sessionId: this.state.sessionId,
                 cinema: this.state.chosenCinema,
                 cinemaRoom: this.state.chosenCinemaRoom,
                 film: this.state.chosenFilm,
@@ -151,7 +180,7 @@ export default class FormSession extends Component{
     }
 
     handleCancelClick = () =>{
-        this.props.callBackCancel();
+        this.props.callBackReturnToUpperPage();
     }
 
     renderGeneralInfoInputContent = () =>{
@@ -226,7 +255,9 @@ export default class FormSession extends Component{
     }
 
     render(){
-        const content = this.renderContent();
+        const content = this.state.dataIsLoaded
+        ? this.renderContent()
+        : <Loading/>;
         return(
             <React.Fragment>
                 {content}
@@ -234,3 +265,5 @@ export default class FormSession extends Component{
         );
     }
 }
+
+export default withRouter(FormSession);

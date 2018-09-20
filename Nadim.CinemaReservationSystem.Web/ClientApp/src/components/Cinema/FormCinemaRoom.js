@@ -1,27 +1,57 @@
 import React, {Component} from 'react';
+import { withRouter } from 'react-router-dom';
 import FormCinemaRoomInfo from './FormCinemaRoomInfo';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
 import ChangeCinemaRoomInfoComponents from './ChangeCinemaRoomInfoComponents';
 import ChangeSeatTypeModal from './ChangeSeatTypeModal';
 import seatsHelper from '../../Helper/SeatsHelper';
+import cinemaService from '../../Services/CinemaService';
+import Loading from '../General/Loading';
+import applicationService from '../../Services/ApplicationService';
 
-export default class FormCinemaRoom extends Component{
+class FormCinemaRoom extends Component{
     displayName = FormCinemaRoom.displayName;
 
     constructor(props){
         super(props);
         this.state={
-            cinemaRoomInfo: this.props.cinemaRoom ? this.props.cinemaRoom.info : undefined,
-            cinemaRoomSeats: this.props.cinemaRoom ? this.props.cinemaRoom.seats : undefined,
+            cinemaRoomInfo: undefined,
+            cinemaRoomSeats: undefined,
             modalIsOpen: false,
             seatToChangeType: {},
-            allowSubmit: true
+            allowSubmit: true,
+            dataIsLoaded: false
         }
+    }
+
+    componentWillMount(){
+        if(this.props.match.params.id){
+            this.getCinemaRoom(this.props.match.params.id)
+            .then(() => this.setState({ dataIsLoaded: true }))
+            .catch(error => {
+                applicationService.informWithErrorMessage(error);
+                this.props.callBackReturnToUpperPage();
+            });
+        }
+        else{
+            this.setState({ dataIsLoaded: true });
+        }
+    }
+
+    getCinemaRoom = (id) =>{
+        return cinemaService.getCinemaRoom(cinemaService.getCinemaIdFromCinemaRoomUrl(this.props.match.url), id)
+        .then(cinemaRoom => {
+            this.setState({
+                cinemaRoomInfo: cinemaRoom.info,
+                cinemaRoomSeats: cinemaRoom.seats
+            });
+        });
     }
 
     returnCinemaRoom = () =>{
         if (this.state.allowSubmit){
             this.props.callBackReceiveCinemaRoom({
+                cinemaRoomId: this.state.cinemaRoomInfo.cinemaRoomId,
                 name: this.state.cinemaRoomInfo.name,
                 cinemaRoomSeats: this.state.cinemaRoomSeats
             });
@@ -29,7 +59,7 @@ export default class FormCinemaRoom extends Component{
     }
 
     cancelFormCinemaRoom = () =>{
-        this.props.callBackCancel();
+        this.props.callBackReturnToUpperPage();
     }
 
     createSeatsArray = (cinemaRoomInfo) =>{
@@ -86,7 +116,7 @@ export default class FormCinemaRoom extends Component{
                 <FormCinemaRoomInfo
                     callBackReceiveCinemaRoomInfo={this.createSeatsArray}
                     callBackCancel={this.cancelFormCinemaRoom}
-                />  
+                />
             </React.Fragment> 
         );
     }
@@ -141,7 +171,9 @@ export default class FormCinemaRoom extends Component{
     }
 
     render(){
-        const content = this.renderFormCinemaRoomContent();
+        const content = this.state.dataIsLoaded
+        ? this.renderFormCinemaRoomContent()
+        : <Loading/>;
 
         return(
             <div>
@@ -156,3 +188,5 @@ export default class FormCinemaRoom extends Component{
         )
     }
 }
+
+export default withRouter(FormCinemaRoom);

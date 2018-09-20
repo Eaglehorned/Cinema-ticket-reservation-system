@@ -17,6 +17,7 @@ const sendRequestToGetSessionList = () =>{
 const createSessionInfoForRequest = (sessionInfo) =>{
     return new Promise ((resolve) => {
         resolve({
+            sessionId: sessionInfo.sessionId,
             cinemaRoomId: sessionInfo.cinemaRoom.cinemaRoomId,
             filmId: sessionInfo.film.filmId,
             beginTime: sessionInfo.beginTime,
@@ -53,8 +54,8 @@ const sendRequestToGetSession = (id) =>{
     });
 }
 
-const sendRequestToEditSession = (id, sessionInfo) =>{
-    return fetch(`api/sessions/${id}`, {
+const sendRequestToEditSession = (sessionInfo) =>{
+    return fetch(`api/sessions/${sessionInfo.sessionId}`, {
         method: 'PUT',
         headers:{
             'Accept': 'application/json',
@@ -101,9 +102,27 @@ const sendRequestToEditSessionSeat = (sessionId, sessionSeatId, booked) =>{
     });
 }
 
+const sendRequestToGetSessionListWithFilters = (filterString) =>{
+    return fetch(`api/sessions${filterString}`, {
+        method: 'GET',
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userService.getToken()}`
+        }
+    });
+}
+
 class SessionDataAccess{
     getSessionList = () =>{
         return sendRequestToGetSessionList()
+        .then(receivedDataProcessingHelper.handleRequestError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequestedData);
+    }
+
+    getSessionListWithFilters = (filterString) =>{
+        return sendRequestToGetSessionListWithFilters(filterString)
         .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(receivedDataProcessingHelper.getRequestedData);
@@ -124,9 +143,9 @@ class SessionDataAccess{
         .then(receivedDataProcessingHelper.getRequestedData);
     }
 
-    editSession = (id, sessionInfo) =>{
+    editSession = (sessionInfo) =>{
         return createSessionInfoForRequest(sessionInfo) 
-        .then(sessionInfoForRequest => sendRequestToEditSession(id, sessionInfoForRequest))
+        .then(sessionInfoForRequest => sendRequestToEditSession(sessionInfoForRequest))
         .then(receivedDataProcessingHelper.handleRequestError);
     }
 

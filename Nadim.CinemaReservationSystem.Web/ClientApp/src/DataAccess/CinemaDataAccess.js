@@ -112,8 +112,8 @@ const sendRequestToCreateCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
     })
 }
 
-const sendRequestToEditCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
-    return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomId}`, {
+const sendRequestToEditCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
+    return fetch(`api/cinemas/${cinemaId}/cinemaRooms/${cinemaRoomInfo.cinemaRoomId}`, {
         method:'PUT',
         headers:{
             'Accept': 'application/json',
@@ -189,8 +189,8 @@ class CinemaDataAccess{
         );
     }
 
-    editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
-        return sendRequestToEditCinemaRoom(cinemaId, cinemaRoomId, cinemaRoomInfo)
+    editCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
+        return sendRequestToEditCinemaRoom(cinemaId, cinemaRoomInfo)
         .then(receivedDataProcessingHelper.handleRequestError);
     }
 }

@@ -1,46 +1,56 @@
 import React, { Component } from 'react';
+import { withRouter, Route, Switch } from 'react-router-dom';
 import FormGeneralCinemaInfo from './FormGeneralCinemaInfo';
 import FormCinemaRoom from './FormCinemaRoom';
-import '../../styles/FormCinema.css';
 import cinemaService from '../../Services/CinemaService';
 import applicationService from '../../Services/ApplicationService';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
 import DisplayCinemaRoomsList from './DisplayCinemaRoomsList';
+import Loading from '../General/Loading';
+import '../../styles/FormCinema.css';
 
-export default class FormCinema extends Component{
+class FormCinema extends Component{
     displayName = FormCinema.displayName;
+
     constructor(props){
         super(props);
         this.state={
-            cinemaInfo: this.props.cinema ? this.props.cinema.info : undefined,
-            cinemaRooms: this.props.cinema ? this.props.cinema.cinemaRooms : [],
-            chosenOperation: '',
+            cinemaInfo: undefined,
+            cinemaRooms: undefined,
             chosenCinemaRoomInfo: undefined,
-            allowSubmit: true
+            allowSubmit: true,
+            dataIsLoaded: false
         };
     }
 
-    getCinemaRoom = (id) =>{
-        cinemaService.getCinemaRoom(this.state.cinemaInfo.cinemaId, id)
+    componentWillMount(){
+        if(this.props.match.params.id){
+            this.getCinema(this.props.match.params.id)
+            .then(() => this.setState({ dataIsLoaded: true }))
+            .catch(error => {
+                applicationService.informWithErrorMessage(error);
+                this.props.callBackReturnToUpperPage();
+            });
+        }
+        else{
+            this.setState({ dataIsLoaded: true });
+        }
+    }
+
+    getCinema = (id) =>{
+        return cinemaService.getCinema(id)
         .then(cinema => {
             this.setState({
-                chosenCinemaRoomInfo: cinema,
-                chosenOperation: 'editCinemaRoom'
-            });
-        })
-        .catch(error => {
-            this.setState({
-                chosenOperation:''
-            });
-            applicationService.informWithErrorMessage(error);
+                cinemaInfo: cinema.info,
+                cinemaRooms: cinema.cinemaRooms
+            })
         });
     }
 
     createCinemaRoom = (cinemaRoomInfo) =>{
-        this.setState({
-            chosenOperation: ''
-        });
-        cinemaService.createCinemaRoom(this.state.cinemaInfo.cinemaId, cinemaRoomInfo)
+        this.returnToCinemaMainPage();
+
+        cinemaService.createCinemaRoom(this.props.match.params.id, cinemaRoomInfo)
         .then(cinemaRoom => {
             this.setState({
                 cinemaRooms: this.state.cinemaRooms.concat(cinemaRoom)
@@ -51,15 +61,13 @@ export default class FormCinema extends Component{
     }
     
     editCinemaRoom = (cinemaRoomInfo) =>{
-        this.setState({
-            chosenOperation: '',
-        });
-        cinemaService.editCinemaRoom(this.state.cinemaInfo.cinemaId, this.state.chosenCinemaRoomInfo.info.cinemaRoomId, cinemaRoomInfo)
+        this.returnToCinemaMainPage();
+
+        cinemaService.editCinemaRoom(this.props.match.params.id, cinemaRoomInfo)
         .then(() => {
             this.setState({
                 cinemaRooms: cinemaService.updateCinemaRoomList(
                     this.state.cinemaRooms,
-                    this.state.chosenCinemaRoomInfo.info.cinemaRoomId,
                     cinemaRoomInfo
                 )
             });
@@ -76,10 +84,8 @@ export default class FormCinema extends Component{
         }
     }
 
-    cancelCurrentOperation = () =>{
-        this.setState({
-            chosenOperation: ''
-        })
+    returnToCinemaMainPage = () =>{
+        this.props.history.push(`${this.props.match.url}`);
     }
 
     handleCinemaInfoChange = (cinemaInfo) =>{
@@ -92,14 +98,11 @@ export default class FormCinema extends Component{
     }
 
     handleChooseEditCinemaRoomAction = (cinemaRoomId) =>{
-        this.setState({
-            chosenOperation: 'editCinemaRoomLoading'
-        });
-        this.getCinemaRoom(cinemaRoomId);
+        this.props.history.push(`${this.props.match.url}/cinemaRoom/${cinemaRoomId}`)
     }
 
     handleChooseCreateCinemaRoomAction = () =>{
-        this.setState({ chosenOperation: 'createCinemaRoom'});
+        this.props.history.push(`${this.props.match.url}/cinemaRoom/new`);
     }
 
     renderCinemaActionButtons = () =>{
@@ -115,29 +118,10 @@ export default class FormCinema extends Component{
                 />
                 <SubmitCancelButtons
                     handleSubmitClick={this.submitFormCinema}
-                    handleCancelClick={this.props.callBackCancelParentOperation}
+                    handleCancelClick={this.props.callBackReturnToUpperPage}
                 />
             </fieldset>
         )
-    }
-
-    renderFormCinemaRoomCreateContent = () =>{
-        return(
-            <FormCinemaRoom
-                callBackReceiveCinemaRoom={this.createCinemaRoom}
-                callBackCancel={this.cancelCurrentOperation}
-            />
-        );
-    }
-
-    renderFormCinemaRoomEditContent = () =>{
-        return(
-            <FormCinemaRoom
-                callBackReceiveCinemaRoom={this.editCinemaRoom}
-                cinemaRoom={this.state.chosenCinemaRoomInfo}
-                callBackCancel={this.cancelCurrentOperation}
-            />
-        );
     }
 
     renderFormCreateCinemaContent = () =>{
@@ -149,7 +133,7 @@ export default class FormCinema extends Component{
                 </h2>
                 <FormGeneralCinemaInfo 
                     callBackFromParent={this.props.callBackFromParent}
-                    callBackCancel={this.props.callBackCancelParentOperation}
+                    callBackCancel={this.props.callBackReturnToUpperPage}
                 />
             </React.Fragment>
         );
@@ -179,31 +163,35 @@ export default class FormCinema extends Component{
         );
     }
 
-    renderComponentContent = () =>{
-        //If we are creating new cinema
+    renderContent = () =>{
         if (!this.state.cinemaInfo){
             return this.renderFormCreateCinemaContent();
         }
-        //if we have opened existing cinema
-        switch(this.state.chosenOperation){
-            case 'createCinemaRoom':
-                return this.renderFormCinemaRoomCreateContent();
-            case 'editCinemaRoomLoading':
-                return(
-                    <div className="font-x-large font-italic">
-                        Loading...
-                    </div>
-                );
-            case 'editCinemaRoom':
-                return this.renderFormCinemaRoomEditContent();
-            default:
-                return this.renderCinemaInfoAndActionsContent();
-        }
-
+        return(
+            <Switch>
+                <Route exact path={`${this.props.match.url}/cinemaRoom/new`} render={() =>(
+                    <FormCinemaRoom
+                        callBackReceiveCinemaRoom={this.createCinemaRoom}
+                        callBackReturnToUpperPage={this.returnToCinemaMainPage}
+                    />
+                )}/>
+                <Route path={`${this.props.match.url}/cinemaRoom/:id`} render={() => (
+                    <FormCinemaRoom
+                        callBackReceiveCinemaRoom={this.editCinemaRoom}
+                        callBackReturnToUpperPage={this.returnToCinemaMainPage}
+                    />
+                )}/>
+                <Route exact path={this.props.match.url} render={()=>(
+                    this.renderCinemaInfoAndActionsContent()
+                )}/>
+            </Switch>
+        );
     }
 
     render(){
-        const content = this.renderComponentContent();
+        const content = this.state.dataIsLoaded
+        ? this.renderContent()
+        : <Loading/>;
 
         return(
             <div className="form-cinema-room-container">
@@ -212,3 +200,5 @@ export default class FormCinema extends Component{
         )
     }
 }
+
+export default withRouter(FormCinema);

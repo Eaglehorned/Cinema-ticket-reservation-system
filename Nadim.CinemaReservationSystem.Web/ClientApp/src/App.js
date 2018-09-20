@@ -3,6 +3,7 @@ import applicationService from './Services/ApplicationService';
 import Header from './components/Header';
 import Body from './components/Body';
 import MyAlert from './components/MyAlert';
+import { BrowserRouter as Router, Route} from 'react-router-dom';
 
 export default class App extends Component {
     displayName = App.name
@@ -15,12 +16,6 @@ export default class App extends Component {
             alertStyle:'info'
         }
         applicationService.setInformWithMessage(this.informWithMessage);
-    }
-
-    setShownRole = (role) =>{
-        this.setState({
-            shownRole: role
-        })
     }
 
     informWithMessage = (message) =>{
@@ -58,20 +53,22 @@ export default class App extends Component {
 
     render() {
         return (
-            <React.Fragment>
-                <div className="font-x-large">
-                    {this.state.show ? 
-                        this.renderAlertMessage() :
-                        ''
-                    }
-                </div>
-                <Header
-                    callBackSetShownRole={this.setShownRole}
-                />
-                <Body
-                    role={this.state.shownRole}
-                />
-            </React.Fragment>
+            <Router>
+                <React.Fragment>
+                    <div className="font-x-large">
+                        {this.state.show ? 
+                            this.renderAlertMessage() :
+                            ''
+                        }
+                    </div>
+                    <Route path="/" render={()=> (
+                        <Header
+                            callBackSetShownRole={this.setShownRole}
+                        />
+                    )}/>
+                    <Route path="/" component={Body}/>
+                </React.Fragment>
+            </Router>
         );
     }
 }

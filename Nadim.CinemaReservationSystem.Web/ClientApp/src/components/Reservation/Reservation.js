@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import ReserveTicket from './ReserveTicket';
 import DisplaySessions from './DisplaySessions';
-import sessionService from '../../Services/SessionService';
-import applicationService from '../../Services/ApplicationService';
 import '../../styles/Reservation.css';
 
 export default class Reservation extends Component{
@@ -13,39 +12,8 @@ export default class Reservation extends Component{
         super(props);
         this.state={
             sessionList: [],
-            chosenOperation: '',
             session: {}
         }
-    }
-
-    getSession = (sessionId) =>{
-        this.setState({
-            chosenOperation: 'reservationLoading'
-        });
-        sessionService.getSession(sessionId)
-        .then(requestedData =>{
-            this.setState({
-                session : sessionService.addInfoToSession(this.state.session, requestedData)
-            });
-            return sessionId;
-        })
-        .then(this.getSessionSeats)
-        .catch(error => {
-            this.setState({
-                chosenOperation: ''
-            });
-            applicationService.informWithErrorMessage(error);
-        });
-    }
-
-    getSessionSeats = (sessionId) =>{
-        sessionService.getSessionSeats(sessionId)
-        .then(requestedData =>{
-            this.setState({
-                session : sessionService.addSeatsToSession(this.state.session, requestedData),
-                chosenOperation: 'reservation'
-            })
-        });
     }
 
     handleReceiveSessionList = (receivedSessionList) =>{
@@ -55,54 +23,41 @@ export default class Reservation extends Component{
     }
 
     handleReserveTicketClick = (sessionId) =>{
-        this.getSession(sessionId);
+        this.props.history.push(`${this.props.match.url}/${sessionId}`);
     }
 
-    handleCancelOperation = () =>{
-        this.setState({
-            chosenOperation: ''
-        });
+    returnToMainPage = () =>{
+        this.props.history.push(this.props.match.url);
     }
 
     renderSessionListContent = () =>{
         return(
             <React.Fragment>
                 <h1>Sessions</h1>
-                    <SearchBar
-                        token={this.props.token}
-                        callBackReceiveSessionList={this.handleReceiveSessionList}
-                        callBackInformWithMessage={this.props.callBackInformWithMessage}
-                    />
-                    <div className="list-container">
+                    <Route path={this.props.match.url} component={SearchBar}/>
+                    <Route path={this.props.match.url} render={() =>(
                         <DisplaySessions
                             sessions={this.state.sessionList}
                             callBackHandleSessionAction={this.handleReserveTicketClick}
                         />
-                    </div>
+                    )}/>
             </React.Fragment>
         );
     }
 
     renderContent = () =>{
-        switch(this.state.chosenOperation){
-            case 'reservation':
-                return(
+        return(
+            <Switch>
+                <Route path={`${this.props.match.url}/:id`} render={() => (
                     <ReserveTicket
-                        token={this.props.token}
-                        callBackInformWithMessage={this.props.callBackInformWithMessage}
-                        session={this.state.session}
-                        callBackCancelParentOperation={this.handleCancelOperation}
-                    />
-                );
-            case 'reservationLoading':
-                return(
-                    <div className="font-x-large font-italic">
-                        Loading...
-                    </div>
-                );
-            default:
-                return this.renderSessionListContent();
-        }
+                        callBackReturnToUpperPage={this.returnToMainPage}
+                    />                   
+                )}/>
+                <Route path={this.props.match.url} render={() => 
+                    this.renderSessionListContent()
+                }/>
+            </Switch>
+        );
     }
 
     render(){

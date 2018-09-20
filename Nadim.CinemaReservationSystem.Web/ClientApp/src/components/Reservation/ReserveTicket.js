@@ -1,26 +1,60 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import ChooseSeats from './ChooseSeats';
 import ConfirmReservation from './ConfirmReservation';
 import sessionService from '../../Services/SessionService';
 import applicationService from '../../Services/ApplicationService';
 import reservationServise from '../../Services/ReservationService';
+import Loading from '../General/Loading';
 
-export default class ReserveTicket extends Component{
+class ReserveTicket extends Component{
     displayName = ReserveTicket.displayName;
 
     constructor(props){
         super(props);
         this.state={
             seatsChosen: false,
-            seats: this.props.session.seats,
+            seats: [],
             chosenSeats: [],
-            lastTimeUpdated: new Date()
+            lastTimeUpdated: new Date(),
+            session: {},
+            dataIsLoaded: false
         }
+    }
+
+    componentWillMount = () =>{
+        this.getSession(this.props.match.params.id)
+        .then(() => { this.setState({dataIsLoaded: true}) })
+        .catch(error => {
+            applicationService.informWithErrorMessage(error)
+            this.props.callBackReturnToUpperPage();
+        });
+    }
+
+    getSession = (sessionId) =>{
+        return sessionService.getSession(sessionId)
+        .then(requestedData =>{
+            this.setState({
+                session : sessionService.addInfoToSession(this.state.session, requestedData)
+            });
+            return sessionId;
+        })
+        .then(this.getSessionSeats);
+    }
+
+    getSessionSeats = (sessionId) =>{
+        return sessionService.getSessionSeats(sessionId)
+        .then(requestedData =>{
+            this.setState({
+                seats: requestedData,
+                session : sessionService.addSeatsToSession(this.state.session, requestedData)
+            })
+        });
     }
 
     createOrder = () =>{
         reservationServise.createOrder(
-                this.props.session.info.sessionId,
+                this.state.session.info.sessionId,
                 this.state.chosenSeats
         )
         .then(() => {
@@ -30,7 +64,9 @@ export default class ReserveTicket extends Component{
     }
 
     getUpdates = () =>{
-        sessionService.getSessionSeatsUpdates(this.props.session.info.sessionId, this.state.lastTimeUpdated)
+        sessionService.getSessionSeatsUpdates(
+            this.state.session.info.sessionId, 
+            this.state.lastTimeUpdated)
         .then(sessionSeatsUpdates =>{
             this.setState({
                 seats: sessionService.updateSessionSeats(
@@ -49,7 +85,11 @@ export default class ReserveTicket extends Component{
     }
 
     editSessionSeat = (seatInfo) =>{
-        return sessionService.editSessionSeat(this.props.session.info.sessionId, seatInfo.sessionSeatId, seatInfo.booked)
+        return sessionService.editSessionSeat(
+            this.state.session.info.sessionId, 
+            seatInfo.sessionSeatId, 
+            seatInfo.booked
+        )
         .then(() =>{
             this.setState({
                 seats: sessionService.updateSessionSeatInSeatsArray(seatInfo, this.state.seats),
@@ -59,26 +99,33 @@ export default class ReserveTicket extends Component{
         .catch(error => applicationService.informWithErrorMessage(error));
     }
 
-    handleSeatClick = (seatInfo) =>{
+    changeSeat = (seatInfo) =>{
         if(!this.state.seats[seatInfo.row][seatInfo.column].booked){
             if(!this.state.chosenSeats.find(el => el.sessionSeatId === seatInfo.sessionSeatId)){
                 if(this.state.chosenSeats.length < 10){
-                    this.editSessionSeat(sessionService.formSeatInfo(seatInfo))        
-                    .then(this.getUpdates);
+                    return this.editSessionSeat(sessionService.formSeatInfo(seatInfo));
                 }
             }
             else{
-                this.editSessionSeat(sessionService.formSeatInfo(seatInfo))
-                .then(this.getUpdates);
+                return this.editSessionSeat(sessionService.formSeatInfo(seatInfo));
             }
         }
     }
 
+    handleSeatClick = (seatInfo) =>{
+        this.changeSeat(seatInfo)
+        .then(this.getUpdates);
+    }
+
     cancelReservation = () =>{
         this.state.chosenSeats.forEach(el=>{
-            this.handleSeatClick(this.state.seats[el.row][el.column]);
+            sessionService.editSessionSeat(
+                this.state.session.info.sessionId, 
+                this.state.seats[el.row][el.column].sessionSeatId,
+                false
+            );
         });
-        this.props.callBackCancelParentOperation();
+        this.props.callBackReturnToUpperPage();
     }
 
     handleSeatsChoice = () =>{
@@ -95,7 +142,7 @@ export default class ReserveTicket extends Component{
 
     handleConfirmReservation = () =>{
         this.createOrder();
-        this.props.callBackCancelParentOperation();
+        this.props.callBackReturnToUpperPage();
     }
 
     renderChooseSeatsContent(){
@@ -103,7 +150,7 @@ export default class ReserveTicket extends Component{
             <ChooseSeats
                 seats={this.state.seats}
                 chosenSeats={this.state.chosenSeats}
-                sessionSeatTypePrices={this.props.session.info.sessionSeatTypePrices}
+                sessionSeatTypePrices={this.state.session.info.sessionSeatTypePrices}
                 callBackHandleSeatClick={this.handleSeatClick}
                 callBackHandleSeatsChoice={this.handleSeatsChoice}
                 callBackCancelReservation={this.cancelReservation}
@@ -115,14 +162,14 @@ export default class ReserveTicket extends Component{
         return(
             <ConfirmReservation
                 chosenSeats={this.state.chosenSeats}
-                sessionSeatTypePrices={this.props.session.info.sessionSeatTypePrices}
+                sessionSeatTypePrices={this.state.session.info.sessionSeatTypePrices}
                 callBackCancelConfirm={this.handleCancelConfirm}
                 callBackConfirmReservation={this.handleConfirmReservation}
             />
         );
     }
     
-    renderContent = () =>{
+    renderReservationContent = () =>{
         if (!this.state.seatsChosen){
             return this.renderChooseSeatsContent();
         }
@@ -131,24 +178,42 @@ export default class ReserveTicket extends Component{
         }
     }
 
+    renderInformation = () =>{
+        return(
+            <div className="inline-information-block">
+                <div className="header-string-box">
+                    {this.state.session.info.film.name}
+                </div>
+                <div className="information-block">
+                    {this.state.session.info.cinema.city},{' '}
+                    {this.state.session.info.cinema.name}
+                </div>
+                <div className="information-block">
+                    {new Date(this.state.session.info.beginTime).toLocaleString()}
+                </div>
+            </div>
+        );
+    }
+
+    renderContent = () =>{
+        return(
+            <React.Fragment>
+                {this.renderInformation()}
+                {this.renderReservationContent()}
+            </React.Fragment>
+        );
+    }
+
     render(){
-        const content = this.renderContent();
+        const content = this.state.dataIsLoaded 
+            ? this.renderContent() 
+            : <Loading/>;
         return(
             <div>
-                <div className="inline-information-block">
-                    <div className="header-string-box">
-                        {this.props.session.info.film.name}
-                    </div>
-                    <div className="information-block">
-                        {this.props.session.info.cinema.city},{' '}
-                        {this.props.session.info.cinema.name}
-                    </div>
-                    <div className="information-block">
-                        {new Date(this.props.session.info.beginTime).toLocaleString()}
-                    </div>
-                </div>
                 {content}
             </div>
         );
     }
 }
+
+export default withRouter(ReserveTicket);

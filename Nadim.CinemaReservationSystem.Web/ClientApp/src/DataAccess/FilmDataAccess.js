@@ -35,8 +35,8 @@ const sendRequestToCreateFilm = (filmInfo) =>{
     });
 }
 
-const sendRequestToEditFilm = (filmId, filmInfo) =>{
-    return fetch(`api/films/${filmId}`, {
+const sendRequestToEditFilm = (filmInfo) =>{
+    return fetch(`api/films/${filmInfo.filmId}`, {
         method: 'PUT',
         headers:{
             'Accept': 'application/json',
@@ -69,8 +69,8 @@ class FilmDataAccess{
     }
 
 
-    editFilm = (filmId, filmInfo) =>{
-        return sendRequestToEditFilm(filmId, filmInfo)
+    editFilm = (filmInfo) =>{
+        return sendRequestToEditFilm(filmInfo)
         .then(receivedDataProcessingHelper.handleRequestError);
     }
 }

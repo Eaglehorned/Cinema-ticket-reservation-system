@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import filmService from '../../Services/FilmService';
 import SubmitCancelButtons from '../General/SubmitCancelButtons';
@@ -6,20 +7,59 @@ import InputDurationFormGroup from '../General/InputDurationFormGroup';
 import InputDateFormGroup from '../General/InputDateFormGroup';
 import validationService from '../../Services/ValidationService';
 import InputStringFormGroup from '../General/InputStringFormGroup';
+import Loading from '../General/Loading';
+import applicationService from '../../Services/ApplicationService';
 
-export default class FormFilm extends Component{
+class FormFilm extends Component{
     displayName = FormFilm.displayName;
 
     constructor(props){
         super(props);
         this.state={
-            name: this.props.filmInfo ? this.props.filmInfo.name : '',
-            startDate: this.props.filmInfo ? moment(this.props.filmInfo.startDate) : moment(),
-            endDate: this.props.filmInfo ? moment(this.props.filmInfo.endDate) : moment(),
-            duration: this.props.filmInfo ? filmService.convertFromSecToDate(this.props.filmInfo.duration) : moment('00:00:00', 'HH:mm:ss'),
-            description: this.props.filmInfo ? this.props.filmInfo.description : '',
-            showHint: this.props.showHint ? this.props.showHint : false
+            filmId: undefined,
+            name: undefined,
+            startDate: undefined,
+            endDate: undefined,
+            duration: undefined,
+            description: undefined,
+            showHint: this.props.showHint,
+            dataIsLoaded: false
         }
+    }
+
+    componentWillMount(){
+        if (this.props.match.params.id){
+            this.getFilm(this.props.match.params.id)
+            .then(() => this.setState({ dataIsLoaded: true }))
+            .catch(error => {
+                applicationService.informWithErrorMessage(error);
+                this.props.callBackReturnToUpperPage();
+            });
+        }
+        else{
+            this.setState({ 
+                dataIsLoaded: true,
+                name: '',
+                startDate: moment(),
+                endDate: moment(),
+                duration: moment('00:00:00', 'HH:mm:ss'),
+                description: ''
+            });
+        }
+    }
+
+    getFilm = (filmId) =>{
+        return filmService.getFilm(filmId)
+        .then(requestedData => {
+            this.setState({
+                filmId: requestedData.filmId,
+                name: requestedData.name,
+                startDate: moment(requestedData.startDate),
+                endDate: moment(requestedData.endDate),
+                duration: filmService.convertFromSecToDate(requestedData.duration),
+                description: requestedData.description
+            })
+        });
     }
 
     handleChangeName = (event) =>{
@@ -61,6 +101,7 @@ export default class FormFilm extends Component{
             this.state.duration
         )){
             this.props.callBackReceiveFilmInfo({
+                filmId: this.state.filmId,
                 name: this.state.name,
                 startDate: filmService.formDate(this.state.startDate),
                 endDate: filmService.formDate(this.state.endDate),
@@ -74,10 +115,10 @@ export default class FormFilm extends Component{
     }
 
     handleCancelClick = () =>{
-        this.props.callBackCancel();
+        this.props.callBackReturnToUpperPage();
     }
 
-    render(){
+    renderContent = () =>{
         return(
             <React.Fragment>
                 <h1>
@@ -126,4 +167,17 @@ export default class FormFilm extends Component{
             </React.Fragment>
         );
     }
+
+    render(){
+        const content = this.state.dataIsLoaded
+        ? this.renderContent()
+        : <Loading/>;
+        return(
+            <React.Fragment>
+                {content}
+            </React.Fragment>
+        );
+    }
 }
+
+export default withRouter(FormFilm);

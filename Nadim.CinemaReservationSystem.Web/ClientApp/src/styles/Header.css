@@ -1,4 +1,6 @@
 .header{
+    display: flex;
+    align-items: center;
     width: 100%;
     height: 185px;
     position: fixed;
@@ -6,4 +8,17 @@
     border: groove 1px black;
     z-index: 1;
     background-color: rgba(235, 235, 235);
+}
+
+.header-nav-menu{
+    width: calc(100% - 450px);
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.header-nav-menu .link-box{
+    text-align: center;
+    flex-grow: 1;
+    padding: 10px;
+    font-size: x-large;
 }

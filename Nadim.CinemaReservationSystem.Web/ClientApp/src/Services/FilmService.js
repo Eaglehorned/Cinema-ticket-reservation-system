@@ -15,8 +15,8 @@ class FilmService{
         return filmDataAccess.createFilm(filmInfo);
     }
 
-    editFilm = (filmId, filmInfo) =>{
-        return filmDataAccess.editFilm(filmId, filmInfo);
+    editFilm = (filmInfo) =>{
+        return filmDataAccess.editFilm(filmInfo);
     }
 
     convertFromSecToDate = (duration) =>{
@@ -51,9 +51,9 @@ class FilmService{
         && validationService.validateDuration(duration);
     }
 
-    updateFilmList = (filmList, changedFilmId, changedFilmInfo) =>{
+    updateFilmList = (filmList, changedFilmInfo) =>{
         let tempFilmList = filmList;
-        tempFilmList.find((el) => el.filmId === changedFilmId).name = changedFilmInfo.name;
+        tempFilmList.find((el) => el.filmId === changedFilmInfo.filmId).name = changedFilmInfo.name;
         return tempFilmList;
     }
 }

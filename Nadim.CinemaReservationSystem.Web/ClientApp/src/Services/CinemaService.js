@@ -27,8 +27,8 @@ class CinemaService{
         return cinemaDataAccess.createCinemaRoom(cinemaId, cinemaRoomInfo);
     }
 
-    editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
-        return cinemaDataAccess.editCinemaRoom(cinemaId, cinemaRoomId, cinemaRoomInfo);
+    editCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
+        return cinemaDataAccess.editCinemaRoom(cinemaId, cinemaRoomInfo);
     }
 
     getCinemaRoomList = (cinemaId) =>{
@@ -37,6 +37,10 @@ class CinemaService{
 
     getCinemaRoomSeatTypes = (cinemaId, cinemaRoomId) =>{
         return cinemaDataAccess.getCinemaRoomSeatTypes(cinemaId, cinemaRoomId);
+    }
+
+    getCinemaIdFromCinemaRoomUrl = (url) =>{
+        return url.slice(url.indexOf("cinema") + 7, url.indexOf("cinemaRoom") - 1);
     }
 
     validateCinemaRoomInfo(displayedComponents, rows, columns, name){
@@ -70,9 +74,9 @@ class CinemaService{
         return tempCinemaList;
     }
 
-    updateCinemaRoomList = (cinemaRoomList, changedCinemaRoomId, changedCinemaRoomInfo) =>{
+    updateCinemaRoomList = (cinemaRoomList, changedCinemaRoomInfo) =>{
         const tempCinemaRooms = cinemaRoomList;
-        tempCinemaRooms.find((el) => el.cinemaRoomId === changedCinemaRoomId).name = changedCinemaRoomInfo.name;
+        tempCinemaRooms.find((el) => el.cinemaRoomId === changedCinemaRoomInfo.cinemaRoomId).name = changedCinemaRoomInfo.name;
         return tempCinemaRooms;
     }
 }

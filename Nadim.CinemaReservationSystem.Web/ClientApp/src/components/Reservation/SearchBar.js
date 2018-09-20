@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
+import { withRouter } from 'react-router-dom';
 import { FormGroup} from 'react-bootstrap';
 import { DatePicker } from 'antd';
 import moment from 'moment';
+import applicationService from '../../Services/ApplicationService';
 
-export default class SearchBar extends Component{
+class SearchBar extends Component{
     displayName = SearchBar.displayName;
 
     constructor(props){
@@ -33,60 +35,7 @@ export default class SearchBar extends Component{
     }
 
     getSessionList = (filters) =>{
-        let filterString = '';
-        for (let prop in filters){
-            if(filters[prop]){ 
-                if (filterString === ''){
-                    filterString = `${prop}=${filters[prop]}`;
-                }
-                else{
-                    filterString = filterString.concat(`&${prop}=${filters[prop]}`);
-                }
-            }
-        }
-
-        fetch(`api/sessions?${filterString}`, {
-            method: 'GET',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': `bearer ${this.props.token}`
-            }
-        })
-        .then(response => {
-            if (response.ok){
-                return response.json();
-            }
-            if (response.status === 500){
-                return response.json().then((err) => {
-                    throw new Error(`${err.details}`);
-                });
-            }
-            if (response.status === 400){
-                return response.json().then((err) => {
-                    throw new Error(`Bad request. ${err.details}`);
-                });
-            }
-            if (response.status === 401){
-                throw new Error('You need to authorize to do that action.');
-            }
-            if (response.status === 404){
-                return response.json().then((err) => {
-                    throw new Error(`Not found. ${err.details}`);
-                });
-            }
-        })
-        .then(parsedJson => {
-            this.props.callBackReceiveSessionList(
-                parsedJson.requestedData
-            );
-        })
-        .catch(error => this.props.callBackInformWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            })
-        );
+        this.props.history.push(`${this.props.match.url}${applicationService.convertFiltersToFilterString(filters)}`);
     }
 
     renderFiltersContent = () =>{
@@ -111,3 +60,5 @@ export default class SearchBar extends Component{
         );
     }
 }
+
+export default withRouter(SearchBar);
