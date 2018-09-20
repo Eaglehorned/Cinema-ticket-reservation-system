@@ -35,7 +35,6 @@ class Cinema extends Component{
             this.setState({
                 cinemaList: cinemaService.updateCinemaList(
                     this.state.cinemaList,
-                    cinemaInfo.cinemaId,
                     cinemaInfo
                 )
             });

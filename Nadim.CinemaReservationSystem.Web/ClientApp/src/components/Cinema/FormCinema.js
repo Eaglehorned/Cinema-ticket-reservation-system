@@ -63,12 +63,11 @@ class FormCinema extends Component{
     editCinemaRoom = (cinemaRoomInfo) =>{
         this.returnToCinemaMainPage();
 
-        cinemaService.editCinemaRoom(this.props.match.params.id, cinemaRoomInfo.cinemaRoomId, cinemaRoomInfo)
+        cinemaService.editCinemaRoom(this.props.match.params.id, cinemaRoomInfo)
         .then(() => {
             this.setState({
                 cinemaRooms: cinemaService.updateCinemaRoomList(
                     this.state.cinemaRooms,
-                    cinemaRoomInfo.cinemaRoomId,
                     cinemaRoomInfo
                 )
             });

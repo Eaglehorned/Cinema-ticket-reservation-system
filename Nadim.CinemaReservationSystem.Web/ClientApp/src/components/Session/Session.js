@@ -55,12 +55,11 @@ export default class Session extends Component{
     editSession = (sessionInfo) =>{
         this.returnToSessionPage();
 
-        sessionService.editSession(sessionInfo.sessionId, sessionInfo)
+        sessionService.editSession(sessionInfo)
         .then(() => {
             this.setState({
                 sessionList: sessionService.updateSessionList(
                     this.state.sessionList,
-                    sessionInfo.sessionId,
                     sessionInfo
                 )
             });

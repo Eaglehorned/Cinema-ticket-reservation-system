@@ -57,14 +57,11 @@ export default class Film extends Component{
 
     editFilm = (filmInfo) =>{
         this.returnToFilmPage();
-        filmService.editFilm(
-            filmInfo.filmId,
-            filmInfo)
+        filmService.editFilm(filmInfo)
         .then(() => {
             this.setState({
                 filmList: filmService.updateFilmList(
-                    this.state.filmList, 
-                    filmInfo.filmId,
+                    this.state.filmList,
                     filmInfo
                 )
             })

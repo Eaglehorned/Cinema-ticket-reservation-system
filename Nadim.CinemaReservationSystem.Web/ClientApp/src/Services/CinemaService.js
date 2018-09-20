@@ -27,8 +27,8 @@ class CinemaService{
         return cinemaDataAccess.createCinemaRoom(cinemaId, cinemaRoomInfo);
     }
 
-    editCinemaRoom = (cinemaId, cinemaRoomId, cinemaRoomInfo) =>{
-        return cinemaDataAccess.editCinemaRoom(cinemaId, cinemaRoomId, cinemaRoomInfo);
+    editCinemaRoom = (cinemaId, cinemaRoomInfo) =>{
+        return cinemaDataAccess.editCinemaRoom(cinemaId, cinemaRoomInfo);
     }
 
     getCinemaRoomList = (cinemaId) =>{
@@ -66,17 +66,17 @@ class CinemaService{
         return true;
     }
 
-    updateCinemaList = (cinemaList, changedCinemaId, changedCinemaInfo) =>{
+    updateCinemaList = (cinemaList, changedCinemaInfo) =>{
         const tempCinemaList = cinemaList;
-        const tempChosenCinema = tempCinemaList.find((el) => el.cinemaId === changedCinemaId);
+        const tempChosenCinema = tempCinemaList.find((el) => el.cinemaId === changedCinemaInfo.cinemaId);
         tempChosenCinema.name = changedCinemaInfo.name;
         tempChosenCinema.city = changedCinemaInfo.city;
         return tempCinemaList;
     }
 
-    updateCinemaRoomList = (cinemaRoomList, changedCinemaRoomId, changedCinemaRoomInfo) =>{
+    updateCinemaRoomList = (cinemaRoomList, changedCinemaRoomInfo) =>{
         const tempCinemaRooms = cinemaRoomList;
-        tempCinemaRooms.find((el) => el.cinemaRoomId === changedCinemaRoomId).name = changedCinemaRoomInfo.name;
+        tempCinemaRooms.find((el) => el.cinemaRoomId === changedCinemaRoomInfo.cinemaRoomId).name = changedCinemaRoomInfo.name;
         return tempCinemaRooms;
     }
 }

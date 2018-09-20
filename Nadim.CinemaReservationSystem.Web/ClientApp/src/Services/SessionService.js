@@ -18,8 +18,8 @@ class SessionService{
         return sessionDataAccess.getSession(id);
     }
 
-    editSession = (id, sessionInfo) =>{
-        return sessionDataAccess.editSession(id, sessionInfo);
+    editSession = (sessionInfo) =>{
+        return sessionDataAccess.editSession(sessionInfo);
     }
 
     getSessionSeats = (sessionId) =>{
@@ -34,9 +34,9 @@ class SessionService{
         return sessionDataAccess.editSessionSeat(sessionId, sessionSeatId, booked);
     }
 
-    updateSessionList = (sessionList, changedSessionId, changedSessionInfo) =>{
+    updateSessionList = (sessionList, changedSessionInfo) =>{
         const tempSessionList = sessionList;
-        const tempSessionChangedElement = tempSessionList.find( el => el.sessionId === changedSessionId);
+        const tempSessionChangedElement = tempSessionList.find( el => el.sessionId === changedSessionInfo.sessionId);
         tempSessionChangedElement.cinema = changedSessionInfo.cinema;
         tempSessionChangedElement.cinemaRoom = changedSessionInfo.cinemaRoom;
         tempSessionChangedElement.film = changedSessionInfo.film;
