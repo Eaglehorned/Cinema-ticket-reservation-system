@@ -1,12 +1,13 @@
 .authentication-container{
     text-align: center;    
-    display: inline-block;
+    /* display: block; */
+    float: right;
 }
 
 .login, .logout{
     padding: 5px;
-    border-left: groove 1px black;
-    background-color: rgb(235, 235, 235);
+    /* border-left: groove 1px black; */
+    /* background-color: rgb(235, 235, 235); */
     position: relative;
     height: 183px;
     width: 450px;

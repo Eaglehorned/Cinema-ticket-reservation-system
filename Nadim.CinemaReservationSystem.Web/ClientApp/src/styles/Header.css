@@ -1,13 +1,13 @@
 .header{
-    display: flex;
-    align-items: center;
+    /* display: flex; */
+    /* align-items: center; */
     width: 100%;
     height: 185px;
     position: fixed;
     top: 0;
-    border: groove 1px black;
+    /* border: groove 1px black; */
     z-index: 1;
-    background-color: rgba(235, 235, 235);
+    background-color: #b29050; /*rgba(235, 235, 235);*/
 }
 
 .header-nav-menu{
@@ -21,4 +21,10 @@
     flex-grow: 1;
     padding: 10px;
     font-size: x-large;
+}
+
+.header-column1{
+    width: 100px; 
+    height: 100px;
+    float: left;
 }
