@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from '../Images/cinema_logo_white.png';
 import { Route, Link } from 'react-router-dom';
 import { Button, FormControl} from 'react-bootstrap';
 
@@ -11,7 +12,7 @@ const NavPanel = (props) =>{
                         <Link to="/">
                             <div className="logo">
                                 <img
-                                    src={require('../Images/cinema_logo_white.png')}
+                                    src={logo}
                                     alt="logo"
                                 />
                             </div>
