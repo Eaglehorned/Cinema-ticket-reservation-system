@@ -19,3 +19,8 @@ input {
     left:15%;
     width: 70%;
 }
+
+.wrap{
+    max-width: 1350px;
+    margin: 0 auto;
+}

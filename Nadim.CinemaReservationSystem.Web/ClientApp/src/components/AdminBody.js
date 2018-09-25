@@ -8,9 +8,9 @@ import userService from '../Services/UserService';
 const renderContent = (props) =>{
     return(
         <Switch>
-                <Route path={`${props.match.url}/cinema`} component={Cinema}/>
-                <Route path={`${props.match.url}/film`} component={Film}/>
-                <Route path={`${props.match.url}/session`} component={Session}/>
+            <Route path={`${props.match.url}/cinema`} component={Cinema}/>
+            <Route path={`${props.match.url}/film`} component={Film}/>
+            <Route path={`${props.match.url}/session`} component={Session}/>
         </Switch>
     );
 }
