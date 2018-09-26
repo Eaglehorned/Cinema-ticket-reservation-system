@@ -30,7 +30,7 @@
 .header .header-column .search-container{
     position: relative;
     padding-top: 60px;
-    padding-left: 30px;
+    padding-left: 32px;
 }
 
 .header .header-column .search-container .form-control{
@@ -51,7 +51,6 @@
     left: 0;
     color: white;
     font-size: 30px;
-    margin-right: 3px;
 }
 
 .header .header-column .logo{
