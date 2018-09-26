@@ -20,11 +20,12 @@ const NavPanel = (props) =>{
                     </div>
                     <div className="header-column">
                         <div className="search-container">
-                            <img 
-                                className="icon-image" 
-                                src={require('../Images/icons8-search-24.png')}
-                                alt="search"
-                            />
+                            <i className="material-icons icon-container" style={{
+                                color: 'white',
+                                fontSize: 30
+                            }}>
+                                search
+                            </i>
                             <FormControl
                                 type="text"
                                 name="search"

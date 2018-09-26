@@ -1,4 +1,5 @@
 @import '~antd/dist/antd.css';
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
 
 input {
     margin-bottom: 7px;
@@ -21,6 +22,6 @@ input {
 }
 
 .wrap{
-    max-width: 1350px;
+    width: 1350px;
     margin: 0 auto;
 }

@@ -44,11 +44,9 @@
     padding-top: 4px;
 }
 
-.header .header-column .search-container .icon-image{
-    padding: 3px;
-    display: block;
+.header .header-column .search-container .icon-container{
     float: left;
-    margin-right: 5px;
+    margin-right: 3px;
 }
 
 .header .header-column .logo{
