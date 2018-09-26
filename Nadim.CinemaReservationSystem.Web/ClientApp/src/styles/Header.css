@@ -28,8 +28,9 @@
 }
 
 .header .header-column .search-container{
-    height: 30px;
+    position: relative;
     padding-top: 60px;
+    padding-left: 30px;
 }
 
 .header .header-column .search-container .form-control{
@@ -45,7 +46,11 @@
 }
 
 .header .header-column .search-container .icon-container{
-    float: left;
+    position: absolute;
+    top: 60;
+    left: 0;
+    color: white;
+    font-size: 30px;
     margin-right: 3px;
 }
 

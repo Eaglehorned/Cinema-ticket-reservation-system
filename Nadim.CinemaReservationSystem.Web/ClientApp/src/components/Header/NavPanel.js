@@ -20,10 +20,7 @@ const NavPanel = (props) =>{
                     </div>
                     <div className="header-column">
                         <div className="search-container">
-                            <i className="material-icons icon-container" style={{
-                                color: 'white',
-                                fontSize: 30
-                            }}>
+                            <i className="material-icons icon-container">
                                 search
                             </i>
                             <FormControl
