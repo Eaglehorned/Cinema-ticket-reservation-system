@@ -7,11 +7,13 @@ import AdminBody from './AdminBody';
 const Body = () =>{
     return(
         <div className="body">
-            <Switch>
-                <Route path="/admin" component={AdminBody}/>
-                <Route path="/sessions" component={Reservation}/>
-                <Redirect from="/" to="/sessions"/>
-            </Switch>
+            <div className="wrap">
+                <Switch>
+                    <Route path="/admin" component={AdminBody}/>
+                    <Route path="/sessions" component={Reservation}/>
+                    <Redirect from="/" to="/sessions"/>
+                </Switch>
+            </div>
         </div>
     );
 }

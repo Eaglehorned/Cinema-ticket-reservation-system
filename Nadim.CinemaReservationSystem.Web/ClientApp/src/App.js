@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import applicationService from './Services/ApplicationService';
-import Header from './components/Header';
+import Header from './components/Header/Header';
 import Body from './components/Body';
 import MyAlert from './components/MyAlert';
 import { BrowserRouter as Router, Route} from 'react-router-dom';

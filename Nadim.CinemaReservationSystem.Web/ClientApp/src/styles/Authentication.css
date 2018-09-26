@@ -1,19 +1,42 @@
 .authentication-container{
-    text-align: center;    
-    display: inline-block;
+    float: right;
+    height: 183px;
 }
 
 .login, .logout{
-    padding: 5px;
-    border-left: groove 1px black;
-    background-color: rgb(235, 235, 235);
-    position: relative;
-    height: 183px;
-    width: 450px;
+    text-align: center;
+    padding: 10px;
 }
 
 .logout{
-    padding-top: 20px;
+    padding-top: 22px;
+}
+
+.login{
+    width: 380px;
+}
+
+.header .authentication-container .logout .buttons-container{
+    width: 100px;
+    margin: auto;
+}
+
+.header .authentication-container .btn-log-out{
+    height: 30px;
+    width: 100%;
+    padding-top: 4px;
+}
+
+.header .authentication-container .logout .buttons-container .btn-xs{
+    width: 45px;
+}
+
+.header .authentication-container .logout .buttons-container .left{
+    float: left;
+}
+
+.header .authentication-container .logout .buttons-container .right{
+    float: right;
 }
 
 .authentication-container button{
