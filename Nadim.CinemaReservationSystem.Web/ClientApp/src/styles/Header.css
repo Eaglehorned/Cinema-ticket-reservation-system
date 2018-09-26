@@ -37,7 +37,8 @@
     height: 30px;
     width: 300px;
     margin: 0 5px 0 0;
-    float: left;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .header .header-column .search-container .btn{
