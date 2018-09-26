@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
-import Cinema from './Cinema/Cinema';
-import Film from './Film/Film';
-import Session from './Session/Session';
-import userService from '../Services/UserService';
+import Cinema from '../Cinema/Cinema';
+import Film from '../Film/Film';
+import Session from '../Session/Session';
+import userService from '../../Services/UserService';
 
 const renderContent = (props) =>{
     return(

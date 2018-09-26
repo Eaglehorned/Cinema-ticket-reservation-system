@@ -1,0 +1,14 @@
+.carousele-image{
+    width: 100%;
+}
+
+.carousele-container{
+    min-width: 1350px;
+}
+
+.carousele-container .item .btn{
+    width: 150px;
+    position: absolute;
+    top: 80%;
+    left: 20%;
+}
