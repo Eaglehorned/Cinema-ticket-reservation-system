@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import DisplayFilm from './DisplayFilm';
+import img1 from '../Images/post-image-1.jpg';
 import sessionService from '../../Services/SessionService';
 import applicationService from '../../Services/ApplicationService';
 import Loading from '../General/Loading';
+import EventCard from './EventCard';
 
 class DisplaySessions extends Component{
     displayName = DisplaySessions.displayName;
@@ -40,19 +42,29 @@ class DisplaySessions extends Component{
     renderSessionByFilms = () =>{
         const films = this.state.sessions.map((el) =>el.film.filmId).filter((e, i, a) => a.indexOf(e) === i);
         return(            
-            <div className="list-container">
+            // <div className="list-container">
+            <React.Fragment>
                 {
-                    films.map((f) =>
-                        <DisplayFilm
-                            key={f}
-                            sessions={
-                                this.state.sessions.filter(s => s.film.filmId === f)
-                            }
-                            callBackHandleSessionAction={this.props.callBackHandleSessionAction}
+                    films.map((filmId) =>{
+                        // console.log(this.state.sessions.filter(s => s.film.filmId === filmId));
+                        // return <DisplayFilm
+                        //     key={filmId}
+                        //     sessions={
+                        //         this.state.sessions.filter(s => s.film.filmId === filmId)
+                        //     }
+                        //     callBackHandleSessionAction={this.props.callBackHandleSessionAction}
+                        // />
+                        return <EventCard
+                            key={filmId}
+                            film={{
+                                ...this.state.sessions.find(s => s.film.filmId === filmId).film,
+                                posterImage: img1
+                            }}
                         />
-                    )
+                    })
                 }
-            </div>
+            </React.Fragment>
+            // </div>
         );
     }
 
