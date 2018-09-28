@@ -7,6 +7,7 @@ import {Route, Redirect, Switch} from 'react-router-dom';
 import "../../styles/Body.css";
 import AdminBody from './AdminBody';
 import DisplayCarousel from './DisplayCarousel';
+import DisplayFilm from '../Reservation/DisplayFilm';
 
 const Body = () =>{
     return(
@@ -18,6 +19,7 @@ const Body = () =>{
                 <Switch>
                     <Route path="/admin" component={AdminBody}/>
                     <Route path="/sessions" component={Reservation}/>
+                    <Route path="/film/:filmId" component={Reservation}/>
                     <Redirect from="/" to="/sessions"/>
                 </Switch>
             </div>

@@ -54,6 +54,22 @@ namespace Nadim.CinemaReservationSystem.Web.Controllers
             return NotFound(result);
         }
 
+        [HttpGet("{filmId}")]
+        public IActionResult GetFilmSessions(int filmId)
+        {
+            GetResult<IEnumerable<ResponseSessionDisplayInfo>> result = filmService.GetFilmSessions(filmId);
+
+            if (result.ResultOk)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound(result);
+            }
+        }
+
+
         [Authorize(Roles = "admin")]
         [HttpPut("{filmId}")]
         public IActionResult EditFilm([FromBody] FilmInfo filmInfo, int filmId)

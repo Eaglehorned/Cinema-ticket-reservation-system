@@ -114,6 +114,18 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
+        public GetResult<IEnumerable<ResponseSessionDisplayInfo>> GetFilmSessions(int filmId) {
+            if (!FilmExists(filmId))
+            {
+                return new GetResult<IEnumerable<ResponseSessionDisplayInfo>>
+                {
+                    ResultOk = false,
+                    Details = "Such film does not exist."
+                };
+            }
+            //TODO return sessions
+        }
+
         public Result EditFilm(int filmId, FilmInfo filmInfo)
         {
             if (!FilmExists(filmId))

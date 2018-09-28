@@ -41,30 +41,20 @@ class DisplaySessions extends Component{
 
     renderSessionByFilms = () =>{
         const films = this.state.sessions.map((el) =>el.film.filmId).filter((e, i, a) => a.indexOf(e) === i);
-        return(            
-            // <div className="list-container">
+        return(
             <React.Fragment>
                 {
-                    films.map((filmId) =>{
-                        // console.log(this.state.sessions.filter(s => s.film.filmId === filmId));
-                        // return <DisplayFilm
-                        //     key={filmId}
-                        //     sessions={
-                        //         this.state.sessions.filter(s => s.film.filmId === filmId)
-                        //     }
-                        //     callBackHandleSessionAction={this.props.callBackHandleSessionAction}
-                        // />
-                        return <EventCard
+                    films.map((filmId) =>
+                        <EventCard
                             key={filmId}
                             film={{
                                 ...this.state.sessions.find(s => s.film.filmId === filmId).film,
                                 posterImage: img1
                             }}
                         />
-                    })
+                    )
                 }
             </React.Fragment>
-            // </div>
         );
     }
 

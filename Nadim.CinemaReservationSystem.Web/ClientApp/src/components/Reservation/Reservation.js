@@ -4,6 +4,7 @@ import SearchBar from './SearchBar';
 import ReserveTicket from './ReserveTicket';
 import DisplaySessions from './DisplaySessions';
 import '../../styles/Reservation.css';
+import DisplayFilm from './DisplayFilm';
 
 export default class Reservation extends Component{
     displayName = Reservation.displayName;
