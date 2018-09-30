@@ -7,6 +7,10 @@ class FilmService{
         return filmDataAccess.getFilmList();
     }
 
+    getFilmSessionsList = (filmId) => {
+        return filmDataAccess.getFilmSessionsList(filmId);
+    }
+
     getFilm = (id) =>{
         return filmDataAccess.getFilm(id);
     }

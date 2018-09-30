@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Nadim.CinemaReservationSystem.Web.Models;
 using Nadim.CinemaReservationSystem.Web.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Nadim.CinemaReservationSystem.Web.Services
 {
@@ -32,6 +33,26 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 && !String.IsNullOrEmpty(filmInfo.Description)
                 && filmInfo.StartDate < filmInfo.EndDate
                 && filmInfo.Duration != 0;
+        }
+
+        private IQueryable<Session> CreateFilteredFilmSessionsQuery(int filmId, FilmFilter filter)
+        {
+            IQueryable<Session> query = dbContext.Sessions
+                .Where(s => s.Film.FilmId == filmId)
+                .Include(s => s.Film)
+                .Include(s => s.CinemaRoom)
+                .Include(s => s.CinemaRoom.Cinema);
+
+            if (filter.StartDate != null)
+            {
+                query = query.Where(s => filter.StartDate < s.BeginTime);
+            }
+            if (filter.EndDate != null)
+            {
+                query = query.Where(s => s.BeginTime < filter.EndDate);
+            }
+
+            return query;
         }
 
         public GetResult<IEnumerable<ResponseFilmDisplayInfo>> GetFilmList()
@@ -114,7 +135,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             };
         }
 
-        public GetResult<IEnumerable<ResponseSessionDisplayInfo>> GetFilmSessions(int filmId) {
+        public GetResult<IEnumerable<ResponseSessionDisplayInfo>> GetFilmSessions(int filmId, FilmFilter filters)
+        {
             if (!FilmExists(filmId))
             {
                 return new GetResult<IEnumerable<ResponseSessionDisplayInfo>>
@@ -123,7 +145,33 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                     Details = "Such film does not exist."
                 };
             }
-            //TODO return sessions
+
+            return new GetResult<IEnumerable<ResponseSessionDisplayInfo>>
+            {
+                ResultOk = true,
+                RequestedData = CreateFilteredFilmSessionsQuery(filmId, filters)
+                .Select(s => new ResponseSessionDisplayInfo
+                {
+                    SessionId = s.SessionId,
+                    Film = new ResponseFilmDisplayInfo
+                    {
+                        FilmId = s.FilmId,
+                        Name = s.Film.Name
+                    },
+                    Cinema = new ResponseCinemaDisplayInfo
+                    {
+                        Name = s.CinemaRoom.Cinema.Name,
+                        City = s.CinemaRoom.Cinema.City,
+                        CinemaId = s.CinemaRoom.Cinema.CinemaId
+                    },
+                    CinemaRoom = new ResponseCinemaRoomDisplayInfo
+                    {
+                        Name = s.CinemaRoom.Name,
+                        CinemaRoomId = s.CinemaRoomId
+                    },
+                    BeginTime = s.BeginTime
+                })
+            };
         }
 
         public Result EditFilm(int filmId, FilmInfo filmInfo)

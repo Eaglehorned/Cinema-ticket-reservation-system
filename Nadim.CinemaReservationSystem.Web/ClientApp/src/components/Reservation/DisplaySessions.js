@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import DisplayFilm from './DisplayFilm';
-import img1 from '../Images/post-image-1.jpg';
+import img1 from '../Images/post-image-3.jpg';
 import sessionService from '../../Services/SessionService';
 import applicationService from '../../Services/ApplicationService';
 import Loading from '../General/Loading';

@@ -19,7 +19,7 @@ const Body = () =>{
                 <Switch>
                     <Route path="/admin" component={AdminBody}/>
                     <Route path="/sessions" component={Reservation}/>
-                    <Route path="/film/:filmId" component={Reservation}/>
+                    <Route path="/film/:filmId" component={DisplayFilm}/>
                     <Redirect from="/" to="/sessions"/>
                 </Switch>
             </div>

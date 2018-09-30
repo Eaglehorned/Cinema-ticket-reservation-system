@@ -47,9 +47,27 @@ const sendRequestToEditFilm = (filmInfo) =>{
     })
 }
 
+const sendRequestToGetFilmSessionsList = (filmId) =>{
+    return fetch(`api/films/${filmId}/sessions`,{
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `bearer ${userService.getToken()}`
+        }
+    });
+}
+
 class FilmDataAccess{
     getFilmList = () =>{
         return sendRequestToGetFilmList()
+        .then(receivedDataProcessingHelper.handleRequestError)
+        .then(receivedDataProcessingHelper.parseJson)
+        .then(receivedDataProcessingHelper.getRequestedData);
+    }
+
+    getFilmSessionsList = (filmId) =>{
+        return sendRequestToGetFilmSessionsList(filmId)
         .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(receivedDataProcessingHelper.getRequestedData);

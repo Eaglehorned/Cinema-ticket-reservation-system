@@ -35,6 +35,7 @@
 
 .event-card .post-card-image{
     width: 240px;
-    height: 360px;
+    height: 360px; 
+    object-fit: cover;
     border-radius: 10px;
 }

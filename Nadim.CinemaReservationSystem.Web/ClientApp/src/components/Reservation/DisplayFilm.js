@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import DisplayCinema from './DisplayCinema';
-import sessionService from '../../Services/SessionService';
 import applicationService from '../../Services/ApplicationService';
 import Loading from '../General/Loading';
+import img1 from '../Images/post-image-1.jpg';
+import filmService from '../../Services/FilmService';
+import '../../styles/DisplayFilm.css';
+import CinemaSessionTimes from './CinemaSessionTimes';
 
 export default class DisplayFilm extends Component{
     displayName = DisplayFilm.displayName;
@@ -13,46 +15,54 @@ export default class DisplayFilm extends Component{
             sessions: undefined,
             dataIsLoaded: false
         }
-        // this.getSessionListWithFilters(this.props.location.search);
+        this.getFilmSessionList(this.props.match.params.filmId);
     }
 
-    // getSessionListWithFilters = (searchString) =>{
-    //     sessionService.getSessionListWithFilters(searchString)
-    //     .then(requestedData => {
-    //         this.setState({
-    //             sessions: requestedData,
-    //             dataIsLoaded: true
-    //         });
-    //     })
-    //     .catch(error => applicationService.informWithErrorMessage(error));
-    // }
+    getFilmSessionList = (filmId) =>{
+        filmService.getFilmSessionsList(filmId)
+        .then(requestedData => {
+            this.setState({
+                sessions: requestedData,
+                dataIsLoaded: true
+            });
+            console.log(requestedData);
+        })
+        .catch(error => applicationService.informWithErrorMessage(error));
+    }
 
     renderContent = () =>{
+        const cinemas = this.state.sessions.map((el) =>el.cinema.cinemaId).filter((e, i, a) => a.indexOf(e) === i);
         return(
-            <React.Fragment>
-                
-            </React.Fragment>
+            <div>
+                <div className ="movie-container">
+                    <div className="movie-info">
+                        <div className="image-container">
+                            <img className="movie-info-image" alt="movie poster image" src={img1}/>
+                        </div>
+                        <div className="movie-info-main">
+                            <h1>
+                                {this.state.sessions[0].film.name}
+                            </h1>
+                        </div>
+                    </div>
+                    <div className="movie-times">
+                        {cinemas.map((cinemaId) =>
+                            <CinemaSessionTimes
+                                key={cinemaId}
+                                sessions={this.state.sessions.filter((el) => 
+                                    el.cinema.cinemaId === cinemaId
+                                )}
+                            />    
+                        )}
+                    </div>
+                </div>
+            </div>
         );
     }
 
     render(){
-        // const cinemas = this.props.sessions.map((el) =>el.cinema.cinemaId).filter((e, i, a) => a.indexOf(e) === i);
         const content = this.state.dataIsLoaded ? this.renderContent() : <Loading/>;
         return(
-            // <div className="session-film-display-container">
-            //     <h2>{this.props.sessions[0].film.name}</h2>
-            //     {
-            //         cinemas.map((c) =>
-            //             <DisplayCinema
-            //                 key={c}
-            //                 sessions={
-            //                     this.props.sessions.filter(s => s.cinema.cinemaId === c)
-            //                 }
-            //                 callBackHandleSessionAction={this.props.callBackHandleSessionAction}
-            //             />
-            //         )
-            //     }
-            // </div>
             <React.Fragment>
                 {content}
             </React.Fragment>

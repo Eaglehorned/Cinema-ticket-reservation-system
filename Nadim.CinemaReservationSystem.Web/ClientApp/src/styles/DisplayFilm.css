@@ -1,0 +1,40 @@
+.movie-container{
+    padding: 30px;
+}
+
+.movie-info{
+    margin-bottom: 30px;
+}
+
+.movie-info:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.movie-info .image-container{
+    padding-right: 40px;
+    float: left;
+}
+
+.movie-info .image-container .movie-info-image{
+    width: 160px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.movie-times{
+    width: 100%;
+}
+
+.movie-times .cinema-session-times-container:first-child{
+    border-top: 5px solid #524e4a; 
+}
+
+.movie-times .cinema-session-times-container{
+    border-bottom: 5px solid #524e4a; 
+}
+
+
+
