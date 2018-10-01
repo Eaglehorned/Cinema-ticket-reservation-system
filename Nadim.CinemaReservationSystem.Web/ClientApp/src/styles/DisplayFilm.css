@@ -33,8 +33,27 @@
 }
 
 .movie-times .cinema-session-times-container{
-    border-bottom: 5px solid #524e4a; 
+    padding: 35px 20px;
+    border-bottom: 5px solid #524e4a;
 }
 
+.movie-times .cinema-session-times-container .cinema-info{
+    display: inline-block;
+    width: 185px;
+    padding-right: 35px;
+}
 
+.movie-times .cinema-session-times-container .cinema-info .heading{
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: x-large;
+}
 
+.movie-times .cinema-session-times-container .cinema-info .location{
+    font-size: medium;
+}
+
+.movie-times .cinema-session-times-container .session-cards-container{
+    display: inline-block;
+    vertical-align: top;
+}

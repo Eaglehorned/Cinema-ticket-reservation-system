@@ -1,19 +1,19 @@
 import React from 'react';
-import '../../styles/EventCard.css';
+import '../../styles/FilmCard.css';
 import { Link, withRouter } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 
-const EventCard = (props) =>{
+const FilmCard = (props) =>{
     return(
-        <div className="event-card">
+        <div className="film-card">
             <div className="post-card-image-container">
                 <Link 
                     to={`/film/${props.film.filmId}`}
                 >   
-                    <img className="post-card-image" src={props.film.posterImage}/>
+                    <img alt="film poster" className="post-card-image" src={props.film.posterImage}/>
                 </Link>
             </div>
-            <div className="event-card-name">
+            <div className="film-card-name">
                 <Link
                     to={`/film/${props.film.filmId}`}
                 >
@@ -22,7 +22,7 @@ const EventCard = (props) =>{
             </div>
             <div>
                 <Button
-                    className="event-card-button"
+                    className="film-card-button"
                     onClick={()=> props.history.push(`/film/${props.film.filmId}`)}
                 >
                     Buy
@@ -32,4 +32,4 @@ const EventCard = (props) =>{
     );
 }
 
-export default withRouter(EventCard);
+export default withRouter(FilmCard);

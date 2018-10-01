@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 var informWithMessage = undefined;
 
 class ApplicationService{
@@ -30,6 +32,20 @@ class ApplicationService{
         }
         
         return filterString;
+    }
+
+    getNearestTimeSearchString = () =>{
+        return this.convertFiltersToFilterString({
+            startDate: moment().format('L'),
+            endDate: moment().add(14, 'days').format('L')
+        });
+    }
+
+    getTodayTimeSearchString = () =>{
+        return this.convertFiltersToFilterString({
+            startDate: moment().format('L'),
+            endDate: moment().add(1, 'days').format('L')
+        });
     }
 }
 

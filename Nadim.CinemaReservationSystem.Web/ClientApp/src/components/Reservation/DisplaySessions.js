@@ -4,7 +4,7 @@ import img1 from '../Images/post-image-3.jpg';
 import sessionService from '../../Services/SessionService';
 import applicationService from '../../Services/ApplicationService';
 import Loading from '../General/Loading';
-import EventCard from './EventCard';
+import FilmCard from './FilmCard';
 
 class DisplaySessions extends Component{
     displayName = DisplaySessions.displayName;
@@ -17,14 +17,19 @@ class DisplaySessions extends Component{
         }
     }
     
+    componentWillMount(){
+        if(this.props.location.search === applicationService.getNearestTimeSearchString()){
+            this.getSessionListWithFilters(this.props.location.search);
+        }
+        else{
+            this.props.history.push(`${this.props.match.url}${applicationService.getNearestTimeSearchString()}`);
+        }
+    }
+    
     componentWillReceiveProps(nextProps){
         if (this.props.location.search !== nextProps.location.search){
             this.getSessionListWithFilters(nextProps.location.search);
         }
-    }
-
-    componentWillMount(){
-        this.getSessionListWithFilters(this.props.location.search);
     }
 
     getSessionListWithFilters = (searchString) =>{
@@ -44,7 +49,7 @@ class DisplaySessions extends Component{
             <React.Fragment>
                 {
                     films.map((filmId) =>
-                        <EventCard
+                        <FilmCard
                             key={filmId}
                             film={{
                                 ...this.state.sessions.find(s => s.film.filmId === filmId).film,

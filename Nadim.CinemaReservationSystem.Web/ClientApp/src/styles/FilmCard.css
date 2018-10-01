@@ -1,39 +1,40 @@
-.event-card{
-    width: 280px;
+.film-card{
+    width: 318px;
     margin-top: 20px;
-    padding: 0 20px;
+    margin-bottom: 20px; 
+    padding: 0 39px;
     display: inline-block;
 }
 
-.event-card .post-card-image-container{
+.film-card .post-card-image-container{
     width: 240px;
     height: 360px;
     margin-bottom: 15px; 
 }
 
-.event-card .event-card-name{
+.film-card .film-card-name{
     text-align: center;
     margin-bottom: 10px;
 }
 
-.event-card .event-card-name a{
+.film-card .film-card-name a{
     font-size: x-large;
     font-weight: bold;
     color: black;
     transition: 0.3s ;
 }
 
-.event-card .event-card-name a:hover{
+.film-card .film-card-name a:hover{
     color: rgb(120, 120, 120);
 }
 
-.event-card .event-card-button{
+.film-card .film-card-button{
     width: 150px;
     display: block;
     margin: 0 auto;
 }
 
-.event-card .post-card-image{
+.film-card .post-card-image{
     width: 240px;
     height: 360px; 
     object-fit: cover;

@@ -47,8 +47,8 @@ const sendRequestToEditFilm = (filmInfo) =>{
     })
 }
 
-const sendRequestToGetFilmSessionsList = (filmId) =>{
-    return fetch(`api/films/${filmId}/sessions`,{
+const sendRequestToGetFilmSessionsList = (filmId, searchString) =>{
+    return fetch(`api/films/${filmId}/sessions${searchString}`,{
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -66,8 +66,8 @@ class FilmDataAccess{
         .then(receivedDataProcessingHelper.getRequestedData);
     }
 
-    getFilmSessionsList = (filmId) =>{
-        return sendRequestToGetFilmSessionsList(filmId)
+    getFilmSessionsList = (filmId, searchString) =>{
+        return sendRequestToGetFilmSessionsList(filmId, searchString)
         .then(receivedDataProcessingHelper.handleRequestError)
         .then(receivedDataProcessingHelper.parseJson)
         .then(receivedDataProcessingHelper.getRequestedData);

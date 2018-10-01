@@ -3,8 +3,9 @@ import applicationService from '../../Services/ApplicationService';
 import Loading from '../General/Loading';
 import img1 from '../Images/post-image-1.jpg';
 import filmService from '../../Services/FilmService';
-import '../../styles/DisplayFilm.css';
 import CinemaSessionTimes from './CinemaSessionTimes';
+import SearchBar from './SearchBar';
+import '../../styles/DisplayFilm.css';
 
 export default class DisplayFilm extends Component{
     displayName = DisplayFilm.displayName;
@@ -12,40 +13,92 @@ export default class DisplayFilm extends Component{
     constructor(props){
         super(props);
         this.state={
+            film: undefined,
             sessions: undefined,
             dataIsLoaded: false
         }
-        this.getFilmSessionList(this.props.match.params.filmId);
     }
 
-    getFilmSessionList = (filmId) =>{
-        filmService.getFilmSessionsList(filmId)
+    componentWillMount(){
+        if(this.props.location.search === applicationService.getTodayTimeSearchString()){
+            this.getFilmSessionList(this.props.match.params.filmId, this.props.location.search);
+        }
+        else{
+            this.props.history.push(`${this.props.match.url}${applicationService.getTodayTimeSearchString()}`);
+        }
+    }
+    
+    componentWillReceiveProps(nextProps){
+        if (this.props.location.search !== nextProps.location.search){
+            this.getFilmSessionList(this.props.match.params.filmId, nextProps.location.search);
+        }
+    }
+
+    getFilmSessionList = (filmId, searchString) =>{
+        filmService.getFilm(filmId)
+        .then(requestedData =>{
+            this.setState({
+                film: requestedData
+            })
+        })
+        .then(() => filmService.getFilmSessionsList(filmId, searchString))
         .then(requestedData => {
             this.setState({
                 sessions: requestedData,
                 dataIsLoaded: true
             });
-            console.log(requestedData);
         })
         .catch(error => applicationService.informWithErrorMessage(error));
     }
 
+    renderCinemaSessionTimes = (cinemasIds) =>{
+        return(
+            <div className="movie-times">
+                {cinemasIds.map((cinemaId) =>
+                    <CinemaSessionTimes
+                        key={cinemaId}
+                        sessions={this.state.sessions.filter((el) => 
+                            el.cinema.cinemaId === cinemaId
+                        )}
+                    />
+                )}
+            </div>
+        );
+    }
+
+    renderNothingFound = () =>{
+        return(
+            <div className="font-bold font-x-large">
+                Nothing found.
+            </div>
+        );
+    }
+
     renderContent = () =>{
-        const cinemas = this.state.sessions.map((el) =>el.cinema.cinemaId).filter((e, i, a) => a.indexOf(e) === i);
+        let cinemasSessionsTimes;
+
+        if (this.state.sessions.length === 0){
+            cinemasSessionsTimes = this.renderNothingFound();
+        }
+        else{
+            cinemasSessionsTimes = this.renderCinemaSessionTimes(this.state.sessions.map((el) =>el.cinema.cinemaId).filter((e, i, a) => a.indexOf(e) === i));
+        }
+
         return(
             <div>
                 <div className ="movie-container">
                     <div className="movie-info">
                         <div className="image-container">
-                            <img className="movie-info-image" alt="movie poster image" src={img1}/>
+                            <img className="movie-info-image" alt="movie poster" src={img1}/>
                         </div>
                         <div className="movie-info-main">
                             <h1>
-                                {this.state.sessions[0].film.name}
+                                {this.state.film.name}
                             </h1>
                         </div>
                     </div>
-                    <div className="movie-times">
+                    {cinemasSessionsTimes}
+                    {/* <div className="movie-times">
                         {cinemas.map((cinemaId) =>
                             <CinemaSessionTimes
                                 key={cinemaId}
@@ -54,7 +107,7 @@ export default class DisplayFilm extends Component{
                                 )}
                             />    
                         )}
-                    </div>
+                    </div> */}
                 </div>
             </div>
         );
@@ -64,6 +117,7 @@ export default class DisplayFilm extends Component{
         const content = this.state.dataIsLoaded ? this.renderContent() : <Loading/>;
         return(
             <React.Fragment>
+                <SearchBar/>
                 {content}
             </React.Fragment>
         );
