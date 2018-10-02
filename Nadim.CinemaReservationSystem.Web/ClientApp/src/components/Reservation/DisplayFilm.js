@@ -3,8 +3,8 @@ import applicationService from '../../Services/ApplicationService';
 import Loading from '../General/Loading';
 import img1 from '../Images/post-image-1.jpg';
 import filmService from '../../Services/FilmService';
-import CinemaSessionTimes from './CinemaSessionTimes';
 import SearchBar from './SearchBar';
+import DisplayCinemaSessionsTimesByDate from './DisplayCinemaSessionsTimesByDate';
 import '../../styles/DisplayFilm.css';
 
 export default class DisplayFilm extends Component{
@@ -20,11 +20,11 @@ export default class DisplayFilm extends Component{
     }
 
     componentWillMount(){
-        if(this.props.location.search === applicationService.getTodayTimeSearchString()){
+        if(this.props.location.search === applicationService.getFromTodayTimeSearchString()){
             this.getFilmSessionList(this.props.match.params.filmId, this.props.location.search);
         }
         else{
-            this.props.history.push(`${this.props.match.url}${applicationService.getTodayTimeSearchString()}`);
+            this.props.history.push(`${this.props.match.url}${applicationService.getFromTodayTimeSearchString()}`);
         }
     }
     
@@ -51,21 +51,6 @@ export default class DisplayFilm extends Component{
         .catch(error => applicationService.informWithErrorMessage(error));
     }
 
-    renderCinemaSessionTimes = (cinemasIds) =>{
-        return(
-            <div className="movie-times">
-                {cinemasIds.map((cinemaId) =>
-                    <CinemaSessionTimes
-                        key={cinemaId}
-                        sessions={this.state.sessions.filter((el) => 
-                            el.cinema.cinemaId === cinemaId
-                        )}
-                    />
-                )}
-            </div>
-        );
-    }
-
     renderNothingFound = () =>{
         return(
             <div className="font-bold font-x-large">
@@ -76,12 +61,14 @@ export default class DisplayFilm extends Component{
 
     renderContent = () =>{
         let cinemasSessionsTimes;
-
+        
         if (this.state.sessions.length === 0){
             cinemasSessionsTimes = this.renderNothingFound();
         }
         else{
-            cinemasSessionsTimes = this.renderCinemaSessionTimes(this.state.sessions.map((el) =>el.cinema.cinemaId).filter((e, i, a) => a.indexOf(e) === i));
+            cinemasSessionsTimes = <DisplayCinemaSessionsTimesByDate
+                sessions={this.state.sessions}
+            />;
         }
 
         return(
@@ -98,16 +85,6 @@ export default class DisplayFilm extends Component{
                         </div>
                     </div>
                     {cinemasSessionsTimes}
-                    {/* <div className="movie-times">
-                        {cinemas.map((cinemaId) =>
-                            <CinemaSessionTimes
-                                key={cinemaId}
-                                sessions={this.state.sessions.filter((el) => 
-                                    el.cinema.cinemaId === cinemaId
-                                )}
-                            />    
-                        )}
-                    </div> */}
                 </div>
             </div>
         );

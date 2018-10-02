@@ -12,6 +12,10 @@
     display: table;
 }
 
+.movie-info .movie-info-main h1{
+    font-size: 45px;
+}
+
 .movie-info .image-container{
     padding-right: 40px;
     float: left;
@@ -24,36 +28,43 @@
     border-radius: 8px;
 }
 
-.movie-times{
-    width: 100%;
+.session-times-by-date-item .date{
+    padding: 60px 20px 40px;
+    font-size: 30px;
+    font-weight: bold;
 }
 
-.movie-times .cinema-session-times-container:first-child{
-    border-top: 5px solid #524e4a; 
+.session-times-by-date-item:first-child .date{
+    padding-top: 20px;
 }
 
-.movie-times .cinema-session-times-container{
-    padding: 35px 20px;
-    border-bottom: 5px solid #524e4a;
+.cinema-session-times-container:first-child{
+    border-top: 2px solid #524e4a; 
 }
 
-.movie-times .cinema-session-times-container .cinema-info{
+.cinema-session-times-container{
+    margin: 0 50px;
+    padding: 25px 20px;
+    border-bottom: 2px solid #524e4a;
+}
+
+.cinema-session-times-container .cinema-info{
     display: inline-block;
     width: 185px;
     padding-right: 35px;
 }
 
-.movie-times .cinema-session-times-container .cinema-info .heading{
+.cinema-session-times-container .cinema-info .heading{
     margin-bottom: 10px;
     font-weight: bold;
     font-size: x-large;
 }
 
-.movie-times .cinema-session-times-container .cinema-info .location{
+.cinema-session-times-container .cinema-info .location{
     font-size: medium;
 }
 
-.movie-times .cinema-session-times-container .session-cards-container{
+.cinema-session-times-container .session-cards-container{
     display: inline-block;
     vertical-align: top;
 }

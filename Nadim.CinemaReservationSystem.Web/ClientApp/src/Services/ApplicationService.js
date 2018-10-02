@@ -41,10 +41,9 @@ class ApplicationService{
         });
     }
 
-    getTodayTimeSearchString = () =>{
+    getFromTodayTimeSearchString = () =>{
         return this.convertFiltersToFilterString({
-            startDate: moment().format('L'),
-            endDate: moment().add(1, 'days').format('L')
+            startDate: moment().format('L')
         });
     }
 }
