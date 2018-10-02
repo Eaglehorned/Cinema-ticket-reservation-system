@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { Route } from 'react-router-dom';
+import moment from 'moment';
 import applicationService from '../../Services/ApplicationService';
 import Loading from '../General/Loading';
 import img1 from '../Images/post-image-1.jpg';
 import filmService from '../../Services/FilmService';
-import SearchBar from './SearchBar';
 import DisplayCinemaSessionsTimesByDate from './DisplayCinemaSessionsTimesByDate';
+import FilmDatesPanel from './FilmDatesPanel';
 import '../../styles/DisplayFilm.css';
 
 export default class DisplayFilm extends Component{
@@ -73,6 +75,9 @@ export default class DisplayFilm extends Component{
 
         return(
             <div>
+                <Route path={`${this.props.match.url}`} render={() =>(<FilmDatesPanel
+                   dates={this.state.sessions.map((el) =>moment(el.beginTime).format('L')).filter((e, i, a) => a.indexOf(e) === i)} 
+                />)}/>
                 <div className ="movie-container">
                     <div className="movie-info">
                         <div className="image-container">
@@ -94,7 +99,6 @@ export default class DisplayFilm extends Component{
         const content = this.state.dataIsLoaded ? this.renderContent() : <Loading/>;
         return(
             <React.Fragment>
-                <SearchBar/>
                 {content}
             </React.Fragment>
         );
