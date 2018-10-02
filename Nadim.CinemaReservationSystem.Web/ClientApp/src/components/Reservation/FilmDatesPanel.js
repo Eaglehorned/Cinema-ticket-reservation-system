@@ -5,21 +5,32 @@ import '../../styles/FilmDatesPanel.css';
 import applicationService from '../../Services/ApplicationService';
 
 const FilmDatesPanel = (props) =>{
-    //TODO need to fix, now url changes and this causes requesting sessions on one day,
-    // this panel get dates from sessions, so after requesting session for one day
-    //this panel will have only one day
     return(
         <div className="film-dates-panel">
-            {props.dates.map(el => 
+            <div className="date-container">
                 <Link 
-                    to={`${props.match.url}${applicationService.convertFiltersToFilterString({
-                        startDate: moment(el).format('L'),
-                        endDate: (moment(el).add(1, 'day')).format('L')
-                    })}`}
-                    className="date"
+                    to={`${props.match.url}${applicationService.getFromTodayTimeSearchString()}`}
                 >
-                    {moment(el).format('D MMM')}
+                    <div className="date">
+                        All days
+                    </div>
                 </Link>
+            </div>
+            {props.dates.map((el, i) => 
+                <div className="date-container"
+                    key={i}
+                >
+                    <Link 
+                        to={`${props.match.url}${applicationService.convertFiltersToFilterString({
+                            startDate: moment(el).format('L'),
+                            endDate: (moment(el).add(1, 'day')).format('L')
+                        })}`}
+                    >
+                        <div className="date">
+                            {moment(el).format('D MMM')}
+                        </div>
+                    </Link>
+                </div>
             )}
         </div>
     );

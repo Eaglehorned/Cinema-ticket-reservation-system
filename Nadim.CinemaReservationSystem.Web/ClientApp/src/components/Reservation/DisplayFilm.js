@@ -17,24 +17,52 @@ export default class DisplayFilm extends Component{
         this.state={
             film: undefined,
             sessions: undefined,
-            dataIsLoaded: false
+            dataIsLoaded: false,
+            startDate: undefined,
+            endDate: undefined
         }
     }
 
     componentWillMount(){
-        if(this.props.location.search === applicationService.getFromTodayTimeSearchString()){
-            this.getFilmSessionList(this.props.match.params.filmId, this.props.location.search);
+        this.getFilmSessionList(this.props.match.params.filmId, applicationService.getFromTodayTimeSearchString());
+        if (!this.props.location.search){
+            this.props.history.push(`${this.props.match.url}${applicationService.getFromTodayTimeSearchString()}`);
         }
         else{
-            this.props.history.push(`${this.props.match.url}${applicationService.getFromTodayTimeSearchString()}`);
+            this.setFilterDates(this.props.location.search);
         }
     }
     
     componentWillReceiveProps(nextProps){
         if (this.props.location.search !== nextProps.location.search){
-            this.getFilmSessionList(this.props.match.params.filmId, nextProps.location.search);
+            this.setFilterDates(nextProps.location.search);
         }
     }
+
+    setFilterDates = (searchString) =>{
+        const dates = applicationService.parseQueryString(searchString);
+        if (dates.startDate){
+            dates.startDate = moment(dates.startDate);
+        }
+        if (dates.endDate){
+            dates.endDate = moment(dates.endDate);
+        }
+        this.setState({
+            startDate: dates.startDate,
+            endDate: dates.endDate
+        });
+    }
+
+    filterSessionsByDate = (sessions, startDate, endDate) =>{
+        let filteredSessions = sessions;
+        if(startDate){
+            filteredSessions = filteredSessions.filter(el => startDate.isSameOrBefore(moment(el.beginTime)));
+        }
+        if(endDate){
+            filteredSessions = filteredSessions.filter(el => endDate.isSameOrAfter(moment(el.beginTime)));
+        }
+        return filteredSessions;
+    } 
 
     getFilmSessionList = (filmId, searchString) =>{
         filmService.getFilm(filmId)
@@ -69,7 +97,7 @@ export default class DisplayFilm extends Component{
         }
         else{
             cinemasSessionsTimes = <DisplayCinemaSessionsTimesByDate
-                sessions={this.state.sessions}
+                sessions={this.filterSessionsByDate(this.state.sessions, this.state.startDate, this.state.endDate)}
             />;
         }
 
