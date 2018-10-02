@@ -1,21 +1,8 @@
 import React from 'react';
-import moment from 'moment';
 import SessionCard from './SessionCard';
+import sessionService from '../../Services/SessionService';
 
-const CinemaSessionTimes = (props) =>{
-
-    const sortSessionByTime = (sessions) =>{
-        return sessions.sort((a, b)=>{
-            if (moment(a.beginTime) > moment(b.beginTime)){
-                return 1;
-            }
-            if(moment(a.beginTime) < moment(b.beginTime)){
-                return -1;
-            }
-            return 0;
-        });
-    }
-    
+const CinemaSessionTimes = (props) =>{    
     return(
         <div className="cinema-session-times-container">
             <div className="cinema-info">
@@ -27,7 +14,7 @@ const CinemaSessionTimes = (props) =>{
                 </div>
             </div>
             <div className="session-cards-container">
-                {sortSessionByTime(props.sessions).map(el =>
+                {sessionService.sortSessionByTime(props.sessions).map(el =>
                     <SessionCard
                         key={el.sessionId}
                         session={el}

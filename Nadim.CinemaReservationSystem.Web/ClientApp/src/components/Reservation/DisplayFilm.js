@@ -8,6 +8,7 @@ import filmService from '../../Services/FilmService';
 import DisplayCinemaSessionsTimesByDate from './DisplayCinemaSessionsTimesByDate';
 import FilmDatesPanel from './FilmDatesPanel';
 import '../../styles/DisplayFilm.css';
+import sessionService from '../../Services/SessionService';
 
 export default class DisplayFilm extends Component{
     displayName = DisplayFilm.displayName;
@@ -53,17 +54,6 @@ export default class DisplayFilm extends Component{
         });
     }
 
-    filterSessionsByDate = (sessions, startDate, endDate) =>{
-        let filteredSessions = sessions;
-        if(startDate){
-            filteredSessions = filteredSessions.filter(el => startDate.isSameOrBefore(moment(el.beginTime)));
-        }
-        if(endDate){
-            filteredSessions = filteredSessions.filter(el => endDate.isSameOrAfter(moment(el.beginTime)));
-        }
-        return filteredSessions;
-    } 
-
     getFilmSessionList = (filmId, searchString) =>{
         filmService.getFilm(filmId)
         .then(requestedData =>{
@@ -97,7 +87,7 @@ export default class DisplayFilm extends Component{
         }
         else{
             cinemasSessionsTimes = <DisplayCinemaSessionsTimesByDate
-                sessions={this.filterSessionsByDate(this.state.sessions, this.state.startDate, this.state.endDate)}
+                sessions={sessionService.filterSessionsByDate(this.state.sessions, this.state.startDate, this.state.endDate)}
             />;
         }
 
