@@ -41,7 +41,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
                 .Where(s => s.Film.FilmId == filmId)
                 .Include(s => s.Film)
                 .Include(s => s.CinemaRoom)
-                .Include(s => s.CinemaRoom.Cinema);
+                .Include(s => s.CinemaRoom.Cinema)
+                .AsNoTracking();
 
             if (filter.StartDate != null)
             {

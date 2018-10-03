@@ -1,8 +1,9 @@
 import React from 'react';
 import CinemaSessionTimes from './CinemaSessionTimes';
+import filmService from '../../Services/FilmService';
 
 const DisplayCinemasSessionsTimes = (props) =>{
-    const cinemasIds = props.sessions.map((el) =>el.cinema.cinemaId).filter((e, i, a) => a.indexOf(e) === i);
+    const cinemasIds = filmService.getFilmSessionsCinemasIds(props.sessions);
     
     return(
         <div>

@@ -47,11 +47,15 @@ class ApplicationService{
         });
     }
 
+    getUniqueObjectsOfArray = (arr) =>{
+        return arr.filter((el, index, array) => array.indexOf(el) === index);
+    }
+
     parseQueryString = (queryString) =>{
-        let query = {};
-        let pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+        const query = {};
+        const pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
         for (let i = 0; i < pairs.length; i++) {
-            let pair = pairs[i].split('=');
+            const pair = pairs[i].split('=');
             query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
         }
         return query;

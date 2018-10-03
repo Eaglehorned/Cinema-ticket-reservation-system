@@ -1,16 +1,17 @@
 import React from 'react';
 import moment from 'moment';
 import DisplayCinemasSessionsTimes from './DisplayCinemasSessionsTimes';
+import filmService from '../../Services/FilmService';
 
 
 const DisplayCinemaSessionsTimesByDate = (props) =>{
-    const dates = props.sessions.map((el) =>moment(el.beginTime).format('L')).filter((e, i, a) => a.indexOf(e) === i);
+    const dates = filmService.getFilmSessionsDates(props.sessions);
     return(
         <div>
-            {dates.map((el, i)=>{
+            {dates.map((el, index)=>{
                 return(
                     <div className="session-times-by-date-item"
-                        key={i} 
+                        key={index} 
                     >
                         <div className="date">
                             {moment(el).format('D MMMM')}

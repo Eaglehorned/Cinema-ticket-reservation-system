@@ -171,7 +171,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
             IQueryable<Session> query = dbContext.Sessions
                 .Include(s => s.Film)
                 .Include(s => s.CinemaRoom)
-                .Include(s => s.CinemaRoom.Cinema);
+                .Include(s => s.CinemaRoom.Cinema)
+                .AsNoTracking();
 
             if (filter.FilmId != null)
             {
@@ -192,7 +193,8 @@ namespace Nadim.CinemaReservationSystem.Web.Services
         private IQueryable<SessionSeat> CreateFilteredSessionSeatsQuery(int sessionId, DateTime? lastTimeUpdated)
         {
             IQueryable<SessionSeat> query = dbContext.SessionSeats
-                .Where(ss => ss.SessionId == sessionId);
+                .Where(ss => ss.SessionId == sessionId)
+                .AsNoTracking();
 
             if (lastTimeUpdated != null)
             {

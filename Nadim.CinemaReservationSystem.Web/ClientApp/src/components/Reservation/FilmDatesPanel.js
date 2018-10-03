@@ -1,8 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 import { Link, withRouter } from 'react-router-dom';
-import '../../styles/FilmDatesPanel.css';
 import applicationService from '../../Services/ApplicationService';
+import '../../styles/FilmDatesPanel.css';
 
 const FilmDatesPanel = (props) =>{
     return(
