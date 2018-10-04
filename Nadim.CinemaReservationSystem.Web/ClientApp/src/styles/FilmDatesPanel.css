@@ -1,0 +1,31 @@
+.film-dates-panel{
+    padding: 0 25px;
+    margin: 30px 0;
+    border-top: 2px solid rgb(206, 204, 204);
+    border-bottom: 2px solid rgb(206, 204, 204);
+}
+
+.film-dates-panel .date-container{
+    display: inline-block;
+    padding: 15px 10px;
+}
+
+.film-dates-panel .date-container:first-child{
+    border-right: 2px solid rgb(206, 204, 204);
+}
+
+.film-dates-panel .date{
+    border: 1px solid rgb(77, 73, 73);
+    background-color: rgb(77, 73, 73);
+    border-radius: 20px;
+    color: whitesmoke;
+    min-width: 60px;
+    padding: 5px 8px;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.film-dates-panel .date:hover{
+    color: rgb(77, 73, 73);
+    background-color: white;
+}

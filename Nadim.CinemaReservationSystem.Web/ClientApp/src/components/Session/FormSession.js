@@ -86,11 +86,7 @@ class FormSession extends Component{
                 chosenCinemaRoomsList: requestedData
             });
         })
-        .catch(error => this.informWithMessage(
-            { 
-                text: error.message,
-                isError: true
-            })
+        .catch(error => applicationService.informWithErrorMessage(error)
         );
     }
 

@@ -6,7 +6,7 @@ import { Button, FormControl} from 'react-bootstrap';
 const NavPanel = (props) =>{
     if (props.role !== 'admin'){
         return(
-            <Route path="/sessions" render={() => (
+            <Route path="/" render={() => (
                 <React.Fragment>
                     <div className="header-column">
                         <Link to="/">

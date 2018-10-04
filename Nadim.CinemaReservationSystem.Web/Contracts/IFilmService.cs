@@ -14,6 +14,8 @@ namespace Nadim.CinemaReservationSystem.Web.Contracts
 
         GetResult<FilmInfo> GetFilm(int filmId);
 
+        GetResult<IEnumerable<ResponseSessionDisplayInfo>> GetFilmSessions(int filmId, FilmFilter filter);
+
         Result EditFilm(int filmId, FilmInfo filmInfo);
 
     }

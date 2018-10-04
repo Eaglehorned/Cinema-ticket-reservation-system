@@ -1,0 +1,7 @@
+.search-bar-container{
+    width: 100%;
+    padding: 20px 40px;
+    margin: 30px 0;
+    border-top: 2px solid rgb(206, 204, 204);
+    border-bottom: 2px solid rgb(206, 204, 204);
+}

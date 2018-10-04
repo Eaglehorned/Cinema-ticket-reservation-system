@@ -1,5 +1,6 @@
 import sessionDataAccess from '../DataAccess/SessionDataAccess';
 import validationService from './ValidationService';
+import moment from 'moment';
 
 class SessionService{
     getSessionList = () =>{
@@ -116,6 +117,29 @@ class SessionService{
 
         return chosenSeats;
     }
+
+    sortSessionByTime = (sessions) =>{
+        return sessions.sort((a, b)=>{
+            if (moment(a.beginTime) > moment(b.beginTime)){
+                return 1;
+            }
+            if(moment(a.beginTime) < moment(b.beginTime)){
+                return -1;
+            }
+            return 0;
+        });
+    }
+
+    filterSessionsByDate = (sessions, startDate, endDate) =>{
+        let filteredSessions = sessions;
+        if(startDate){
+            filteredSessions = filteredSessions.filter(el => startDate.isSameOrBefore(moment(el.beginTime)));
+        }
+        if(endDate){
+            filteredSessions = filteredSessions.filter(el => endDate.isSameOrAfter(moment(el.beginTime)));
+        }
+        return filteredSessions;
+    } 
 
     validateSessionInfo = (
         chosenCinema, 

@@ -1,0 +1,70 @@
+.movie-container{
+    padding: 30px;
+}
+
+.movie-info{
+    margin-bottom: 30px;
+}
+
+.movie-info:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.movie-info .movie-info-main h1{
+    font-size: 45px;
+}
+
+.movie-info .image-container{
+    padding-right: 40px;
+    float: left;
+}
+
+.movie-info .image-container .movie-info-image{
+    width: 160px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.session-times-by-date-item .date{
+    padding: 60px 20px 40px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.session-times-by-date-item:first-child .date{
+    padding-top: 20px;
+}
+
+.cinema-session-times-container:first-child{
+    border-top: 2px solid #524e4a; 
+}
+
+.cinema-session-times-container{
+    margin: 0 50px;
+    padding: 25px 20px;
+    border-bottom: 2px solid #524e4a;
+}
+
+.cinema-session-times-container .cinema-info{
+    display: inline-block;
+    width: 185px;
+    padding-right: 35px;
+}
+
+.cinema-session-times-container .cinema-info .heading{
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.cinema-session-times-container .cinema-info .location{
+    font-size: medium;
+}
+
+.cinema-session-times-container .session-cards-container{
+    display: inline-block;
+    vertical-align: top;
+}

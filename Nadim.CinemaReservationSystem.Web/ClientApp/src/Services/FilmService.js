@@ -1,10 +1,27 @@
 import filmDataAccess from "../DataAccess/FilmDataAccess";
 import moment from 'moment';
 import validationService from "./ValidationService";
+import applicationService from "./ApplicationService";
 
 class FilmService{
     getFilmList = () =>{
         return filmDataAccess.getFilmList();
+    }
+
+    getFilmSessionsList = (filmId, searchString) => {
+        return filmDataAccess.getFilmSessionsList(filmId, searchString);
+    }
+
+    getFilmSessionsDates = (sessions) =>{
+        return applicationService.getUniqueObjectsOfArray( sessions.map((el) =>
+            moment(el.beginTime).format('L')
+        ));
+    }
+
+    getFilmSessionsCinemasIds = (sessions) =>{
+        return applicationService.getUniqueObjectsOfArray( sessions.map((el) =>
+            el.cinema.cinemaId
+        ));
     }
 
     getFilm = (id) =>{

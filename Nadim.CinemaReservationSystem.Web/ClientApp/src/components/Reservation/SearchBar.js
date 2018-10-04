@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { withRouter } from 'react-router-dom';
-import { FormGroup} from 'react-bootstrap';
 import { DatePicker } from 'antd';
 import moment from 'moment';
 import applicationService from '../../Services/ApplicationService';
+import '../../styles/SearchBar.css';
 
 class SearchBar extends Component{
     displayName = SearchBar.displayName;
@@ -14,11 +14,6 @@ class SearchBar extends Component{
             chosenStartDate: moment(),
             chosenEndDate: moment().add(1, 'day')
         }
-
-        this.getSessionList({
-            startDate: moment().format('L'),
-            endDate: moment().add(14, 'days').format('L')
-        });
     }
 
     handleChangeDate = (time) =>{
@@ -38,25 +33,16 @@ class SearchBar extends Component{
         this.props.history.push(`${this.props.match.url}${applicationService.convertFiltersToFilterString(filters)}`);
     }
 
-    renderFiltersContent = () =>{
+    render(){
         return(
-            <React.Fragment>
+            <div className="search-bar-container">
                 <DatePicker
+                    size={"large"}
                     className="display-inline-block"
                     onChange={this.handleChangeDate}
                     value={this.state.chosenStartDate}
-                />
-            </React.Fragment>   
-        );
-    }
-
-    render(){
-        return(
-            <React.Fragment>
-                <FormGroup>
-                    {this.renderFiltersContent()}
-                </FormGroup>
-            </React.Fragment>
+                /> 
+            </div>
         );
     }
 }
