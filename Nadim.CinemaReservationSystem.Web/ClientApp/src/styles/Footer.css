@@ -1,0 +1,10 @@
+.footer-wrap{
+    padding: 25px 0;
+    background-color: #0d5b98;
+    color: white;
+    font-size: 17px;
+}
+
+.footer-menu-item{
+    display: inline-block;
+}

@@ -4,6 +4,7 @@ import Header from './components/Header/Header';
 import Body from './components/Body/Body';
 import MyAlert from './components/MyAlert';
 import { BrowserRouter as Router, Route} from 'react-router-dom';
+import Footer from './components/Footer/Footer';
 
 export default class App extends Component {
     displayName = App.name
@@ -61,12 +62,9 @@ export default class App extends Component {
                             ''
                         }
                     </div>
-                    <Route path="/" render={()=> (
-                        <Header
-                            callBackSetShownRole={this.setShownRole}
-                        />
-                    )}/>
+                    <Route path="/" component={Header}/>
                     <Route path="/" component={Body}/>
+                    <Route path="/(reservation|sessions|film)" component={Footer}/>
                 </React.Fragment>
             </Router>
         );
