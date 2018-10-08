@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import moment from 'moment';
+
 import Loading from '../General/Loading';
 import DisplayCinemaSessionsTimesByDate from './DisplayCinemaSessionsTimesByDate';
 import FilmDatesPanel from './FilmDatesPanel';
 import applicationService from '../../Services/ApplicationService';
 import filmService from '../../Services/FilmService';
 import sessionService from '../../Services/SessionService';
+
 import img1 from '../Images/post-image-1.jpg';
+
 import '../../styles/DisplayFilm.css';
 
 export default class DisplayFilm extends Component{

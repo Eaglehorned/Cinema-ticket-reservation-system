@@ -5,13 +5,14 @@ input {
     margin-bottom: 7px;
 }
 
-.error-text{
-    color: #f80000;
-}
-
-.body{
+body{
     width: 100%;
     margin-top: 187px;
+    height: calc(100% - 187px);
+}
+
+.error-text{
+    color: #f80000;
 }
 
 .alert-bottom{
