@@ -1,26 +1,61 @@
 .footer-wrap{
     padding: 25px 0 60px;
-    background-color: #0d5b98;
+    background-color: #b29050;
     color: white;
 }
 
-.footer-wrap .footer-menu-item{
+.footer-wrap .footer-menu-items-container{
+    float: left;
+}
+
+.footer-wrap::after {
+    clear: both;
+    display: table;
+    content: "";
+}
+
+.footer-wrap .footer-menu-items-container .footer-menu-item{
+    width: 200px;
     display: inline-block;
     margin-right: 30px;
 }
 
-.footer-wrap .footer-menu-item .heading{
+.footer-wrap .heading{
     font-size: 20px;
     font-style: bold;
+    margin-bottom: 10px; 
 }
 
-.footer-wrap .footer-menu-item a{
-    color: rgb(187, 219, 255);
+.footer-wrap a{
+    color: rgb(253, 255, 226);
     font-size: 15px;
 }
 
-.footer-wrap .footer-menu-item ul{
+.footer-wrap ul{
     margin: 0;
     padding-left: 5px;
     list-style: none;
+}
+
+.footer-wrap .social-media-links-container{
+    margin-right: 20px; 
+    float: right;
+}
+
+.footer-wrap .social-media-links-container .icon-container{
+    transition: 0.3s;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    margin-right: 5px;
+}
+
+.instagram{
+    background: #d6249f;
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);  
+}
+
+.footer-wrap .social-media-links-container .icon{
+    font-size: 30px;
+    vertical-align: middle;
 }
