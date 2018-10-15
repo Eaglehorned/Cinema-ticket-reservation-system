@@ -62,12 +62,12 @@ const Footer = () =>{
                         </div>
                     </Link>
                     <Link to="/">
-                        <div className="icon-container">
+                        <div className="icon-container twitter">
                             <i className="fa fa-twitter icon"></i>
                         </div>
                     </Link>
                     <Link to="/">
-                        <div className="icon-container">
+                        <div className="icon-container facebook">
                             <i className="fa fa-facebook icon"></i>
                         </div>
                     </Link>

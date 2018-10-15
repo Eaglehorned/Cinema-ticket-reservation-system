@@ -43,10 +43,12 @@
 }
 
 .footer-wrap .social-media-links-container .icon-container{
-    transition: 0.3s;
     display: inline-block;
     width: 36px;
     height: 36px;
+    padding: 3px 0;
+    text-align: center;
+    border-radius: 10px;
     margin-right: 5px;
 }
 
@@ -55,7 +57,15 @@
     background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%,#d6249f 60%,#285AEB 90%);  
 }
 
+.twitter{
+    background-color: #1c9be9;
+}
+
+.facebook{
+    background-color: #4267b2;
+}
+
 .footer-wrap .social-media-links-container .icon{
     font-size: 30px;
-    vertical-align: middle;
+    display: inline;
 }
